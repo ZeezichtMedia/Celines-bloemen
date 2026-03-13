@@ -1,0 +1,152 @@
+---
+const services = [
+  {
+    title: 'Winkel Arnemuiden',
+    description: 'De sfeervolle winkel in het hart van Arnemuiden. Kom langs met je eigen vaas of kies een prachtig cadeau.',
+    image: '/images/winkel/winkel-interieur.png',
+    link: '/winkel',
+    spanClass: 'md:col-span-2 md:row-span-2', // Large block
+    aspect: 'aspect-square md:aspect-auto'
+  },
+  {
+    title: 'Verse Boeketten',
+    description: 'Dagverse boeketten, met zorg samengesteld en lokaal bezorgd op Walcheren.',
+    image: '/images/bruiloft-bloemen/boeket-op-bruloft.jpeg',
+    link: '/bestellen',
+    spanClass: 'md:col-span-1 md:row-span-1', // Small block 1
+    aspect: 'aspect-[4/3] md:aspect-square'
+  },
+  {
+    title: 'Atelier Shop',
+    description: 'Bijzondere vazen, keramiek en gereedschap waarmee ik zelf het liefst werk.',
+    image: '/images/droogbloemen/droogbloemen-krans-groot.jpeg',
+    link: '/webshop',
+    spanClass: 'md:col-span-1 md:row-span-1', // Small block 2
+    aspect: 'aspect-[4/3] md:aspect-square'
+  }
+];
+---
+
+<section class="py-32 bg-sand-500 overflow-hidden relative">
+  <!-- Minimal decorative glass blobs -->
+  <div class="absolute top-1/4 left-0 w-96 h-96 bg-sage-500/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
+  <div class="absolute bottom-0 right-10 w-80 h-80 bg-terra-400/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-20 stagger-reveal">
+      <span class="text-sm font-sans font-medium uppercase tracking-widest text-sage-600 mb-4 block">Onze Expertise</span>
+      <h2 class="font-serif text-5xl md:text-7xl text-forest mb-6">Wat we doen</h2>
+      <p class="font-sans text-forest/70 max-w-2xl mx-auto font-light text-xl leading-relaxed">
+        Bij Celine's Bloemen draait alles om ambacht, puurheid en maatwerk.
+      </p>
+    </div>
+
+    <!-- Bento Grid Container -->
+    <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 h-auto md:h-[800px] stagger-reveal perspective-[1500px]">
+      {services.map((service, index) => (
+        <a 
+          href={service.link} 
+          class={`bento-card group relative block overflow-hidden rounded-3xl ${service.spanClass} transform-style-3d`}
+          data-cursor="hover"
+        >
+          <!-- 3D Content wrapper -->
+          <div class="bento-inner w-full h-full relative z-10 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-colors duration-500 group-hover:from-black/90 group-hover:via-black/50">
+            <h3 class="font-serif text-3xl md:text-4xl text-white mb-3 transform translate-z-12 transition-transform duration-500 group-hover:translate-z-24 drop-shadow-md">
+              {service.title}
+            </h3>
+            <p class="font-sans text-white/90 font-light leading-relaxed transform translate-z-12 transition-transform duration-500 max-w-md drop-shadow max-h-0 opacity-0 group-hover:max-h-32 group-hover:opacity-100 group-hover:mt-2 group-hover:duration-700">
+              {service.description}
+            </p>
+          </div>
+
+          <!-- Background Image that moves slightly counter to mouse for parallax -->
+          <div class="bento-bg absolute inset-[-5%] z-0 h-[110%] w-[110%]">
+            <img 
+              src={service.image} 
+              alt={service.title} 
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+
+  const initBento3D = () => {
+    const cards = document.querySelectorAll('.bento-card');
+
+    cards.forEach((card) => {
+      const bentoBg = card.querySelector('.bento-bg');
+      
+      card.addEventListener('mousemove', (e) => {
+        // Find position of mouse relative to the card center (-1 to 1)
+        const rect = card.getBoundingClientRect();
+        const xPos = e.clientX - rect.left;
+        const yPos = e.clientY - rect.top;
+        
+        const xCenter = rect.width / 2;
+        const yCenter = rect.height / 2;
+
+        const xPercentage = (xPos - xCenter) / xCenter;
+        const yPercentage = (yPos - yCenter) / yCenter;
+
+        // Apply 3D rotation (tilt)
+        gsap.to(card, {
+          rotateX: -yPercentage * 8, // Max tilt 8 deg
+          rotateY: xPercentage * 8,
+          duration: 0.5,
+          ease: 'power2.out',
+          transformPerspective: 1000,
+        });
+
+        // Opposite parallax movement for background image to enhance 3D feel
+        if(bentoBg) {
+          gsap.to(bentoBg, {
+            x: -xPercentage * 15,
+            y: -yPercentage * 15,
+            duration: 0.5,
+            ease: 'power2.out'
+          });
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        // Reset state
+        gsap.to(card, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.8,
+          ease: 'elastic.out(1, 0.4)'
+        });
+
+        if(bentoBg) {
+          gsap.to(bentoBg, {
+            x: 0,
+            y: 0,
+            duration: 0.8,
+            ease: 'elastic.out(1, 0.4)'
+          });
+        }
+      });
+    });
+  };
+
+  initBento3D();
+  document.addEventListener('astro:page-load', initBento3D);
+</script>
+
+<style>
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  .translate-z-12 {
+    transform: translateZ(12px);
+  }
+  .translate-z-24 {
+    transform: translateZ(24px);
+  }
+</style>

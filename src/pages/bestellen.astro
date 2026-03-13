@@ -1,0 +1,440 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+
+const bouquets = [
+  {
+    name: 'Vrolijk Veld',
+    color: 'Geel / Blauw / Oranje',
+    description: 'Een energieke mix van zonnebloemen en veldbloemen. Haal de zomer in huis met deze kleurrijke explosie.',
+    price: '€ 29,95',
+    image: '/images/bestellen/vrolijk-veld.png'
+  },
+  {
+    name: 'Zacht Pastel',
+    color: 'Roze / Beige / Wit',
+    description: 'Dromerige pastelkleuren voor een romantisch gevoel. Met weelderige pioenrozen en zachte ranonkels.',
+    price: '€ 34,95',
+    image: '/images/bestellen/zacht-pastel.png'
+  },
+  {
+    name: 'Puur Wit',
+    color: 'Wit / Groen',
+    description: 'Tijdloze elegantie en rust. Een minimalistisch boeket met witte lelies en diepgroen blad.',
+    price: '€ 29,95',
+    image: '/images/bestellen/puur-wit.png'
+  },
+  {
+    name: 'Warm Terracotta',
+    color: 'Oranje / Bruin',
+    description: 'Gezelligheid en warmte. Een robuust boeket met herfstkleuren, dahlia\'s en gedroogde grassen.',
+    price: '€ 27,95',
+    image: '/images/bestellen/warm-terracotta.png'
+  }
+];
+---
+
+<Layout title="Bestel Verse Bloemen - Celine's bloemen" description="Bestel dagverse, handgebonden boeketten. Lokaal bezorgd in de regio Walcheren.">
+  
+  <!-- Simple Page Header -->
+  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <div class="lg:w-1/2 space-y-8 text-center lg:text-left">
+        <div class="inline-block px-4 py-1.5 bg-forest/5 backdrop-blur-md rounded-full border border-forest/10 mb-4 stagger-reveal">
+          <span class="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-terra-600">Direct uit het atelier</span>
+        </div>
+        <h1 class="font-serif text-4xl md:text-7xl lg:text-8xl text-forest leading-[0.9] stagger-reveal">
+          Vang de <span class="italic text-terra-600">Seizoenen</span> in een Boeket
+        </h1>
+        <p class="font-sans text-xl text-forest/70 font-light max-w-xl stagger-reveal leading-relaxed">
+          Geen massaproductie, maar puur handwerk. Ik bind met de seizoenen mee, zodat elke bos een uniek verhaal vertelt bij jou thuis.
+        </p>
+        <div class="pt-4 stagger-reveal">
+          <a href="#boeketten" class="px-10 py-5 bg-forest text-white hover:bg-terra-600 transition-all duration-500 rounded-full font-sans text-xs uppercase tracking-widest font-bold shadow-xl inline-block">
+            Bekijk de collectie
+          </a>
+        </div>
+      </div>
+      <div class="lg:w-1/2 relative space-y-4">
+        <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl relative z-10 stagger-reveal">
+          <img 
+            src="/images/bestellen/hero-flower-field.png" 
+            alt="Bloemenveld tijdens gouden uur" 
+            class="w-full h-full object-cover shadow-inner"
+          />
+          <div class="absolute inset-0 bg-forest/5 mix-blend-multiply"></div>
+        </div>
+        <!-- Decorative elements -->
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-sage-500/10 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute -top-10 -right-10 w-64 h-64 bg-terra-400/10 rounded-full blur-3xl -z-10"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introductie & Filosofie -->
+  <section id="boeketten" class="py-32 bg-white px-6 border-b border-sand-600/30">
+    <div class="max-w-4xl mx-auto space-y-12">
+      <div class="text-center space-y-4 mb-20">
+        <span class="text-terra-600 font-sans text-sm uppercase tracking-widest font-bold">Mijn Filosofie</span>
+        <h2 class="font-serif text-4xl md:text-6xl text-forest italic">Seizoensbloemen in de Vaas</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 font-sans font-light text-forest/80 leading-relaxed text-lg stagger-reveal">
+        <p>
+          Bloemen horen bij een moment, een sfeer. Daarom geloof ik niet in anonieme pakketpost of bloemen die dagenlang in donkere dozen reizen. In het atelier werken we uitsluitend met dagverse stelen, die met zorg zijn geselecteerd op kwaliteit en houdbaarheid.
+        </p>
+        <p>
+          Woon je op Walcheren? Dan worden deze bossen met aandacht bij je langs gebracht. Dat is de lokale, eerlijke service waar <strong>Celine's Bloemen</strong> voor staat. Vers, dichtbij en met zorg verpakt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boeketten Grid -->
+  <section class="py-24 bg-sand-500 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        {bouquets.map((bouquet) => (
+          <div class="bouquet-card bg-white rounded-3xl overflow-hidden shadow-2xl group transition-all duration-700 stagger-reveal flex flex-col md:flex-row h-full border border-sand-600/20" data-tilt>
+            <div class="md:w-5/12 aspect-square md:aspect-auto relative overflow-hidden">
+              <div class="absolute inset-0 bg-forest/5 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+              <img 
+                src={bouquet.image} 
+                alt={bouquet.name} 
+                class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out" 
+              />
+            </div>
+            <div class="md:w-7/12 p-8 md:p-10 flex flex-col justify-center">
+              <span class="text-xs font-sans tracking-[0.3em] uppercase text-sage-500 mb-2 font-bold">{bouquet.color}</span>
+              <h3 class="font-serif text-3xl md:text-4xl text-forest mb-4 group-hover:text-terra-600 transition-colors">{bouquet.name}</h3>
+              <p class="font-sans font-light text-forest/70 mb-8 leading-relaxed text-lg">{bouquet.description}</p>
+              
+              <div class="flex items-center justify-between mt-auto">
+                <span class="font-serif text-2xl text-sage-600 font-medium">{bouquet.price}</span>
+                <button 
+                  class="order-btn group/btn px-8 py-4 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full flex items-center gap-3 overflow-hidden relative" 
+                  data-cursor="hover"
+                  data-name={bouquet.name}
+                  data-price={bouquet.price}
+                >
+                  <span class="relative z-10">Bestellen</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transform group-hover/btn:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+        
+      </div>
+    </div>
+  </section>
+  <!-- Order Modal -->
+  <div id="order-modal" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-all duration-500 px-4">
+    <div class="absolute inset-0 bg-forest/80 backdrop-blur-md modal-backdrop"></div>
+    <div class="bg-sand-500 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.4)] relative z-10 p-6 md:p-12 transform translate-y-12 scale-95 transition-all duration-500 modal-content">
+      <button class="absolute top-8 right-8 text-forest/30 hover:text-forest transition-colors modal-close bg-transparent border-none outline-none cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      
+      <div class="mb-10 text-center">
+        <span class="text-xs font-sans tracking-[0.3em] uppercase text-sage-500 mb-2 font-bold block">Bestelling</span>
+        <h2 class="font-serif text-4xl md:text-5xl text-forest mb-4">Jouw <span id="modal-bouquet-name" class="italic"></span></h2>
+        <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
+      </div>
+
+      <form id="order-form" class="space-y-10">
+        <input type="hidden" id="bouquet-price-val" value="0">
+        <input type="hidden" id="bouquet-name-val" value="">
+
+        <!-- Delivery Method -->
+        <div class="space-y-6">
+          <label class="font-sans text-sm tracking-widest uppercase text-forest/50 font-bold block">Afleveren of Ophalen?</label>
+          <div class="grid grid-cols-2 gap-6">
+            <label class="cursor-pointer group">
+              <input type="radio" name="delivery_method" value="pickup" class="peer sr-only" checked>
+              <div class="border-2 border-sand-600/50 bg-white rounded-2xl p-6 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all duration-500 shadow-sm hover:shadow-md peer-checked:shadow-xl">
+                <span class="block font-serif text-xl mb-1">Ophalen</span>
+                <span class="block text-xs uppercase tracking-widest peer-checked:text-white/60 text-forest/40">In Arnemuiden (Gratis)</span>
+              </div>
+            </label>
+            <label class="cursor-pointer group">
+              <input type="radio" name="delivery_method" value="delivery" class="peer sr-only">
+              <div class="border-2 border-sand-600/50 bg-white rounded-2xl p-6 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all duration-500 shadow-sm hover:shadow-md peer-checked:shadow-xl">
+                <span class="block font-serif text-xl mb-1">Bezorgen</span>
+                <span class="block text-xs uppercase tracking-widest peer-checked:text-white/60 text-forest/40">In de regio (Vanaf €3)</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Delivery Details -->
+        <div id="delivery-details" class="hidden space-y-8 animate-fade-in p-8 bg-white/50 rounded-2xl border border-sand-600/50">
+          <div class="space-y-4">
+            <label class="font-sans text-sm tracking-widest uppercase text-forest/50 font-bold block">Waar mogen we de bloemen brengen?</label>
+            <select id="delivery-region" class="w-full bg-white border-2 border-sand-600/50 rounded-xl p-4 text-forest font-sans focus:outline-none focus:border-forest transition-all appearance-none cursor-pointer">
+              <option value="3.00">Arnemuiden (+ € 3,00)</option>
+              <option value="5.00">Middelburg (+ € 5,00)</option>
+              <option value="8.00">Walcheren / Zuid-Beveland (+ € 8,00)</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="col-span-2">
+              <input type="text" id="straat" class="w-full bg-white border-2 border-sand-600/50 rounded-xl p-4 text-forest focus:outline-none focus:border-forest transition-all placeholder:text-forest/30" placeholder="Straatnaam + Huisnummer">
+            </div>
+            <div class="col-span-2 md:col-span-2">
+              <input type="text" id="plaats" class="w-full bg-white border-2 border-sand-600/50 rounded-xl p-4 text-forest focus:outline-none focus:border-forest transition-all placeholder:text-forest/30" placeholder="Woonplaats">
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="space-y-6">
+          <label class="font-sans text-sm tracking-widest uppercase text-forest/50 font-bold block">Betaling</label>
+          <div id="payment-options" class="grid grid-cols-1 gap-4">
+            <!-- Dynamic radio buttons will be injected here -->
+          </div>
+        </div>
+
+        <!-- Total & Submit -->
+        <div class="pt-10 border-t-2 border-sand-600/30 flex flex-col items-center gap-8">
+          <div class="text-center">
+            <span class="block font-sans text-xs text-forest/40 uppercase tracking-[0.2em] mb-2 font-bold">Totaalbedrag</span>
+            <span id="total-price" class="font-serif text-5xl text-forest">€ 0,00</span>
+          </div>
+          <button type="submit" class="w-full h-20 bg-sage-600 text-white font-sans tracking-[0.2em] uppercase text-sm hover:bg-forest transition-all duration-500 rounded-2xl shadow-xl hover:shadow-2xl flex items-center justify-center gap-4 group">
+            <span class="group-hover:translate-x-1 transition-transform">Verstuur Aanvraag via WhatsApp</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform scale-125"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </button>
+          <p class="text-center text-xs text-forest/40 font-light max-w-sm">Je aanvraag wordt direct doorgezet. Je ontvangt daarna een bevestiging van de bestelling.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Selection Tracker (Innovative Feature) -->
+  <div id="floating-cart" class="fixed bottom-10 right-10 z-[80] translate-y-32 opacity-0 transition-all duration-700">
+    <button class="bg-forest text-white h-20 px-8 rounded-full shadow-[0_20px_50px_rgba(40,54,24,0.3)] hover:shadow-[0_25px_60px_rgba(40,54,24,0.4)] transition-all flex items-center gap-6 group scale-100 hover:scale-105" id="cart-trigger">
+      <div class="flex flex-col items-start leading-tight">
+        <span class="text-[10px] uppercase tracking-widest text-white/50 font-bold">Jouw Selectie</span>
+        <span id="cart-bouquet-name" class="font-serif text-lg">Geen boeket</span>
+      </div>
+      <div class="h-10 w-[1px] bg-white/20"></div>
+      <span class="font-serif text-xl" id="cart-price">€ 0,00</span>
+      <div class="bg-white/10 p-3 rounded-full group-hover:bg-white/20 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+    </button>
+  </div>
+
+  <CtaSection />
+
+  <script>
+    import gsap from 'gsap';
+
+    const initOrderModal = () => {
+      const modal = document.getElementById('order-modal');
+      const floatingCart = document.getElementById('floating-cart');
+      const cartName = document.getElementById('cart-bouquet-name');
+      const cartPrice = document.getElementById('cart-price');
+      const cartTrigger = document.getElementById('cart-trigger');
+      
+      if (!modal) return;
+      
+      const modalBackdrop = modal.querySelector('.modal-backdrop');
+      const modalContent = modal.querySelector('.modal-content');
+      const closeBtns = modal.querySelectorAll('.modal-close');
+      const orderBtns = document.querySelectorAll('.order-btn');
+      const form = document.getElementById('order-form');
+
+      const deliveryRadios = document.querySelectorAll('input[name="delivery_method"]');
+      const deliveryDetails = document.getElementById('delivery-details');
+      const regionSelect = document.getElementById('delivery-region');
+      const paymentOptionsContainer = document.getElementById('payment-options');
+      
+      const priceValInput = document.getElementById('bouquet-price-val') as HTMLInputElement;
+      const nameValInput = document.getElementById('bouquet-name-val') as HTMLInputElement;
+      const modalNameSpan = document.getElementById('modal-bouquet-name');
+      const totalPriceSpan = document.getElementById('total-price');
+
+      const pickupPayments = [
+        {val: 'pin_winkel', text: 'Pinnen in de winkel'},
+        {val: 'contant_winkel', text: 'Contant in de winkel'},
+        {val: 'tikkie_vooraf', text: 'Tikkie via WhatsApp (Vooraf)'}
+      ];
+
+      const deliveryPayments = [
+        {val: 'pin_deur', text: 'Mobiel pinnen aan de deur'},
+        {val: 'contant_deur', text: 'Contant aan de deur'},
+        {val: 'tikkie_vooraf', text: 'Tikkie via WhatsApp (Vooraf)'}
+      ];
+
+      const openModal = (name: string, priceStr: string) => {
+        const priceNum = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
+        priceValInput.value = priceNum.toString();
+        nameValInput.value = name;
+        if(modalNameSpan) modalNameSpan.textContent = name;
+
+        // Visual update for the floating cart
+        if(floatingCart) {
+          if(cartName) cartName.textContent = name;
+          if(cartPrice) cartPrice.textContent = priceStr;
+          floatingCart.classList.remove('translate-y-32', 'opacity-0');
+        }
+
+        updateTotalAndPayments();
+
+        // GSAP Animation for modal
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        gsap.to(modalContent, {
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power4.out'
+        });
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeModal = () => {
+        gsap.to(modalContent, {
+          y: 50,
+          scale: 0.95,
+          opacity: 0,
+          duration: 0.4,
+          ease: 'power2.in',
+          onComplete: () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+          }
+        });
+      };
+
+      const updateTotalAndPayments = () => {
+        const methodEl = document.querySelector('input[name="delivery_method"]:checked') as HTMLInputElement;
+        const isDelivery = methodEl?.value === 'delivery';
+        
+        if(isDelivery) {
+          deliveryDetails?.classList.remove('hidden');
+          gsap.fromTo(deliveryDetails, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.4 });
+        } else {
+          deliveryDetails?.classList.add('hidden');
+        }
+
+        const options = isDelivery ? deliveryPayments : pickupPayments;
+        if(paymentOptionsContainer) {
+          paymentOptionsContainer.innerHTML = options.map((opt, i) => `
+            <label class="cursor-pointer group">
+              <input type="radio" name="payment_method" value="${opt.val}" class="peer sr-only" ${i === 2 ? 'checked' : ''}>
+              <div class="p-4 border-2 border-sand-600/50 rounded-xl peer-checked:bg-forest/5 peer-checked:border-forest transition-all flex items-center justify-between">
+                <span class="font-sans text-forest/80">${opt.text}</span>
+                <div class="w-5 h-5 rounded-full border-2 border-sand-600/50 peer-checked:bg-forest peer-checked:border-forest relative">
+                   <div class="absolute inset-1 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                </div>
+              </div>
+            </label>
+          `).join('');
+        }
+
+        const basePrice = parseFloat(priceValInput.value) || 0;
+        // @ts-ignore
+        const deliveryCost = isDelivery ? parseFloat(regionSelect.value) : 0;
+        const total = basePrice + deliveryCost;
+
+        if(totalPriceSpan) {
+          totalPriceSpan.textContent = `€ ${total.toFixed(2).replace('.', ',')}`;
+        }
+      };
+
+      orderBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          openModal(target.dataset.name || '', target.dataset.price || '');
+        });
+      });
+
+      cartTrigger?.addEventListener('click', () => {
+        const name = nameValInput.value;
+        const price = priceValInput.value;
+        if (name) openModal(name, `€ ${price.replace('.', ',')}`);
+      });
+
+      closeBtns.forEach(btn => btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeModal();
+      }));
+      modalBackdrop?.addEventListener('click', closeModal);
+
+      deliveryRadios.forEach(radio => {
+        radio.addEventListener('change', updateTotalAndPayments);
+      });
+      
+      regionSelect?.addEventListener('change', updateTotalAndPayments);
+
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = nameValInput.value;
+        const total = totalPriceSpan?.textContent;
+        const methodEl = document.querySelector('input[name="delivery_method"]:checked') as HTMLInputElement;
+        const method = methodEl.value;
+        const paymentMethodEl = document.querySelector('input[name="payment_method"]:checked') as HTMLInputElement;
+        const paymentLabel = paymentMethodEl?.parentElement?.querySelector('span')?.textContent;
+        
+        let msg = `Hi Celine! Ik wil graag het boeket '${name}' bestellen voor ${total}.%0A%0A`;
+        
+        if(method === 'pickup') {
+          msg += `📦 Ik kom het ophalen in de winkel in Arnemuiden.%0A`;
+        } else {
+          // @ts-ignore
+          const region = regionSelect.options[regionSelect.selectedIndex].text;
+          const straat = (document.getElementById('straat') as HTMLInputElement).value || 'Geen straat opgegeven';
+          const plaats = (document.getElementById('plaats') as HTMLInputElement).value || 'Geen plaats opgegeven';
+          msg += `🚚 Graag lokaal bezorgen:%0A- Regio: ${region}%0A- Adres: ${straat}, ${plaats}%0A`;
+        }
+
+        msg += `%0A💳 Betaling via: ${paymentLabel}.%0A%0AKan je dit bevestigen?`;
+        
+        const waLink = `https://wa.me/31612345678?text=${msg}`;
+        window.open(waLink, '_blank');
+        closeModal();
+      });
+
+      // Simple Parallax for cards
+      const cards = document.querySelectorAll('.bouquet-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const moveX = (x - centerX) / 20;
+          const moveY = (y - centerY) / 20;
+          
+          gsap.to(card, {
+            rotateY: moveX,
+            rotateX: -moveY,
+            duration: 0.5,
+            ease: 'power2.out'
+          });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            rotateY: 0,
+            rotateX: 0,
+            duration: 0.8,
+            ease: 'elastic.out(1, 0.4)'
+          });
+        });
+      });
+    };
+
+    // Support Astro View Transitions
+    initOrderModal();
+    document.addEventListener('astro:page-load', initOrderModal);
+  </script>
+</Layout>

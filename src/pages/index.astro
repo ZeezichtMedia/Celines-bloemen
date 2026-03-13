@@ -1,11 +1,46 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import ServiceCards from '../components/home/ServiceCards.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import CtaSection from '../components/home/CtaSection.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Home - Celine's bloemen">
+  <!-- Hero Section -->
+  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-sand-600">
+    <div class="absolute inset-0 z-0 overflow-hidden">
+      <div class="absolute inset-0 bg-forest/40 mix-blend-multiply flex items-center justify-center z-10"></div>
+      <!-- Decorative background placeholder -->
+      <img 
+        src="/images/bruiloft-bloemen/bruiloft-bloemen-op-bruiloft-kussend.jpeg" 
+        alt="Prachtige droogbloemen en bruidsboeketten" 
+        class="w-full min-h-[130vh] object-cover relative -top-[15vh]"
+        data-speed="0.8"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-8 mt-12">
+      <!-- Hero Text -->
+      <h1 class="font-serif text-4xl md:text-7xl lg:text-8xl text-white font-medium leading-tight drop-shadow-lg stagger-reveal">
+        Jouw verhaal, vertaald in <span class="italic text-sand-500">puur natuur</span> bloemwerk!
+      </h1>
+      
+      <p class="font-sans text-lg md:text-xl text-sand-500/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md stagger-reveal">
+        Hi, ik ben Celine! Vanuit mijn atelier in Zeeland creëer ik uniek bloemwerk. Met zorg geselecteerde materialen die de kracht van de natuur laten zien. Van onvergetelijke bruidsarrangementen tot creatieve kunstwerken met droogbloemen.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 stagger-reveal">
+        <a href="/bruidsboeketten" class="px-8 py-4 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 w-full sm:w-auto text-center rounded-sm" data-cursor="hover">
+          Bekijk Bruidsboeketten
+        </a>
+        <a href="/contact" class="px-8 py-4 bg-transparent border-2 border-white text-white font-sans text-sm tracking-widest uppercase hover:bg-white hover:text-forest transition-colors duration-300 w-full sm:w-auto text-center rounded-sm glass-card border-none" data-cursor="hover">
+          Stuur een berichtje!
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <ServiceCards />
+  <AboutSection />
+  <CtaSection />
 </Layout>

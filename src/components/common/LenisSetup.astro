@@ -1,0 +1,96 @@
+---
+---
+<script>
+  import Lenis from 'lenis';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Initialize Lenis
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    orientation: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 2,
+    infinite: false,
+  });
+
+  // Sync GSAP ScrollTrigger with Lenis
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+
+  // Set up global parallax function
+  const setupParallax = () => {
+    const parallaxElements = document.querySelectorAll('[data-speed]');
+    parallaxElements.forEach((el) => {
+      // Add type assertion specifically for HTMLElement
+      const htmlEl = el as HTMLElement;
+      // Now dataset is safely accessible
+      const speedRaw = htmlEl.dataset.speed;
+      const speed = speedRaw ? parseFloat(speedRaw) : 0;
+      
+      gsap.to(el, {
+        y: () => (1 - parseFloat(htmlEl.dataset.speed || "1")) * (ScrollTrigger.maxScroll(window) - (ScrollTrigger.maxScroll(window) - htmlEl.getBoundingClientRect().top)),
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+          invalidateOnRefresh: true // recalculate on resize
+        }
+      });
+    });
+  };
+
+  // Handle staggered reveals
+  const setupReveals = () => {
+    const revealElements = document.querySelectorAll('.stagger-reveal');
+    
+    // Group elements by their parent section if possible
+    const sections = new Set(Array.from(revealElements).map(el => el.closest('section')));
+    
+    sections.forEach(section => {
+      if(!section) return;
+      const elementsInSection = section.querySelectorAll('.stagger-reveal');
+      
+      gsap.fromTo(elementsInSection, 
+        { 
+          y: 60, 
+          opacity: 0 
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%", // Trigger when section is 80% visible
+            toggleActions: "play none none reverse" // Play forward on enter, reverse on leave back
+          }
+        }
+      );
+    });
+  };
+
+  // Initialize all interactions
+  const initInteractions = () => {
+    setupReveals();
+    // Parallax setup can happen slightly after to ensure DOM is fully measured
+    setTimeout(setupParallax, 100); 
+  };
+
+  initInteractions();
+  document.addEventListener('astro:page-load', initInteractions);
+</script>

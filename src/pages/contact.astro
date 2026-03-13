@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact - Celine's bloemen" description="Neem contact met mij op voor jouw droogbloemen, verse bloemen of het ontwerpen van je bruidsboeket.">
+  
+  <!-- Page Header -->
+  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
+    <div class="absolute inset-0 z-0 opacity-20">
+      <img src="https://celinesbloemen.nl/wp-content/uploads/2023/11/IMG_0921-scaled.jpeg" class="w-full h-full object-cover blur-sm" alt="Background contact" />
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <span class="text-sm font-sans font-medium uppercase tracking-widest text-sage-600">Kom langs of stuur een bericht</span>
+      <h1 class="font-serif text-5xl md:text-7xl text-forest">Neem Contact Op</h1>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="py-24 bg-white px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+      
+      <!-- Contact Details -->
+      <div class="w-full md:w-5/12 space-y-12 font-sans font-light text-forest/80 leading-relaxed text-lg">
+        <div class="stagger-reveal">
+          <h2 class="font-serif text-3xl md:text-4xl text-forest mb-6">Kom gezellig langs of stuur een berichtje</h2>
+          <p class="mb-6">
+            Of je nu vragen hebt over een bloemenabonnement, stylingadvies nodig hebt voor jullie droomhuwelijk, of een boeket wil laten bezorgen op Walcheren: ik denk onwijs graag creatief met je mee.
+          </p>
+          <p>
+            Je bent natuurlijk ook van harte welkom in de winkel aan de Langstraat 81 in Arnemuiden. Hier kun je onder het genot van een kopje koffie heerlijk rondsnuffelen in de verse bloemen of samen met mij jullie plannen bespreken.
+          </p>
+        </div>
+
+        <ul class="space-y-6 text-forest">
+          <li class="flex flex-col gap-2">
+            <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">E-mail</span>
+            <a href="mailto:info@celinesbloemen.nl" class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">info@celinesbloemen.nl</a>
+          </li>
+          <li class="flex flex-col gap-2">
+            <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">Telefoon / WhatsApp</span>
+            <a href="tel:+31612345678" class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">+31 6 12 34 56 78</a>
+          </li>
+          <li class="flex flex-col gap-2">
+            <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">Atelier (op afspraak)</span>
+            <span class="text-xl font-serif">Zeeland, Nederland</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="w-full md:w-7/12 bg-sand-500 p-8 md:p-12 rounded-sm shadow-xl relative z-10">
+        <h3 class="font-serif text-3xl text-forest mb-8">Stuur een berichtje</h3>
+        
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label for="name" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Naam</label>
+              <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300" placeholder="Bijv. Sofie Jansen">
+            </div>
+            <div class="space-y-2">
+              <label for="email" class="text-sm tracking-widest uppercase text-forest font-medium">E-mailadres</label>
+              <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300" placeholder="jouw@email.nl">
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="subject" class="text-sm tracking-widest uppercase text-forest font-medium">Onderwerp</label>
+            <select id="subject" name="subject" class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 text-forest/80 appearance-none">
+              <option value="bruiloft">Bruiloft bloemen</option>
+              <option value="droogbloemen">Droogbloemen bestellen</option>
+              <option value="verhuur">Verhuur materiaal</option>
+              <option value="anders">Anders...</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label for="message" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Bericht</label>
+            <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 resize-none" placeholder="Typ hier je bericht..."></textarea>
+          </div>
+
+          <button type="submit" class="inline-block px-10 py-5 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm w-full md:w-auto text-center mt-4">
+            Bericht Versturen
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</Layout>

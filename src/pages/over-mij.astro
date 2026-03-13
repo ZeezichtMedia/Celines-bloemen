@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+---
+
+<Layout title="Over mij - Celine's bloemen" description="Lees het verhaal van bloemist Celine en haar passie voor het kweken van biologische bloemen.">
+  
+  <!-- Page Header -->
+  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <span class="text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Het gezicht achter de bloemen</span>
+      <h1 class="font-serif text-5xl md:text-7xl text-forest">Over Celine</h1>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="py-24 bg-white px-6">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+      
+      <div class="w-full md:w-1/2 relative md:sticky top-32">
+        <div class="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl">
+          <img 
+            src="/images/celine/holding-bouquet.jpeg" 
+            alt="Celine tussen de bloemen" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <!-- Decorative element -->
+        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-sage-400/20 rounded-full blur-2xl -z-10"></div>
+      </div>
+
+      <div class="w-full md:w-1/2 space-y-8 font-sans font-light text-forest/80 leading-relaxed text-lg">
+        <h2 class="font-serif text-3xl md:text-4xl text-forest stagger-reveal">Verbonden met de seizoenen, passie voor puur natuur!</h2>
+        <p class="stagger-reveal">
+          Hi, ik ben Celine! Ik ben 22 jaar oud en al op piepjonge leeftijd wist ik één ding zeker: ik wil iets met bloemen doen.
+        </p>
+        <p class="stagger-reveal">
+          Bloemen zijn voor mij altijd een vanzelfsprekendheid geweest. Ik groeide op tussen de kassen en de versgeplukte bossen, waar ik al vroeg leerde hoe bijzonder de kracht van de natuur is. Het vak zit simpelweg in mijn bloed. Tijdens mijn middelbare schooltijd werkte ik al bij een bloemist, waar mijn liefde voor creatieve arrangementen pas écht tot leven kwam.
+        </p>
+        
+        <h2 class="font-serif text-3xl md:text-4xl text-forest pt-6 stagger-reveal">Van creatieve droom tot vakexpert</h2>
+        <p class="stagger-reveal">
+          Mijn gedrevenheid leidde me naar de bloemistenopleiding, die ik in mei 2023 succesvol afrondde als gediplomeerd vakexpert. Gelijk daarna startte ik <strong>Celine's Bloemen</strong> vanuit mijn eigen atelier in Zeeland.
+        </p>
+        <p class="stagger-reveal">
+          Ik werk het liefst met dagverse seizoensbloemen die zorgvuldig zijn geselecteerd op kwaliteit en uitstraling. En wat het werk nog bijzonderder maakt: met natuurlijke bloemen en onbehandelde droogbloemen werk ik volledig zonder chemische overdaad. Gewoon puur natuur! Of ik nu wegdroom bij het binden van een levendig bruidsboeket of meedenk over een uniek bloemwerk bij jou thuis, die natuurlijke eigenheid staat altijd voorop.
+        </p>
+        
+        <div class="pt-8 border-t border-sand-600/30 stagger-reveal">
+          <p class="font-serif text-2xl italic text-forest">"Het allermooiste vind ik om onder het genot van een kopje koffie samen jullie stijl te vertalen naar een bloemwerk dat écht past."</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CtaSection />
+</Layout>

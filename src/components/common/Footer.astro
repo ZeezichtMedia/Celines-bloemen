@@ -1,0 +1,64 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-forest text-sand-500 py-16 mt-auto">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+    
+    <!-- Brand Info -->
+    <div>
+      <h3 class="font-serif text-3xl mb-4 text-white">Celine's Bloemen</h3>
+      <p class="text-sand-600 font-light leading-relaxed max-w-sm mb-6">
+        Bloemen maken jouw bruiloft, huis en evenement compleet. Van eigen kweek en volledig puur natuur.
+      </p>
+      <div class="flex gap-4">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="md:pl-12">
+      <h4 class="font-sans text-sm tracking-widest uppercase text-sage-400 mb-6 font-medium">Navigatie</h4>
+      <ul class="flex flex-col gap-3 font-light">
+        <li><a href="/" class="hover:text-sage-400 transition-colors duration-300">Home</a></li>
+        <li><a href="/winkel" class="hover:text-sage-400 transition-colors duration-300">Winkel Arnemuiden</a></li>
+        <li><a href="/bestellen" class="hover:text-sage-400 transition-colors duration-300">Verse Bloemen Lokaal</a></li>
+        <li><a href="/webshop" class="hover:text-sage-400 transition-colors duration-300">Landelijke Webshop</a></li>
+        <li><a href="/abonnementen" class="hover:text-sage-400 transition-colors duration-300">Abonnementen</a></li>
+        <li><a href="/bruiloften-verhuur" class="hover:text-sage-400 transition-colors duration-300">Bruiloften & Verhuur</a></li>
+        <li><a href="/contact" class="hover:text-sage-400 transition-colors duration-300">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div>
+      <h4 class="font-sans text-sm tracking-widest uppercase text-sage-400 mb-6 font-medium">Contact</h4>
+      <ul class="flex flex-col gap-4 font-light text-sand-600">
+        <li class="flex items-start gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 text-sage-400 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>Winkel Arnemuiden:<br/>Langstraat 81, 4341 EG</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <a href="mailto:info@celinesbloemen.nl" class="hover:text-white transition-colors duration-300">info@celinesbloemen.nl</a>
+        </li>
+        <li class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <a href="tel:+31612345678" class="hover:text-white transition-colors duration-300">+31 6 12 34 56 78</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+  
+  <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-sand-600/60 font-light">
+    <p>&copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.</p>
+    <p>Ontworpen en gebouwd met ♥</p>
+  </div>
+</footer>

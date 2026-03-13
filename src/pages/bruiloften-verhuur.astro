@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+---
+
+<Layout title="Bruiloften & Verhuur - Celine's bloemen" description="Volledige ontzorging van jullie droomhuwelijk: van persoonlijk bruidsboeket tot de verhuur van eyecatchers en backdrops.">
+
+  <!-- Hero met foto over de volle breedte, extra padding -->
+  <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-forest/40 mix-blend-multiply flex items-center justify-center z-10"></div>
+      <img 
+        src="/images/lifestyle/wedding-couple.jpeg" 
+        alt="Bruiloft bloemen en decoratie" 
+        class="w-full h-full object-cover"
+        data-speed="0.8"
+      />
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-white space-y-6 mt-20">
+      <span class="text-sm font-sans font-bold uppercase tracking-[0.2em] text-sand-500 stagger-reveal">Jullie de dag, Ik de styling</span>
+      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl drop-shadow-lg stagger-reveal">Bruiloften & Verhuur</h1>
+    </div>
+  </section>
+
+  <!-- Inhoud / Tekstgedeelte -->
+  <section class="py-24 bg-white px-6">
+     <div class="max-w-4xl mx-auto text-center font-sans font-light text-forest/80 leading-relaxed text-lg space-y-6 stagger-reveal">
+        <p>
+          Gefeliciteerd met jullie trouwplannen! Van jongs af aan ben ik verbonden met de seizoenen en ik weet als geen ander hoe belangrijk de juiste sfeer is op jullie grote dag. Alles draait om het totaalplaatje: een prachtig, handgebonden bruidsboeket in pasteltinten dat perfect matcht bij de natuurlijke elementen die jullie locatie helemaal áf maken.
+        </p>
+        <p>
+          Mijn benadering is heel simpel: <strong>Ontzorging</strong>. Of je nu op zoek bent naar subtiele corsages voor de daggasten, weelderige tafelstyling of het huren van mijn exclusieve gouden kandelaren en robuuste houten zuilen; ik regel het.
+        </p>
+     </div>
+  </section>
+
+  <!-- Split Sectie: Bruidsbloemen vs Verhuur -->
+  <section class="py-24 bg-sand-500 px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+      
+      <!-- Bruidsbloemen -->
+      <div class="space-y-8 stagger-reveal">
+        <div class="aspect-square rounded-sm overflow-hidden relative">
+           <img src="/images/bruiloft-bloemen/foto-bruiloft-met-backdrop-en-bloemen.jpeg" class="w-full h-full object-cover" alt="Bruidsboeket Celine" />
+        </div>
+        <h2 class="font-serif text-3xl md:text-4xl text-forest">Puur Natuur Bruidsbloemen</h2>
+        <p class="font-light text-forest/80">
+          We gaan zitten met een kopje koffie en bespreken al jullie dromen. Ik vertaal dit naar uniek seizoensbloemwerk: van corsages en autoversiering tot het perfecte bruidsboeket. Met zorg uitgekozen materialen en helemaal in jullie stijl.
+        </p>
+      </div>
+
+      <!-- Verhuur -->
+      <div class="space-y-8 stagger-reveal lg:mt-24">
+        <div class="aspect-square rounded-sm overflow-hidden relative">
+           <img src="/images/verhuur/voorbeeld-van-verhuur-alles-in-een.jpeg" class="w-full h-full object-cover" alt="Sfeer en Verhuur" />
+        </div>
+        <h2 class="font-serif text-3xl md:text-4xl text-forest">Verhuur Eyecatchers</h2>
+        <p class="font-light text-forest/80">
+          Zonder stress en zonder dat je zelf tientallen vazen hoeft te kopen. Ik verhuur prachtige, kwalitatieve decoratie zoals melkkrukjes, XXL kandelaren, sierlijke lopers en robuuste zuilen inclusief luxueuze opmaak. 
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <CtaSection />
+</Layout>

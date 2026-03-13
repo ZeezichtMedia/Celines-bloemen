@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+---
+
+<Layout title="Winkel Arnemuiden - Celine's bloemen" description="Breng een bezoek aan de knusse bloemenwinkel van Celine aan de Langstraat 81 in Arnemuiden.">
+  
+  <!-- Page Header -->
+  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
+    <div class="absolute inset-0 z-0 opacity-20">
+      <img src="/images/winkel/winkel-interieur.png" class="w-full h-full object-cover blur-sm" alt="Achtergrond winkel" />
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <span class="text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Jouw lokale bloemist</span>
+      <h1 class="font-serif text-5xl md:text-7xl text-forest">Winkel Arnemuiden</h1>
+      <p class="font-sans text-xl text-forest/70 font-light drop-shadow-sm max-w-xl mx-auto">
+        Langstraat 81, Arnemuiden
+      </p>
+    </div>
+  </section>
+
+  <!-- Shop Content -->
+  <section class="py-24 bg-white px-6">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
+      
+      <!-- Text -->
+      <div class="w-full lg:w-1/2 space-y-8 font-sans font-light text-forest/80 leading-relaxed text-lg">
+        <h2 class="font-serif text-3xl md:text-4xl text-forest stagger-reveal">Kom sfeer proeven in het atelier</h2>
+        <p class="stagger-reveal">
+          Hi! Welkom bij Celine's Bloemen, de plek waar passie voor het vak écht tot leven komt. Hier, in het hart van Arnemuiden, creëer ik een sfeer waarin je je direct omringd voelt door de schoonheid van het seizoen. Tussen de dagverse bloemen, droogbloemen en bijzondere vazen valt er altijd iets nieuws te ontdekken.
+        </p>
+        <p class="stagger-reveal">
+          Ben je op zoek naar een prachtig vers boeket, een bijzonder cadeau voor in huis, of wil je gewoon even binnenwippen voor wat florale inspiratie? Je bent van harte welkom! Ik sta altijd klaar om, het liefst onder het genot van een kopje koffie, mee te denken over de perfecte styling die bij jou past.
+        </p>
+
+        <div class="p-8 bg-sand-500 rounded-sm stagger-reveal mt-8 shadow-sm">
+          <h3 class="font-serif text-2xl text-forest mb-4">Neem je eigen vaas mee!</h3>
+          <p class="text-forest/80">
+            Heb je thuis een favoriete vaas staan die wel wat leven kan gebruiken? Breng hem gerust mee naar de winkel! Ik vind het fantastisch om ter plekke een prachtig vers boeket erin op te maken dat perfect in jouw interieur past. Puur en met aandacht voor detail.
+          </p>
+        </div>
+      </div>
+
+      <!-- Info & Image -->
+      <div class="w-full lg:w-1/2 space-y-12 stagger-reveal">
+        <div class="aspect-[4/3] rounded-xl overflow-hidden shadow-2xl relative">
+          <div class="absolute inset-0 bg-sage-500/10 mix-blend-multiply z-10 transition-opacity duration-500 hover:opacity-0"></div>
+          <img 
+            src="/images/winkel/winkel-interieur.png" 
+            alt="Interieur van Celine's bloemenwinkel" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bento-card rounded-2xl bg-white border border-sand-600/50 p-8 shadow-sm">
+          <div>
+            <h4 class="font-sans text-sm tracking-widest uppercase text-sage-500 font-medium mb-4">Adres</h4>
+            <address class="not-italic text-forest">
+              Langstraat 81<br/>
+              4341 EG Arnemuiden<br/>
+              Zeeland
+            </address>
+          </div>
+          <div>
+            <h4 class="font-sans text-sm tracking-widest uppercase text-sage-500 font-medium mb-4">Openingstijden</h4>
+            <ul class="text-forest space-y-1">
+              <li class="flex justify-between"><span>Dinsdag:</span> <span>10:00 - 17:30</span></li>
+              <li class="flex justify-between"><span>Woensdag:</span> <span>10:00 - 17:30</span></li>
+              <li class="flex justify-between"><span>Donderdag:</span> <span>10:00 - 17:30</span></li>
+              <li class="flex justify-between"><span>Vrijdag:</span> <span>10:00 - 17:30</span></li>
+              <li class="flex justify-between"><span>Zaterdag:</span> <span>10:00 - 16:00</span></li>
+              <li class="flex justify-between text-forest/60"><span>Zondag & Ma:</span> <span>Gesloten</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <CtaSection />
+</Layout>

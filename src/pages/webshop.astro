@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+
+const products = [
+  { name: "Celine's Signature Vaas", desc: "Mondgeblazen glas van hoge kwaliteit, perfect voor weelderige veldboeketten.", price: "€ 34,95", image: "/images/verhuur/vaas-verhuur.jpeg" },
+  { name: "Ambachtelijke Schaal", desc: "Een robuuste basis voor natuurlijke tafelstukken en decoratie.", price: "€ 49,95", image: "/images/verhuur/aankleding-tafel.jpeg" },
+  { name: "Luxe Kandelaar (Goud)", desc: "Mat-gouden afwerking voor een subtiel sprankje sfeer op tafel.", price: "€ 19,95", image: "/images/verhuur/kandelaar-laag-goud-verhuur.jpeg" },
+  { name: "Slank Decoratiestuk", desc: "Minimalistisch design kandelaar voor een modern accent in huis.", price: "€ 19,95", image: "/images/verhuur/kandelaar-recht-verhuur.jpeg" },
+  { name: "Subtiele Ring", desc: "Elegante ronde houder voor kaarsen of kleine droogbloemen.", price: "€ 14,95", image: "/images/verhuur/kandelaar-rondje-verhuur.jpeg" },
+  { name: "Set van 3 Mini-Vaasjes", desc: "Eenvoudig glas, ideaal voor de vrolijke overblijvers van je boeket.", price: "€ 18,95", image: "/images/verhuur/vaas-verhuur.jpeg" }
+];
+---
+
+<Layout title="Atelier Webshop - Celine's bloemen" description="Laat mijn favoriete top producten thuisbezorgen door heel Nederland. Van tijdloze vazen tot sfeervolle kandelaren.">
+  
+  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <span class="text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Door heel Nederland</span>
+      <h1 class="font-serif text-5xl md:text-7xl text-forest">Celine's Favorieten</h1>
+      <p class="font-sans text-xl text-forest/70 font-light drop-shadow-sm max-w-2xl mx-auto stagger-reveal">
+        Laat mijn favoriete top producten gewoon bij je thuisbezorgen, waar in Nederland je ook woont. Van tijdloze vazen tot sfeervolle kandelaren: haal een stukje van de sfeer in huis.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-24 bg-white px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <div class="group cursor-pointer flex flex-col h-full bg-sand-500/50 hover:bg-sand-500 transition-colors duration-500 rounded-sm p-4 stagger-reveal">
+            <div class="aspect-square bg-white overflow-hidden rounded-sm relative mb-4">
+              <img src={product.image} alt={product.name} class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+            </div>
+            <h3 class="font-serif text-xl text-forest mb-2">{product.name}</h3>
+            <p class="font-sans font-light text-forest/70 text-sm mb-4 flex-grow">{product.desc}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-forest/10 mt-auto">
+              <span class="font-sans font-medium text-sage-600">{product.price}</span>
+              <span class="text-xs uppercase tracking-widest text-forest font-medium border-b border-transparent group-hover:border-forest transition-colors">Bestel &rarr;</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaSection />
+</Layout>
