@@ -6,12 +6,12 @@ import CtaSection from '../components/home/CtaSection.astro';
 <Layout title="Bloemen Abonnement - Celine's bloemen" description="Een vers bloemenabonnement in Zeeland. Laat de seizoenen spreken in jouw interieur, wekelijks of maandelijks bezorgd.">
 
   <!-- Hero Section with Image -->
-  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-      <div class="lg:w-1/2 space-y-8 text-center lg:text-left">
-        <span class="text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Nooit meer een lege vaas</span>
-        <h1 class="font-serif text-4xl md:text-7xl lg:text-8xl text-forest leading-[0.9]">Seizoensgeluk op Herhaling</h1>
-        <p class="font-sans text-xl text-forest/70 font-light max-w-xl stagger-reveal">
+  <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-16">
+      <div class="lg:w-1/2 space-y-6 md:space-y-8 text-center lg:text-left">
+        <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Nooit meer een lege vaas</span>
+        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-forest leading-[1.1] md:leading-[0.9]">Seizoensgeluk op Herhaling</h1>
+        <p class="font-sans text-lg md:text-xl text-forest/70 font-light max-w-xl lg:mx-0 mx-auto stagger-reveal">
           Haal de verstilling van het atelier in huis. Met een bloemenabonnement geniet je op jouw tempo van de allermooiste seizoensbloemen, zonder dat je erover na hoeft te denken.
         </p>
       </div>
@@ -30,14 +30,14 @@ import CtaSection from '../components/home/CtaSection.astro';
   </section>
 
   <!-- Hoe het werkt -->
-  <section class="py-24 bg-white px-6">
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-20 space-y-4">
-        <h2 class="font-serif text-4xl md:text-5xl text-forest italic">Hoe het werkt</h2>
+      <div class="text-center mb-16 md:mb-20 space-y-4">
+        <h2 class="font-serif text-4xl md:text-5xl text-forest italic leading-tight">Hoe het werkt</h2>
         <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 text-center">
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">1</div>
           <h3 class="font-serif text-2xl text-forest">Kies je Maat</h3>
@@ -46,20 +46,20 @@ import CtaSection from '../components/home/CtaSection.astro';
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">2</div>
           <h3 class="font-serif text-2xl text-forest">Bepaal de Frequentie</h3>
-          <p class="font-sans font-light text-forest/70">Wekelijks, tweewekelijks of één keer per maand. Jij bepaalt hoe vaak we sfeer komen brengen.</p>
+          <p class="font-sans font-light text-forest/70">Wekelijks, tweewekelijks of één keer per maand. Jij bepaalt hoe vaak ik sfeer kom brengen.</p>
         </div>
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">3</div>
           <h3 class="font-serif text-2xl text-forest">Geniet van Versheid</h3>
-          <p class="font-sans font-light text-forest/70">Wij bezorgen de bloemen met zorg aan de deur, zodat jij alleen nog maar de vaas hoeft neer te zetten.</p>
+          <p class="font-sans font-light text-forest/70">Ik bezorg de bloemen met zorg aan de deur, zodat jij alleen nog maar de vaas hoeft neer te zetten.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Pricing Cards -->
-  <section class="py-24 bg-sand-500/30 px-6 overflow-hidden">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+  <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6 overflow-hidden">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
       
       <!-- Small -->
       <div class="p-10 bg-white border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
@@ -105,17 +105,17 @@ import CtaSection from '../components/home/CtaSection.astro';
   </section>
 
   <!-- Zakelijk Section -->
-  <section class="py-24 bg-white px-6">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 rounded-3xl bg-forest p-12 lg:p-20 text-white overflow-hidden relative">
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 rounded-3xl bg-forest p-8 md:p-12 lg:p-20 text-white overflow-hidden relative">
       <div class="absolute inset-0 opacity-10 pointer-events-none">
         <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <circle cx="90" cy="10" r="30" fill="white" />
         </svg>
       </div>
-      <div class="md:w-2/3 space-y-8 relative z-10">
-        <h2 class="font-serif text-4xl lg:text-5xl italic">Zakelijk Bloemwerk</h2>
+      <div class="md:w-2/3 space-y-6 md:space-y-8 relative z-10">
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl italic leading-tight">Zakelijk Bloemwerk</h2>
         <p class="font-sans font-light text-white/80 text-lg leading-relaxed">
-          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ook voor bedrijven bieden we flexibele abonnementen aan. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie; we denken graag mee over een floral concept dat bij jouw merk past.
+          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ook voor bedrijven bied ik flexibele abonnementen aan. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie; ik denk graag mee over een floral concept dat bij jouw merk past.
         </p>
         <a href="/contact" class="inline-block px-10 py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-xs hover:bg-sand-500 transition-colors shadow-xl">Contact opnemen</a>
       </div>

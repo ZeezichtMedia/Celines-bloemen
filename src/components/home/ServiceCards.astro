@@ -27,44 +27,44 @@ const services = [
 ];
 ---
 
-<section class="py-32 bg-sand-500 overflow-hidden relative">
+<section class="py-20 md:py-32 bg-sand-500 overflow-hidden relative px-4 md:px-0">
   <!-- Minimal decorative glass blobs -->
   <div class="absolute top-1/4 left-0 w-96 h-96 bg-sage-500/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
   <div class="absolute bottom-0 right-10 w-80 h-80 bg-terra-400/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
 
   <div class="max-w-7xl mx-auto px-6 relative z-10">
-    <div class="text-center mb-20 stagger-reveal">
-      <span class="text-sm font-sans font-medium uppercase tracking-widest text-sage-600 mb-4 block">Onze Expertise</span>
-      <h2 class="font-serif text-5xl md:text-7xl text-forest mb-6">Wat we doen</h2>
-      <p class="font-sans text-forest/70 max-w-2xl mx-auto font-light text-xl leading-relaxed">
+    <div class="text-center mb-16 md:mb-20 stagger-reveal">
+      <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-sage-600 mb-3 md:mb-4 block">Mijn Expertise</span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-7xl text-forest mb-4 md:mb-6">Wat ik doe</h2>
+      <p class="font-sans text-forest/70 max-w-2xl mx-auto font-light text-lg md:text-xl leading-relaxed">
         Bij Celine's Bloemen draait alles om ambacht, puurheid en maatwerk.
       </p>
     </div>
 
-    <!-- Bento Grid Container -->
-    <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 h-auto md:h-[800px] stagger-reveal perspective-[1500px]">
+    <!-- Responsive Bento Grid Container -->
+    <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 md:h-[800px] stagger-reveal">
       {services.map((service, index) => (
         <a 
           href={service.link} 
-          class={`bento-card group relative block overflow-hidden rounded-3xl ${service.spanClass} transform-style-3d`}
+          class={`group relative block overflow-hidden rounded-[2rem] ${service.spanClass} ${service.aspect} bg-sand-600 shadow-sm md:shadow-none hover:shadow-2xl transition-all duration-500`}
           data-cursor="hover"
         >
-          <!-- 3D Content wrapper -->
-          <div class="bento-inner w-full h-full relative z-10 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-colors duration-500 group-hover:from-black/90 group-hover:via-black/50">
-            <h3 class="font-serif text-3xl md:text-4xl text-white mb-3 transform translate-z-12 transition-transform duration-500 group-hover:translate-z-24 drop-shadow-md">
+          <!-- Content wrapper -->
+          <div class="w-full h-full relative z-10 p-6 md:p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-colors duration-500 md:from-black/80 md:via-black/20 md:group-hover:from-black/90 md:group-hover:via-black/40">
+            <h3 class="font-serif text-3xl md:text-4xl text-white mb-2 md:mb-3 drop-shadow-md transform transition-transform duration-500 md:group-hover:-translate-y-2">
               {service.title}
             </h3>
-            <p class="font-sans text-white/90 font-light leading-relaxed transform translate-z-12 transition-transform duration-500 max-w-md drop-shadow max-h-0 opacity-0 group-hover:max-h-32 group-hover:opacity-100 group-hover:mt-2 group-hover:duration-700">
+            <p class="font-sans text-white/90 font-light leading-relaxed max-w-md drop-shadow max-h-32 opacity-100 md:max-h-0 md:opacity-0 md:group-hover:max-h-32 md:group-hover:opacity-100 transition-all duration-500">
               {service.description}
             </p>
           </div>
 
-          <!-- Background Image that moves slightly counter to mouse for parallax -->
-          <div class="bento-bg absolute inset-[-5%] z-0 h-[110%] w-[110%]">
+          <!-- Background Image with smooth scale on hover -->
+          <div class="absolute inset-0 z-0 h-full w-full">
             <img 
               src={service.image} 
               alt={service.title} 
-              class="w-full h-full object-cover"
+              class="w-full h-full object-cover transform transition-transform duration-1000 scale-100 group-hover:scale-105"
             />
           </div>
         </a>
@@ -73,80 +73,4 @@ const services = [
   </div>
 </section>
 
-<script>
-  import gsap from 'gsap';
 
-  const initBento3D = () => {
-    const cards = document.querySelectorAll('.bento-card');
-
-    cards.forEach((card) => {
-      const bentoBg = card.querySelector('.bento-bg');
-      
-      card.addEventListener('mousemove', (e) => {
-        // Find position of mouse relative to the card center (-1 to 1)
-        const rect = card.getBoundingClientRect();
-        const xPos = e.clientX - rect.left;
-        const yPos = e.clientY - rect.top;
-        
-        const xCenter = rect.width / 2;
-        const yCenter = rect.height / 2;
-
-        const xPercentage = (xPos - xCenter) / xCenter;
-        const yPercentage = (yPos - yCenter) / yCenter;
-
-        // Apply 3D rotation (tilt)
-        gsap.to(card, {
-          rotateX: -yPercentage * 8, // Max tilt 8 deg
-          rotateY: xPercentage * 8,
-          duration: 0.5,
-          ease: 'power2.out',
-          transformPerspective: 1000,
-        });
-
-        // Opposite parallax movement for background image to enhance 3D feel
-        if(bentoBg) {
-          gsap.to(bentoBg, {
-            x: -xPercentage * 15,
-            y: -yPercentage * 15,
-            duration: 0.5,
-            ease: 'power2.out'
-          });
-        }
-      });
-
-      card.addEventListener('mouseleave', () => {
-        // Reset state
-        gsap.to(card, {
-          rotateX: 0,
-          rotateY: 0,
-          duration: 0.8,
-          ease: 'elastic.out(1, 0.4)'
-        });
-
-        if(bentoBg) {
-          gsap.to(bentoBg, {
-            x: 0,
-            y: 0,
-            duration: 0.8,
-            ease: 'elastic.out(1, 0.4)'
-          });
-        }
-      });
-    });
-  };
-
-  initBento3D();
-  document.addEventListener('astro:page-load', initBento3D);
-</script>
-
-<style>
-  .transform-style-3d {
-    transform-style: preserve-3d;
-  }
-  .translate-z-12 {
-    transform: translateZ(12px);
-  }
-  .translate-z-24 {
-    transform: translateZ(24px);
-  }
-</style>

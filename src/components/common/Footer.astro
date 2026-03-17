@@ -2,12 +2,18 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="bg-forest text-sand-500 py-16 mt-auto">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+<footer class="bg-forest text-sand-500 py-12 md:py-16 mt-auto">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
     
     <!-- Brand Info -->
     <div>
-      <h3 class="font-serif text-3xl mb-4 text-white">Celine's Bloemen</h3>
+      <a href="/" class="inline-block mb-6 w-36 md:w-48 group">
+        <img 
+          src="/images/logo/logo-transparent.png" 
+          alt="Celine's Bloemen Logo" 
+          class="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+        />
+      </a>
       <p class="text-sand-600 font-light leading-relaxed max-w-sm mb-6">
         Bloemen maken jouw bruiloft, huis en evenement compleet. Van eigen kweek en volledig puur natuur.
       </p>
@@ -24,7 +30,7 @@ const currentYear = new Date().getFullYear();
 
     <!-- Quick Links -->
     <div class="md:pl-12">
-      <h4 class="font-sans text-sm tracking-widest uppercase text-sage-400 mb-6 font-medium">Navigatie</h4>
+      <h4 class="font-sans text-xs md:text-sm tracking-widest uppercase text-sage-400 mb-4 md:mb-6 font-medium">Navigatie</h4>
       <ul class="flex flex-col gap-3 font-light">
         <li><a href="/" class="hover:text-sage-400 transition-colors duration-300">Home</a></li>
         <li><a href="/winkel" class="hover:text-sage-400 transition-colors duration-300">Winkel Arnemuiden</a></li>
@@ -38,7 +44,7 @@ const currentYear = new Date().getFullYear();
 
     <!-- Contact Info -->
     <div>
-      <h4 class="font-sans text-sm tracking-widest uppercase text-sage-400 mb-6 font-medium">Contact</h4>
+      <h4 class="font-sans text-xs md:text-sm tracking-widest uppercase text-sage-400 mb-4 md:mb-6 font-medium">Contact</h4>
       <ul class="flex flex-col gap-4 font-light text-sand-600">
         <li class="flex items-start gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 text-sage-400 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
@@ -57,7 +63,7 @@ const currentYear = new Date().getFullYear();
 
   </div>
   
-  <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-sand-600/60 font-light">
+  <div class="max-w-7xl mx-auto px-6 mt-12 md:mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-sand-600/60 font-light text-center md:text-left">
     <p>&copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.</p>
     <p>Ontworpen en gebouwd met ♥</p>
   </div>

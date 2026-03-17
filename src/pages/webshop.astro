@@ -3,44 +3,135 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 
 const products = [
-  { name: "Celine's Signature Vaas", desc: "Mondgeblazen glas van hoge kwaliteit, perfect voor weelderige veldboeketten.", price: "€ 34,95", image: "/images/verhuur/vaas-verhuur.jpeg" },
-  { name: "Ambachtelijke Schaal", desc: "Een robuuste basis voor natuurlijke tafelstukken en decoratie.", price: "€ 49,95", image: "/images/verhuur/aankleding-tafel.jpeg" },
-  { name: "Luxe Kandelaar (Goud)", desc: "Mat-gouden afwerking voor een subtiel sprankje sfeer op tafel.", price: "€ 19,95", image: "/images/verhuur/kandelaar-laag-goud-verhuur.jpeg" },
-  { name: "Slank Decoratiestuk", desc: "Minimalistisch design kandelaar voor een modern accent in huis.", price: "€ 19,95", image: "/images/verhuur/kandelaar-recht-verhuur.jpeg" },
-  { name: "Subtiele Ring", desc: "Elegante ronde houder voor kaarsen of kleine droogbloemen.", price: "€ 14,95", image: "/images/verhuur/kandelaar-rondje-verhuur.jpeg" },
-  { name: "Set van 3 Mini-Vaasjes", desc: "Eenvoudig glas, ideaal voor de vrolijke overblijvers van je boeket.", price: "€ 18,95", image: "/images/verhuur/vaas-verhuur.jpeg" }
+  { 
+    name: "Celine's Signature Vaas", 
+    desc: "Mondgeblazen glas van hoge kwaliteit, perfect voor weelderige veldboeketten. Een tijdloze klassieker die in ieder interieur past.", 
+    price: "€ 34,95", 
+    image: "/images/verhuur/vaas-verhuur.jpeg",
+    featured: true 
+  },
+  { 
+    name: "Ambachtelijke Schaal", 
+    desc: "Een robuuste basis voor natuurlijke tafelstukken en decoratie.", 
+    price: "€ 49,95", 
+    image: "/images/verhuur/aankleding-tafel.jpeg",
+    featured: false 
+  },
+  { 
+    name: "Luxe Kandelaar (Goud)", 
+    desc: "Mat-gouden afwerking voor een subtiel sprankje sfeer op tafel.", 
+    price: "€ 19,95", 
+    image: "/images/verhuur/kandelaar-laag-goud-verhuur.jpeg",
+    featured: false 
+  },
+  { 
+    name: "Set van 3 Mini-Vaasjes", 
+    desc: "Eenvoudig glas, ideaal voor de vrolijke overblijvers van je boeket.", 
+    price: "€ 18,95", 
+    image: "/images/verhuur/vaas-verhuur.jpeg",
+    featured: true 
+  },
+  { 
+    name: "Slank Decoratiestuk", 
+    desc: "Minimalistisch design kandelaar voor een modern accent in huis.", 
+    price: "€ 19,95", 
+    image: "/images/verhuur/kandelaar-recht-verhuur.jpeg",
+    featured: false 
+  },
+  { 
+    name: "Subtiele Ring", 
+    desc: "Elegante ronde houder voor kaarsen of kleine droogbloemen.", 
+    price: "€ 14,95", 
+    image: "/images/verhuur/kandelaar-rondje-verhuur.jpeg",
+    featured: false 
+  }
 ];
 ---
 
 <Layout title="Atelier Webshop - Celine's bloemen" description="Laat mijn favoriete top producten thuisbezorgen door heel Nederland. Van tijdloze vazen tot sfeervolle kandelaren.">
   
-  <section class="pt-40 pb-20 bg-sand-600 px-6 overflow-hidden relative">
-    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-      <span class="text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Door heel Nederland</span>
-      <h1 class="font-serif text-5xl md:text-7xl text-forest">Celine's Favorieten</h1>
-      <p class="font-sans text-xl text-forest/70 font-light drop-shadow-sm max-w-2xl mx-auto stagger-reveal">
-        Laat mijn favoriete top producten gewoon bij je thuisbezorgen, waar in Nederland je ook woont. Van tijdloze vazen tot sfeervolle kandelaren: haal een stukje van de sfeer in huis.
+  <!-- Modern Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
+    <div class="absolute inset-0 z-0 opacity-40">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-sand-600 z-10"></div>
+      <img src="/images/winkel/winkel-interieur.png" class="w-full h-full object-cover blur-md scale-105" alt="Achtergrond webshop" />
+    </div>
+    
+    <div class="relative z-10 max-w-5xl mx-auto text-center space-y-6 md:space-y-8 mt-10">
+      <div class="inline-block px-4 py-1.5 bg-white/50 backdrop-blur-md rounded-full border border-forest/10 mt-4 stagger-reveal">
+        <span class="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-terra-600">Landelijk Bezorgd</span>
+      </div>
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-forest drop-shadow-sm stagger-reveal leading-[1.1] md:leading-[0.9]">Celine's Favorieten</h1>
+      <p class="font-sans text-lg md:text-xl text-forest/70 font-light max-w-2xl mx-auto stagger-reveal leading-relaxed">
+        Laat mijn favoriete top producten gewoon bij je thuisbezorgen, waar in Nederland je ook woont. Van tijdloze vazen tot sfeervolle kandelaren: haal een stukje sfeer uit het atelier in huis.
       </p>
+    </div>
+
+    <!-- Decorative blobs -->
+    <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-sage-500/20 rounded-full blur-[100px] z-0"></div>
+    <div class="absolute top-20 -right-20 w-80 h-80 bg-terra-400/20 rounded-full blur-[100px] z-0"></div>
+  </section>
+
+  <!-- Modern Bento Product Grid -->
+  <section class="py-16 md:py-32 bg-sand-500/30 px-4 md:px-6 border-b border-sand-600/30">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {products.map((product) => (
+          <a 
+            href={`https://wa.me/31612345678?text=Hi Celine, ik wil graag de '${product.name}' bestellen!`}
+            target="_blank"
+            class="group block relative rounded-[2rem] overflow-hidden bg-white shadow-sm hover:shadow-2xl transition-all duration-700 stagger-reveal flex flex-col"
+            data-cursor="hover"
+          >
+            <!-- Image Container -->
+            <div class="relative overflow-hidden aspect-square md:aspect-[4/5]">
+               <div class="absolute inset-0 bg-forest/5 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+               <img 
+                 src={product.image} 
+                 alt={product.name} 
+                 class="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]" 
+               />
+               
+               <!-- Hover Price Badge -->
+               <div class="absolute top-4 left-4 md:top-6 md:left-6 z-20 bg-white/90 backdrop-blur-md px-4 py-2 md:px-5 md:py-2.5 rounded-full shadow-lg transform -translate-y-4 opacity-100 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 ease-out">
+                 <span class="font-serif font-medium tracking-wide text-sm text-forest">{product.price}</span>
+               </div>
+            </div>
+            
+            <!-- Content Container -->
+            <div class="p-6 md:p-12 flex flex-col justify-center bg-white border border-transparent group-hover:border-sand-600/30 transition-colors duration-500 flex-grow border-t border-sand-600/20">
+              <h3 class="font-serif text-2xl md:text-3xl text-forest mb-3 md:mb-4 group-hover:text-terra-600 transition-colors duration-300">{product.name}</h3>
+              <p class="font-sans font-light text-forest/70 text-base md:text-lg mb-8 leading-relaxed line-clamp-3">{product.desc}</p>
+              
+              <div class="mt-auto flex items-center justify-between pt-6 border-t border-sand-600/30 group-hover:border-forest/20 transition-colors duration-500">
+                 <span class="font-serif text-xl md:text-2xl text-sage-600 transition-opacity duration-300 transform opacity-0 -translate-x-4 md:opacity-100 md:translate-x-0 group-hover:opacity-0 group-hover:-translate-x-4">
+                   <span class="md:hidden">Naar WhatsApp</span>
+                   <span class="hidden md:inline">{product.price}</span>
+                 </span>
+                 
+                 <span class="text-[10px] md:text-xs uppercase tracking-widest text-forest font-bold flex items-center gap-2 md:gap-3 transform translate-x-0 md:translate-x-0 group-hover:translate-x-2 transition-transform duration-500">
+                   Bestellen 
+                   <span class="w-8 h-8 rounded-full bg-forest text-white flex items-center justify-center group-hover:bg-terra-600 transition-colors duration-300 shadow-md">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:translate-x-0.5 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                   </span>
+                 </span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      
     </div>
   </section>
 
-  <section class="py-24 bg-white px-6">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {products.map((product) => (
-          <div class="group cursor-pointer flex flex-col h-full bg-sand-500/50 hover:bg-sand-500 transition-colors duration-500 rounded-sm p-4 stagger-reveal">
-            <div class="aspect-square bg-white overflow-hidden rounded-sm relative mb-4">
-              <img src={product.image} alt={product.name} class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
-            </div>
-            <h3 class="font-serif text-xl text-forest mb-2">{product.name}</h3>
-            <p class="font-sans font-light text-forest/70 text-sm mb-4 flex-grow">{product.desc}</p>
-            <div class="flex items-center justify-between pt-4 border-t border-forest/10 mt-auto">
-              <span class="font-sans font-medium text-sage-600">{product.price}</span>
-              <span class="text-xs uppercase tracking-widest text-forest font-medium border-b border-transparent group-hover:border-forest transition-colors">Bestel &rarr;</span>
-            </div>
-          </div>
-        ))}
-      </div>
+  <!-- Filosofie Section -->
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
+    <div class="max-w-4xl mx-auto text-center space-y-6 md:space-y-8 stagger-reveal">
+      <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl text-forest italic">Mijn selectie voor jou</h2>
+      <p class="font-sans text-forest/80 text-base md:text-lg lg:text-xl font-light leading-relaxed">
+        Elk item in de webshop gebruik ik wekelijks in het atelier. Kwalitatieve vazen met de juiste verhoudingen, robuuste schalen en elegante kandelaren die nét dat beetje extra styling aan een ruimte geven. Producten waar ik zelf volledig achter sta.
+      </p>
     </div>
   </section>
 

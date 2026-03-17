@@ -3,9 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 ---
 
-<Layout title="Bruiloften & Verhuur - Celine's bloemen" description="Volledige ontzorging van jullie droomhuwelijk: van persoonlijk bruidsboeket tot de verhuur van eyecatchers en backdrops.">
 
-  <!-- Hero met foto over de volle breedte, extra padding -->
+<Layout title="Bruiloften & Verhuur - Celine's bloemen" description="Ik zorg voor jullie droomhuwelijk: van persoonlijk bruidsboeket tot de verhuur van kandelaren, backdrops en vazen. In eigen beheer, met liefde voor detail.">
+
+  <!-- Hero met foto over de volle breedte -->
   <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 z-0">
       <div class="absolute inset-0 bg-forest/40 mix-blend-multiply flex items-center justify-center z-10"></div>
@@ -16,50 +17,144 @@ import CtaSection from '../components/home/CtaSection.astro';
         data-speed="0.8"
       />
     </div>
-    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-white space-y-6 mt-20">
-      <span class="text-sm font-sans font-bold uppercase tracking-[0.2em] text-sand-500 stagger-reveal">Jullie de dag, Ik de styling</span>
-      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl drop-shadow-lg stagger-reveal">Bruiloften & Verhuur</h1>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 text-center text-white space-y-4 md:space-y-6 mt-16 md:mt-20">
+      <span class="text-xs md:text-sm font-sans font-bold uppercase tracking-[0.2em] text-sand-500 stagger-reveal">Jullie de dag, ik de styling</span>
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl drop-shadow-lg stagger-reveal leading-tight">Bruiloften & Verhuur</h1>
     </div>
   </section>
 
   <!-- Inhoud / Tekstgedeelte -->
-  <section class="py-24 bg-white px-6">
-     <div class="max-w-4xl mx-auto text-center font-sans font-light text-forest/80 leading-relaxed text-lg space-y-6 stagger-reveal">
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
+     <div class="max-w-4xl mx-auto text-center font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg space-y-5 md:space-y-6 stagger-reveal">
         <p>
-          Gefeliciteerd met jullie trouwplannen! Van jongs af aan ben ik verbonden met de seizoenen en ik weet als geen ander hoe belangrijk de juiste sfeer is op jullie grote dag. Alles draait om het totaalplaatje: een prachtig, handgebonden bruidsboeket in pasteltinten dat perfect matcht bij de natuurlijke elementen die jullie locatie helemaal áf maken.
+          Gefeliciteerd met jullie trouwplannen! Van jongs af aan ben ik verbonden met de seizoenen en ik weet als geen ander hoe belangrijk de juiste sfeer is op jullie grote dag. De datum is vastgelegd, de locatie is gekozen en de gastenlijst is compleet — en nu is het tijd om je te concentreren op de details die jullie speciale dag echt onvergetelijk maken.
         </p>
         <p>
-          Mijn benadering is heel simpel: <strong>Ontzorging</strong>. Of je nu op zoek bent naar subtiele corsages voor de daggasten, weelderige tafelstyling of het huren van mijn exclusieve gouden kandelaren en robuuste houten zuilen; ik regel het.
+          Mijn benadering is heel simpel: <strong>ontzorging</strong>. Of je nu op zoek bent naar een uniek bruidsboeket, corsages voor de daggasten, weelderige tafelstyling of het huren van mijn kandelaren, vazen en backdrop — ik regel het allemaal. Zo kunnen jullie je volledig focussen op het creëren van kostbare herinneringen op de mooiste dag van jullie leven.
         </p>
      </div>
   </section>
 
   <!-- Split Sectie: Bruidsbloemen vs Verhuur -->
-  <section class="py-24 bg-sand-500 px-6">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+  <section class="py-16 md:py-24 bg-sand-500 px-4 md:px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
       
       <!-- Bruidsbloemen -->
-      <div class="space-y-8 stagger-reveal">
+      <div class="space-y-6 md:space-y-8 stagger-reveal">
         <div class="aspect-square rounded-sm overflow-hidden relative">
            <img src="/images/bruiloft-bloemen/foto-bruiloft-met-backdrop-en-bloemen.jpeg" class="w-full h-full object-cover" alt="Bruidsboeket Celine" />
         </div>
-        <h2 class="font-serif text-3xl md:text-4xl text-forest">Puur Natuur Bruidsbloemen</h2>
-        <p class="font-light text-forest/80">
-          We gaan zitten met een kopje koffie en bespreken al jullie dromen. Ik vertaal dit naar uniek seizoensbloemwerk: van corsages en autoversiering tot het perfecte bruidsboeket. Met zorg uitgekozen materialen en helemaal in jullie stijl.
+        <h2 class="font-serif text-3xl md:text-4xl text-forest leading-tight">Puur Natuur Bruidsbloemen</h2>
+        <p class="font-light text-forest/80 text-base md:text-lg">
+          Bloemen zijn onmisbaar op jullie bruiloft, en zorgen voor nét dat beetje extra. Het bruidsboeket is het meest persoonlijke bloemwerk van de dag — het moet perfect aansluiten op het thema, je bruidsjurk en je persoonlijkheid. Of jullie nu kiezen voor droogbloemen, verse bloemen of een combinatie van beide: ik ga graag met jullie aan de slag. Van een kleurrijk veldboeket tot een klassiek boeket vol rozen, de mogelijkheden zijn eindeloos. Ik ga graag met jullie zitten, onder het genot van een kopje koffie, om al jullie dromen te bespreken.
+        </p>
+        <p class="font-light text-forest/80 text-base md:text-lg">
+          Vergeet ook de bruidegom niet: een corsage die aansluit op het bruidsboeket maakt jullie tot een prachtig bruidspaar. Ik maak alles op maat, zodat ieder bloemwerk uniek is.
         </p>
       </div>
 
       <!-- Verhuur -->
-      <div class="space-y-8 stagger-reveal lg:mt-24">
+      <div class="space-y-6 md:space-y-8 stagger-reveal lg:mt-24">
         <div class="aspect-square rounded-sm overflow-hidden relative">
            <img src="/images/verhuur/voorbeeld-van-verhuur-alles-in-een.jpeg" class="w-full h-full object-cover" alt="Sfeer en Verhuur" />
         </div>
-        <h2 class="font-serif text-3xl md:text-4xl text-forest">Verhuur Eyecatchers</h2>
-        <p class="font-light text-forest/80">
-          Zonder stress en zonder dat je zelf tientallen vazen hoeft te kopen. Ik verhuur prachtige, kwalitatieve decoratie zoals melkkrukjes, XXL kandelaren, sierlijke lopers en robuuste zuilen inclusief luxueuze opmaak. 
+        <h2 class="font-serif text-3xl md:text-4xl text-forest leading-tight">Verhuur Eyecatchers</h2>
+        <p class="font-light text-forest/80 text-base md:text-lg">
+          Om jullie droomhuwelijk werkelijkheid te laten worden, zonder je zorgen te hoeven maken over vazen, kandelaars, backdrops en andere decoraties, bied ik de mogelijkheid om deze erbij te huren. Geen gedoe, geen stress — gewoon prachtige decoratie die naadloos aansluit bij jullie stijl en de bloemen die ik voor jullie maak.
         </p>
       </div>
 
+    </div>
+  </section>
+
+  <!-- Verhuur Aanbod Details -->
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6" id="verhuur-aanbod">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 md:mb-20 space-y-4 stagger-reveal">
+        <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Wat ik verhuur</span>
+        <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl text-forest italic leading-tight">Het Verhuur Aanbod</h2>
+        <p class="font-sans font-light text-forest/70 max-w-xl mx-auto text-base md:text-lg">
+          Ben je op zoek naar tafelvaasjes, autodecoratie of heb je andere creatieve ideeën? Aarzel niet om een berichtje te sturen. Ik ga graag met jullie om tafel — onder het genot van een kopje koffie — om jouw wensen om te zetten in prachtige, persoonlijke bloemcreaties.
+        </p>
+        <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full mt-6 md:mt-8"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+        <!-- Kandelaren -->
+        <div class="space-y-6 stagger-reveal">
+          <div class="aspect-[4/3] rounded-sm overflow-hidden">
+            <img src="/images/verhuur/kandelaar-laag-goud-verhuur.jpeg" class="w-full h-full object-cover" alt="Gouden kandelaren verhuur" />
+          </div>
+          <h3 class="font-serif text-2xl md:text-3xl text-forest">Kandelaren</h3>
+          <p class="font-light text-forest/80 leading-relaxed">
+            Kandelaren vormen een prachtige aanvulling op jullie dinertafels. Ze scheppen een warme en intieme sfeer die nog specialer wordt naarmate de avond valt. De kandelaren zijn verkrijgbaar in diverse tinten goud, waardoor je kunt kiezen wat het beste past bij de stijl van jullie bruiloft.
+          </p>
+          <a href="/contact" class="inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
+        </div>
+
+        <!-- Backdrop -->
+        <div class="space-y-6 stagger-reveal">
+          <div class="aspect-[4/3] rounded-sm overflow-hidden">
+            <img src="/images/verhuur/backdrop-met-laken-verhuur.jpeg" class="w-full h-full object-cover" alt="Backdrop verhuur bruiloft" />
+          </div>
+          <h3 class="font-serif text-2xl md:text-3xl text-forest">Backdrop</h3>
+          <p class="font-light text-forest/80 leading-relaxed">
+            Een backdrop is een fantastische aanvulling op jullie bruiloft. Tijdens de ceremonie is het een essentieel sfeerelement. Maar ook buiten de officiële momenten zorgt een backdrop voor nét dat beetje extra — denk aan de perfecte achtergrond voor de firstlook, de fotoshoot, of als hippe fotobooth.
+          </p>
+          <p class="font-light text-forest/80 leading-relaxed">
+            Door het doek elegant over het frame te draperen, ontstaat een prachtig trouwprieel. Ik kies samen met jullie het perfecte bloemstuk dat past bij het bruiloftsthema. De backdrop is gemakkelijk zelf in elkaar te zetten en wordt geleverd met duidelijke instructies. Dankzij de stevige constructie is hij ook geschikt voor grootse bloemwerken.
+          </p>
+          <a href="/contact" class="inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
+        </div>
+
+        <!-- Vazen -->
+        <div class="space-y-6 stagger-reveal">
+          <div class="aspect-[4/3] rounded-sm overflow-hidden">
+            <img src="/images/verhuur/vaas-verhuur.jpeg" class="w-full h-full object-cover" alt="Vazen verhuur bruiloft" />
+          </div>
+          <h3 class="font-serif text-2xl md:text-3xl text-forest">Vazen & Tafeldecoratie</h3>
+          <p class="font-light text-forest/80 leading-relaxed">
+            Mooie opgemaakte vazen gevuld met bloemen zijn de finishing touch op jullie bruiloft. Deze bloemstukken worden helemaal aangepast aan de stijl van de bruiloft en kunnen gemaakt worden met verse of droogbloemen.
+          </p>
+          <p class="font-light text-forest/80 leading-relaxed">
+            Je hebt de mogelijkheid om de vazen erbij te huren. Zo kunnen jullie met een gerust hart de bloemen voor jullie bruiloft uit handen geven, zodat jullie je volledig kunnen concentreren op de grote dag.
+          </p>
+          <a href="/contact" class="inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Meer afbeeldingen van verhuur -->
+  <section class="py-12 md:py-16 bg-sand-500/30 px-4 md:px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 stagger-reveal">
+      <div class="aspect-square overflow-hidden rounded-sm">
+        <img src="/images/verhuur/backdrop-de-luxe-verhuur.jpeg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Luxe backdrop" />
+      </div>
+      <div class="aspect-square overflow-hidden rounded-sm">
+        <img src="/images/verhuur/aankleding-tafel.jpeg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Tafelaankleding" />
+      </div>
+      <div class="aspect-square overflow-hidden rounded-sm">
+        <img src="/images/verhuur/aangeklede-tafel-bruiloft-verhuur.jpeg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Aangeklede trouwtafel" />
+      </div>
+      <div class="aspect-square overflow-hidden rounded-sm">
+        <img src="/images/verhuur/backdrop-op-bruiloft-verhuur.jpeg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Backdrop op bruiloft" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Prijzen Callout -->
+  <section class="py-12 md:py-16 bg-white px-4 md:px-6">
+    <div class="max-w-4xl mx-auto bg-forest text-white rounded-3xl p-8 md:p-16 text-center space-y-6 stagger-reveal">
+      <h2 class="font-serif text-3xl md:text-4xl italic leading-tight">Tarieven op maat</h2>
+      <p class="font-sans font-light text-white/80 text-base md:text-lg leading-relaxed">
+        Ieder item wordt op maat gemaakt en samengesteld. Daarom varieert de prijs per bloemwerk en per gelegenheid. Ik stel graag een offerte voor jullie samen — stuur mij een berichtje en dan plannen we een vrijblijvend kennismakingsgesprek om jullie wensen te bespreken, het liefst onder het genot van een kopje koffie.
+      </p>
+      <a href="/contact" class="inline-block px-8 py-4 md:px-10 md:py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-[10px] md:text-xs hover:bg-sand-500 transition-colors shadow-xl">
+        Neem contact op
+      </a>
     </div>
   </section>
 
