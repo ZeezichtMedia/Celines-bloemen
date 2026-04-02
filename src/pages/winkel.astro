@@ -8,7 +8,7 @@ import CtaSection from '../components/home/CtaSection.astro';
   <!-- Page Header -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
     <div class="absolute inset-0 z-0 opacity-20">
-      <img src="/images/winkel/winkel-interieur.png" class="w-full h-full object-cover blur-sm" alt="Achtergrond winkel" />
+      <img src="/images/winkel/winkel-interieur.png" loading="lazy" class="w-full h-full object-cover blur-sm" alt="Achtergrond winkel" />
     </div>
     <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 md:space-y-6">
       <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Jouw lokale bloemist</span>
@@ -39,6 +39,16 @@ import CtaSection from '../components/home/CtaSection.astro';
             Heb je thuis een favoriete vaas staan die wel wat leven kan gebruiken? Breng hem gerust mee naar de winkel! Ik vind het fantastisch om ter plekke een prachtig vers boeket erin op te maken dat perfect in jouw interieur past. Puur en met aandacht voor detail.
           </p>
         </div>
+
+        <div class="p-8 bg-forest text-white rounded-sm stagger-reveal mt-4 shadow-sm">
+          <h3 class="font-serif text-2xl mb-4">Liever een boeket laten bezorgen?</h3>
+          <p class="text-white/80 mb-6">
+            Kun je niet langskomen? Geen probleem! Ik bezorg dagverse, handgebonden boeketten in de regio Walcheren. Kies je favoriete bos en laat hem bij je thuisbezorgen.
+          </p>
+          <a href="/bestellen" class="inline-block px-8 py-4 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-xs hover:bg-sand-500 transition-colors shadow-lg">
+            Bekijk de boeketten
+          </a>
+        </div>
       </div>
 
       <!-- Info & Image -->
@@ -46,8 +56,9 @@ import CtaSection from '../components/home/CtaSection.astro';
         <div class="aspect-[4/3] rounded-xl overflow-hidden shadow-2xl relative">
           <div class="absolute inset-0 bg-sage-500/10 mix-blend-multiply z-10 transition-opacity duration-500 hover:opacity-0"></div>
           <img 
-            src="/images/winkel/winkel-interieur.png" 
-            alt="Interieur van Celine's bloemenwinkel" 
+            src="/images/winkel/winkel-interieur.png"
+            alt="Interieur van Celine's bloemenwinkel"
+            loading="lazy"
             class="w-full h-full object-cover"
           />
         </div>

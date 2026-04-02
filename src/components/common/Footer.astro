@@ -1,4 +1,5 @@
 ---
+import { siteConfig } from '../../config';
 const currentYear = new Date().getFullYear();
 ---
 
@@ -18,11 +19,16 @@ const currentYear = new Date().getFullYear();
         Bloemen maken jouw bruiloft, huis en evenement compleet. Van eigen kweek en volledig puur natuur.
       </p>
       <div class="flex gap-4">
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
+        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="Volg ons op Instagram" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+        <a href={siteConfig.tiktok} target="_blank" rel="noopener noreferrer" aria-label="Volg ons op TikTok" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.51a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.63a8.23 8.23 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.04z"/>
           </svg>
         </a>
       </div>
@@ -34,7 +40,7 @@ const currentYear = new Date().getFullYear();
       <ul class="flex flex-col gap-3 font-light">
         <li><a href="/" class="hover:text-sage-400 transition-colors duration-300">Home</a></li>
         <li><a href="/winkel" class="hover:text-sage-400 transition-colors duration-300">Winkel Arnemuiden</a></li>
-        <li><a href="/bestellen" class="hover:text-sage-400 transition-colors duration-300">Verse Bloemen Lokaal</a></li>
+        <li><a href="/bestellen" class="hover:text-sage-400 transition-colors duration-300">Boeket Bestellen</a></li>
         <li><a href="/webshop" class="hover:text-sage-400 transition-colors duration-300">Landelijke Webshop</a></li>
         <li><a href="/abonnementen" class="hover:text-sage-400 transition-colors duration-300">Abonnementen</a></li>
         <li><a href="/bruiloften-verhuur" class="hover:text-sage-400 transition-colors duration-300">Bruiloften & Verhuur</a></li>
@@ -52,11 +58,11 @@ const currentYear = new Date().getFullYear();
         </li>
         <li class="flex items-center gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <a href="mailto:info@celinesbloemen.nl" class="hover:text-white transition-colors duration-300">info@celinesbloemen.nl</a>
+          <a href={`mailto:${siteConfig.email}`} class="hover:text-white transition-colors duration-300">{siteConfig.email}</a>
         </li>
         <li class="flex items-center gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          <a href="tel:+31612345678" class="hover:text-white transition-colors duration-300">+31 6 12 34 56 78</a>
+          <a href={`tel:${siteConfig.phone}`} class="hover:text-white transition-colors duration-300">{siteConfig.phoneDisplay}</a>
         </li>
       </ul>
     </div>

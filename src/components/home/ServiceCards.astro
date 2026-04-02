@@ -5,24 +5,24 @@ const services = [
     description: 'De sfeervolle winkel in het hart van Arnemuiden. Kom langs met je eigen vaas of kies een prachtig cadeau.',
     image: '/images/winkel/winkel-interieur.png',
     link: '/winkel',
-    spanClass: 'md:col-span-2 md:row-span-2', // Large block
-    aspect: 'aspect-square md:aspect-auto'
   },
   {
-    title: 'Verse Boeketten',
+    title: 'Boeket Bestellen',
     description: 'Dagverse boeketten, met zorg samengesteld en lokaal bezorgd op Walcheren.',
     image: '/images/bruiloft-bloemen/boeket-op-bruloft.jpeg',
     link: '/bestellen',
-    spanClass: 'md:col-span-1 md:row-span-1', // Small block 1
-    aspect: 'aspect-[4/3] md:aspect-square'
   },
   {
-    title: 'Atelier Shop',
-    description: 'Bijzondere vazen, keramiek en gereedschap waarmee ik zelf het liefst werk.',
+    title: 'Webshop',
+    description: 'Bijzondere vazen, keramiek en sfeervolle kandelaren. Landelijk bezorgd.',
     image: '/images/droogbloemen/droogbloemen-krans-groot.jpeg',
     link: '/webshop',
-    spanClass: 'md:col-span-1 md:row-span-1', // Small block 2
-    aspect: 'aspect-[4/3] md:aspect-square'
+  },
+  {
+    title: 'Bruiloften & Verhuur',
+    description: 'Van persoonlijk bruidsboeket tot de verhuur van kandelaren, backdrops en vazen.',
+    image: '/images/bruiloft-bloemen/foto-bruiloft-met-backdrop-en-bloemen.jpeg',
+    link: '/bruiloften-verhuur',
   }
 ];
 ---
@@ -41,29 +41,30 @@ const services = [
       </p>
     </div>
 
-    <!-- Responsive Bento Grid Container -->
-    <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 md:h-[800px] stagger-reveal">
-      {services.map((service, index) => (
-        <a 
-          href={service.link} 
-          class={`group relative block overflow-hidden rounded-[2rem] ${service.spanClass} ${service.aspect} bg-sand-600 shadow-sm md:shadow-none hover:shadow-2xl transition-all duration-500`}
+    <!-- 4 Equal Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-reveal">
+      {services.map((service) => (
+        <a
+          href={service.link}
+          class="group relative block overflow-hidden rounded-[2rem] aspect-[3/4] bg-sand-600 shadow-sm hover:shadow-2xl transition-all duration-500"
           data-cursor="hover"
         >
           <!-- Content wrapper -->
-          <div class="w-full h-full relative z-10 p-6 md:p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-colors duration-500 md:from-black/80 md:via-black/20 md:group-hover:from-black/90 md:group-hover:via-black/40">
-            <h3 class="font-serif text-3xl md:text-4xl text-white mb-2 md:mb-3 drop-shadow-md transform transition-transform duration-500 md:group-hover:-translate-y-2">
+          <div class="w-full h-full relative z-10 p-6 md:p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:from-black/90 group-hover:via-black/40 transition-colors duration-500">
+            <h3 class="font-serif text-2xl md:text-3xl text-white mb-2 drop-shadow-md transform transition-transform duration-500 group-hover:-translate-y-2">
               {service.title}
             </h3>
-            <p class="font-sans text-white/90 font-light leading-relaxed max-w-md drop-shadow max-h-32 opacity-100 md:max-h-0 md:opacity-0 md:group-hover:max-h-32 md:group-hover:opacity-100 transition-all duration-500">
+            <p class="font-sans text-white/90 text-sm font-light leading-relaxed max-w-md drop-shadow max-h-0 opacity-0 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-500">
               {service.description}
             </p>
           </div>
 
           <!-- Background Image with smooth scale on hover -->
           <div class="absolute inset-0 z-0 h-full w-full">
-            <img 
-              src={service.image} 
-              alt={service.title} 
+            <img
+              src={service.image}
+              alt={service.title}
+              loading="lazy"
               class="w-full h-full object-cover transform transition-transform duration-1000 scale-100 group-hover:scale-105"
             />
           </div>
@@ -72,5 +73,3 @@ const services = [
     </div>
   </div>
 </section>
-
-

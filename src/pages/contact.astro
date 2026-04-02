@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config';
 ---
 
 <Layout title="Contact - Celine's bloemen" description="Neem contact met mij op voor jouw droogbloemen, verse bloemen of het ontwerpen van je bruidsboeket.">
@@ -7,7 +8,7 @@ import Layout from '../layouts/Layout.astro';
   <!-- Page Header -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
     <div class="absolute inset-0 z-0 opacity-20">
-      <img src="https://celinesbloemen.nl/wp-content/uploads/2023/11/IMG_0921-scaled.jpeg" class="w-full h-full object-cover blur-sm" alt="Background contact" />
+      <img src="/images/contact/contact-hero.jpeg" loading="lazy" class="w-full h-full object-cover blur-sm" alt="Background contact" />
     </div>
     <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 md:space-y-6">
       <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-sage-600">Kom langs of stuur een bericht</span>
@@ -34,11 +35,11 @@ import Layout from '../layouts/Layout.astro';
         <ul class="space-y-6 text-forest">
           <li class="flex flex-col gap-2">
             <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">E-mail</span>
-            <a href="mailto:info@celinesbloemen.nl" class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">info@celinesbloemen.nl</a>
+            <a href={`mailto:${siteConfig.email}`} class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">{siteConfig.email}</a>
           </li>
           <li class="flex flex-col gap-2">
             <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">Telefoon / WhatsApp</span>
-            <a href="tel:+31612345678" class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">+31 6 12 34 56 78</a>
+            <a href={`tel:${siteConfig.phone}`} class="text-xl font-serif hover:text-sage-600 transition-colors duration-300">{siteConfig.phoneDisplay}</a>
           </li>
           <li class="flex flex-col gap-2">
             <span class="text-sm tracking-widest uppercase text-sage-500 font-medium">Atelier (op afspraak)</span>
@@ -51,37 +52,59 @@ import Layout from '../layouts/Layout.astro';
       <div class="w-full md:w-7/12 bg-sand-500 p-8 md:p-12 rounded-sm shadow-xl relative z-10">
         <h3 class="font-serif text-3xl text-forest mb-8">Stuur een berichtje</h3>
         
-        <form class="space-y-6">
+        <form id="contact-form" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
-              <label for="name" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Naam</label>
-              <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300" placeholder="Bijv. Sofie Jansen">
+              <label for="contact-name" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Naam</label>
+              <input type="text" id="contact-name" name="name" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 focus:ring-2 focus:ring-sage-500/30" placeholder="Bijv. Sofie Jansen">
             </div>
             <div class="space-y-2">
-              <label for="email" class="text-sm tracking-widest uppercase text-forest font-medium">E-mailadres</label>
-              <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300" placeholder="jouw@email.nl">
+              <label for="contact-email" class="text-sm tracking-widest uppercase text-forest font-medium">E-mailadres</label>
+              <input type="email" id="contact-email" name="email" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 focus:ring-2 focus:ring-sage-500/30" placeholder="jouw@email.nl">
             </div>
           </div>
-          
+
           <div class="space-y-2">
-            <label for="subject" class="text-sm tracking-widest uppercase text-forest font-medium">Onderwerp</label>
-            <select id="subject" name="subject" class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 text-forest/80 appearance-none">
+            <label for="contact-subject" class="text-sm tracking-widest uppercase text-forest font-medium">Onderwerp</label>
+            <select id="contact-subject" name="subject" class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 text-forest/80 appearance-none focus:ring-2 focus:ring-sage-500/30">
               <option value="bruiloft">Bruiloft bloemen</option>
               <option value="droogbloemen">Droogbloemen bestellen</option>
               <option value="verhuur">Verhuur materiaal</option>
+              <option value="abonnement">Bloemenabonnement</option>
               <option value="anders">Anders...</option>
             </select>
           </div>
 
           <div class="space-y-2">
-            <label for="message" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Bericht</label>
-            <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 resize-none" placeholder="Typ hier je bericht..."></textarea>
+            <label for="contact-message" class="text-sm tracking-widest uppercase text-forest font-medium">Jouw Bericht</label>
+            <textarea id="contact-message" name="message" rows="5" required class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 resize-none focus:ring-2 focus:ring-sage-500/30" placeholder="Typ hier je bericht..."></textarea>
           </div>
 
-          <button type="submit" class="inline-block px-10 py-5 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm w-full md:w-auto text-center mt-4">
-            Bericht Versturen
+          <button type="submit" class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm w-full md:w-auto text-center mt-4 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:ring-offset-2">
+            <span>Verstuur via WhatsApp</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           </button>
         </form>
+
+        <script is:inline define:vars={{ whatsappNumber: siteConfig.whatsappNumber }}>
+          document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject');
+            const subjectText = subject.options[subject.selectedIndex].text;
+            const message = document.getElementById('contact-message').value;
+
+            let msg = `Hi Celine! Ik stuur je een berichtje via de website.%0A%0A`;
+            msg += `Naam: ${name}%0A`;
+            msg += `E-mail: ${email}%0A`;
+            msg += `Onderwerp: ${subjectText}%0A%0A`;
+            msg += `Bericht:%0A${message}`;
+
+            window.open(`https://wa.me/${whatsappNumber}?text=${msg}`, '_blank');
+          });
+        </script>
       </div>
 
     </div>

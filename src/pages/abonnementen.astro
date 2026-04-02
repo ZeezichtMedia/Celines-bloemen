@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
+import { siteConfig } from '../config';
 ---
 
-<Layout title="Bloemen Abonnement - Celine's bloemen" description="Een vers bloemenabonnement in Zeeland. Laat de seizoenen spreken in jouw interieur, wekelijks of maandelijks bezorgd.">
+<Layout title="Bloemen Abonnement - Celine's bloemen" description="Een vers of kunstbloemen abonnement in Zeeland. Laat de seizoenen spreken in jouw interieur.">
 
-  <!-- Hero Section with Image -->
+  <!-- Hero Section -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-16">
       <div class="lg:w-1/2 space-y-6 md:space-y-8 text-center lg:text-left">
@@ -17,13 +18,13 @@ import CtaSection from '../components/home/CtaSection.astro';
       </div>
       <div class="lg:w-1/2 relative">
         <div class="aspect-square rounded-full overflow-hidden shadow-2xl border-8 border-white/50 relative z-10 stagger-reveal">
-          <img 
-            src="/images/abonnementen/minimalist-bouquet.png" 
-            alt="Minimalistisch wit boeket op witte achtergrond" 
+          <img
+            src="/images/abonnementen/minimalist-bouquet.png"
+            alt="Minimalistisch wit boeket op witte achtergrond"
+            loading="lazy"
             class="w-full h-full object-cover"
           />
         </div>
-        <!-- Decorative blob -->
         <div class="absolute -top-10 -right-10 w-64 h-64 bg-sage-500/20 rounded-full blur-3xl -z-10"></div>
       </div>
     </div>
@@ -36,7 +37,7 @@ import CtaSection from '../components/home/CtaSection.astro';
         <h2 class="font-serif text-4xl md:text-5xl text-forest italic leading-tight">Hoe het werkt</h2>
         <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
       </div>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 text-center">
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">1</div>
@@ -57,10 +58,16 @@ import CtaSection from '../components/home/CtaSection.astro';
     </div>
   </section>
 
-  <!-- Pricing Cards -->
+  <!-- Verse Bloemen Pricing Cards -->
   <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6 overflow-hidden">
+    <div class="max-w-4xl mx-auto text-center mb-12 space-y-4 stagger-reveal">
+      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Vers van het atelier</span>
+      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Verse Bloemen Abonnement</h2>
+      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-xl mx-auto">Dagverse seizoensbloemen, wekelijks of maandelijks bezorgd op Walcheren.</p>
+    </div>
+
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-      
+
       <!-- Small -->
       <div class="p-10 bg-white border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
         <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Small</h3>
@@ -71,7 +78,7 @@ import CtaSection from '../components/home/CtaSection.astro';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Verrassend kleurenpalet</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg">Kies dit plan</button>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het Small verse bloemen abonnement (€ 17,50 per keer).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
       </div>
 
       <!-- Medium -->
@@ -85,27 +92,80 @@ import CtaSection from '../components/home/CtaSection.astro';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Exclusieve combinaties</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button class="mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg">Deel in het plezier</button>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het Medium verse bloemen abonnement (€ 27,50 per keer).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Deel in het plezier</a>
       </div>
 
       <!-- Large -->
       <div class="p-10 bg-white border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
         <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Large</h3>
-        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een extravagant pronkstuk vol diepgang en textuur. Voor wie écht wil uitpakken in het interieur.</p>
+        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een extravagant pronkstuk vol diepgang en textuur. Voor wie echt wil uitpakken in het interieur.</p>
         <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 39,50 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
         <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Maximaal volume & luxe</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Robuuste eye-catchers</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg">Kies dit plan</button>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het Large verse bloemen abonnement (€ 39,50 per keer).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Kunstbloemen Abonnement -->
+  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
+    <div class="max-w-4xl mx-auto text-center mb-12 space-y-4 stagger-reveal">
+      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Duurzaam & onderhoudsvrij</span>
+      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Kunstbloemen Abonnement</h2>
+      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-xl mx-auto">Elke periode een nieuw, zorgvuldig samengesteld kunstbloemen arrangement. Altijd fris, zonder onderhoud.</p>
+    </div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+
+      <!-- Per Kwartaal -->
+      <div class="p-10 bg-sand-500/30 border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
+        <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Per Kwartaal</h3>
+        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Elk kwartaal een nieuw kunstbloemen arrangement dat past bij het seizoen en jouw interieur.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-600/30 pb-8">€ 49,95 <span class="text-sm font-sans text-forest/50">/ kwartaal</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> 4x per jaar vernieuwd</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Seizoensgebonden styling</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Onderhoudsvrij</li>
+        </ul>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het kunstbloemen abonnement per kwartaal (€ 49,95).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+      </div>
+
+      <!-- Per Halfjaar -->
+      <div class="p-10 border-2 border-sage-500 rounded-3xl flex flex-col shadow-2xl transform lg:-translate-y-8 bg-white stagger-reveal relative group">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-sage-500 text-white text-xs font-bold tracking-widest uppercase px-6 py-2 rounded-full">Populair</div>
+        <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Per Halfjaar</h3>
+        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Twee keer per jaar een groter, luxer arrangement. De perfecte balans tussen afwisseling en gemak.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 89,95 <span class="text-sm font-sans text-forest/50">/ halfjaar</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> 2x per jaar vernieuwd</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Luxe arrangement</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Persoonlijke kleurkeuze</li>
+        </ul>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het kunstbloemen abonnement per halfjaar (€ 89,95).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+      </div>
+
+      <!-- Per Jaar -->
+      <div class="p-10 bg-sand-500/30 border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
+        <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Per Jaar</h3>
+        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een jaarabonnement met maximaal gemak. Eenmalig kiezen, het hele jaar genieten van wisselende kunstbloemen.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-600/30 pb-8">€ 159,95 <span class="text-sm font-sans text-forest/50">/ jaar</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> 4 wisselingen per jaar</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Voordeligste prijs per wisseling</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Maximaal ontzorgd</li>
+        </ul>
+        <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine! Ik heb interesse in het kunstbloemen jaarabonnement (€ 159,95).`} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
       </div>
 
     </div>
   </section>
 
   <!-- Zakelijk Section -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
+  <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 rounded-3xl bg-forest p-8 md:p-12 lg:p-20 text-white overflow-hidden relative">
       <div class="absolute inset-0 opacity-10 pointer-events-none">
         <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -113,11 +173,17 @@ import CtaSection from '../components/home/CtaSection.astro';
         </svg>
       </div>
       <div class="md:w-2/3 space-y-6 md:space-y-8 relative z-10">
+        <span class="text-xs md:text-sm font-sans font-bold uppercase tracking-widest text-sand-500">Voor bedrijven</span>
         <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl italic leading-tight">Zakelijk Bloemwerk</h2>
         <p class="font-sans font-light text-white/80 text-lg leading-relaxed">
-          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ook voor bedrijven bied ik flexibele abonnementen aan. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie; ik denk graag mee over een floral concept dat bij jouw merk past.
+          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ik bied flexibele zakelijke abonnementen aan met zowel verse als kunstbloemen. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie — ik denk graag mee over een floral concept dat bij jouw merk past.
         </p>
-        <a href="/contact" class="inline-block px-10 py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-xs hover:bg-sand-500 transition-colors shadow-xl">Contact opnemen</a>
+        <div class="flex flex-wrap gap-4">
+          <span class="inline-block px-4 py-2 bg-white/10 rounded-full text-xs uppercase tracking-widest font-bold text-sand-500">Verse bloemen</span>
+          <span class="inline-block px-4 py-2 bg-white/10 rounded-full text-xs uppercase tracking-widest font-bold text-sand-500">Kunstbloemen</span>
+          <span class="inline-block px-4 py-2 bg-white/10 rounded-full text-xs uppercase tracking-widest font-bold text-sand-500">Op maat</span>
+        </div>
+        <a href="/contact" class="inline-block px-10 py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-xs hover:bg-sand-500 transition-colors shadow-xl">Neem contact op</a>
       </div>
     </div>
   </section>
