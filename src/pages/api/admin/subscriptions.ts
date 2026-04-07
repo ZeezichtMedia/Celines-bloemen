@@ -39,3 +39,20 @@ export const PATCH: APIRoute = async ({ request }) => {
 
   return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
 };
+
+// DELETE — remove subscription record
+export const DELETE: APIRoute = async ({ request }) => {
+  if (!isAuthenticated(request.headers.get('cookie'))) {
+    return new Response(JSON.stringify({ error: 'Niet ingelogd' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+  }
+  const { id } = await request.json();
+
+  // Try to cancel in Mollie first
+  const [sub] = await db.select().from(schema.subscriptions).where(eq(schema.subscriptions.id, id)).limit(1);
+  if (sub?.mollieCustomerId && sub?.mollieSubscriptionId) {
+    try { await cancelSubscription(sub.mollieCustomerId, sub.mollieSubscriptionId); } catch { /* ok */ }
+  }
+
+  await db.delete(schema.subscriptions).where(eq(schema.subscriptions.id, id));
+  return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
+};

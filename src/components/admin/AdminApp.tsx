@@ -200,13 +200,31 @@ function BouquetsTab({ showToast }: { showToast: (m: string) => void }) {
 function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
 
-  useEffect(() => { fetch('/api/admin/orders').then((r) => r.json()).then(setOrders).catch(() => {}).finally(() => setLoading(false)); }, []);
+  const reload = () => fetch('/api/admin/orders').then((r) => r.json()).then(setOrders).catch(() => {});
+  useEffect(() => { reload().finally(() => setLoading(false)); }, []);
 
   const updateStatus = async (id: number, status: string) => {
     await fetch('/api/admin/orders', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
     setOrders(orders.map((o) => o.id === id ? { ...o, status } : o));
     showToast('Status bijgewerkt');
+  };
+
+  const syncAll = async () => {
+    setSyncing(true);
+    const res = await fetch('/api/admin/orders', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'sync-all' }) });
+    const data = await res.json();
+    await reload();
+    setSyncing(false);
+    showToast(data.synced > 0 ? `${data.synced} bestelling(en) bijgewerkt` : 'Alles is up-to-date');
+  };
+
+  const deleteOrder = async (id: number) => {
+    if (!confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')) return;
+    await fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    setOrders(orders.filter((o) => o.id !== id));
+    showToast('Bestelling verwijderd');
   };
 
   const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
@@ -222,7 +240,17 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
 
   return (
     <>
-      <h2 style={SERIF} className="text-3xl text-[#2B0000] mb-6">Bestellingen</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 style={SERIF} className="text-3xl text-[#2B0000]">Bestellingen</h2>
+          <p className="text-[#2B0000]/40 text-sm mt-1">{orders.length} bestelling{orders.length !== 1 ? 'en' : ''}</p>
+        </div>
+        <button onClick={syncAll} disabled={syncing}
+          className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#E3D4C6] text-[#2B0000]/70 text-xs tracking-wider uppercase rounded-xl hover:bg-[#F2E5D9] transition-colors disabled:opacity-50">
+          {syncing ? <span className="w-4 h-4 border-2 border-[#a06d69] border-t-transparent rounded-full animate-spin" /> : Icon.repeat}
+          {syncing ? 'Synchroniseren...' : 'Sync met Mollie'}
+        </button>
+      </div>
       {orders.length === 0 ? (
         <EmptyState icon={Icon.orders} text="Nog geen bestellingen" />
       ) : (
@@ -245,7 +273,10 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
                       <p className="text-xs text-[#2B0000]/30 mt-0.5">{o.deliveryAddress}, {o.deliveryCity}</p>
                     )}
                   </div>
-                  <span style={SERIF} className="text-2xl text-[#2B0000] flex-shrink-0">{formatPrice(o.total)}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span style={SERIF} className="text-2xl text-[#2B0000]">{formatPrice(o.total)}</span>
+                    <IconBtn onClick={() => deleteOrder(o.id)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5 flex-wrap pt-3 border-t border-[#F2E5D9]">
                   <span className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mr-1">Status:</span>
@@ -281,6 +312,13 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
     showToast(action === 'cancel' ? 'Abonnement gestopt' : 'Status bijgewerkt');
   };
 
+  const deleteSub = async (id: number) => {
+    if (!confirm('Weet je zeker dat je dit abonnement wilt verwijderen?')) return;
+    await fetch('/api/admin/subscriptions', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    setSubs(subs.filter((s) => s.id !== id));
+    showToast('Abonnement verwijderd');
+  };
+
   const freqLabels: Record<string, string> = { weekly: 'Wekelijks', biweekly: '2-wekelijks', monthly: 'Maandelijks', quarterly: 'Per kwartaal', biannual: 'Per halfjaar', yearly: 'Per jaar' };
   const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
     active:    { label: 'Actief',        color: 'bg-green-50 text-green-700',  dot: 'bg-green-400' },
@@ -313,9 +351,12 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
                     </div>
                     <p className="text-xs text-[#2B0000]/40 mt-1">{s.customerEmail}</p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span style={SERIF} className="text-xl text-[#2B0000]">{formatPrice(s.pricePerDelivery)}</span>
-                    <span className="block text-[10px] text-[#2B0000]/30 uppercase tracking-wider">per levering</span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="text-right">
+                      <span style={SERIF} className="text-xl text-[#2B0000]">{formatPrice(s.pricePerDelivery)}</span>
+                      <span className="block text-[10px] text-[#2B0000]/30 uppercase tracking-wider">per levering</span>
+                    </div>
+                    <IconBtn onClick={() => deleteSub(s.id)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-[#2B0000]/40 mb-3">
