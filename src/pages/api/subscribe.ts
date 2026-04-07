@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, schema } from '../../lib/db';
 import { createFirstPayment, priceToAmount } from '../../lib/mollie';
+import { eq } from 'drizzle-orm';
 
 export const prerender = false;
 
@@ -9,7 +10,7 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     const {
       customer,
-      plan, // { type, size, frequency, price }
+      plan,
       delivery,
     } = body;
 
@@ -44,7 +45,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Store Mollie customer ID
     await db.update(schema.subscriptions)
       .set({ mollieCustomerId: customerId })
-      .where(schema.subscriptions.id.equals(sub.id));
+      .where(eq(schema.subscriptions.id, sub.id));
 
     return new Response(JSON.stringify({
       subscriptionId: sub.id,
@@ -52,9 +53,12 @@ export const POST: APIRoute = async ({ request }) => {
     }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) {
-    console.error('Subscribe error:', err);
-    return new Response(JSON.stringify({ error: 'Er ging iets mis' }), {
+  } catch (err: any) {
+    console.error('Subscribe error:', err?.message || err);
+    return new Response(JSON.stringify({
+      error: 'Er ging iets mis',
+      detail: err?.message || 'Onbekende fout',
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

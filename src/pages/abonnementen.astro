@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
-import { getWhatsAppUrl } from '../utils/whatsapp';
+import SubscriptionForm from '../components/shop/SubscriptionForm';
 ---
 
 <Layout title="Bloemen Abonnement - Celine's bloemen" description="Een vers of kunstbloemen abonnement in Zeeland. Laat de seizoenen spreken in jouw interieur.">
@@ -18,12 +18,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
       </div>
       <div class="lg:w-1/2 relative">
         <div class="aspect-square rounded-full overflow-hidden shadow-2xl border-8 border-white/50 relative z-10 stagger-reveal">
-          <img
-            src="/images/abonnementen/minimalist-bouquet.png"
-            alt="Minimalistisch wit boeket op witte achtergrond"
-            loading="lazy"
-            class="w-full h-full object-cover"
-          />
+          <img src="/images/abonnementen/minimalist-bouquet.png" alt="Minimalistisch wit boeket op witte achtergrond" loading="lazy" class="w-full h-full object-cover" />
         </div>
         <div class="absolute -top-10 -right-10 w-64 h-64 bg-sage-500/20 rounded-full blur-3xl -z-10"></div>
       </div>
@@ -37,22 +32,21 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
         <h2 class="font-serif text-4xl md:text-5xl text-forest italic leading-tight">Hoe het werkt</h2>
         <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 text-center">
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">1</div>
-          <h3 class="font-serif text-2xl text-forest">Kies je Maat</h3>
-          <p class="font-sans font-light text-forest/70">Van een subtiel boeketje tot een weelderig pronkstuk; kies het formaat dat bij jouw ruimte past.</p>
+          <h3 class="font-serif text-2xl text-forest">Kies je Plan</h3>
+          <p class="font-sans font-light text-forest/70">Vers of kunstbloemen, in het formaat dat bij jouw ruimte past.</p>
         </div>
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">2</div>
-          <h3 class="font-serif text-2xl text-forest">Bepaal de Frequentie</h3>
-          <p class="font-sans font-light text-forest/70">Wekelijks, tweewekelijks of één keer per maand. Jij bepaalt hoe vaak ik sfeer kom brengen.</p>
+          <h3 class="font-serif text-2xl text-forest">Betaal met iDEAL</h3>
+          <p class="font-sans font-light text-forest/70">Veilig betalen via Mollie. Na de eerste betaling wordt automatisch een incasso aangemaakt.</p>
         </div>
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">3</div>
           <h3 class="font-serif text-2xl text-forest">Geniet van Versheid</h3>
-          <p class="font-sans font-light text-forest/70">Ik bezorg de bloemen met zorg aan de deur, zodat jij alleen nog maar de vaas hoeft neer te zetten.</p>
+          <p class="font-sans font-light text-forest/70">Ik bezorg de bloemen met zorg aan de deur. Pauzeren of stoppen kan altijd.</p>
         </div>
       </div>
     </div>
@@ -78,7 +72,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Verrassend kleurenpalet</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het Small verse bloemen abonnement (€ 17,50 per keer).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Small" data-frequency="weekly" data-price="€ 17,50" data-label="Small Verse Bloemen">Kies dit plan</button>
       </div>
 
       <!-- Medium -->
@@ -92,7 +86,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Exclusieve combinaties</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het Medium verse bloemen abonnement (€ 27,50 per keer).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Deel in het plezier</a>
+        <button type="button" class="sub-btn mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Medium" data-frequency="biweekly" data-price="€ 27,50" data-label="Medium Verse Bloemen">Deel in het plezier</button>
       </div>
 
       <!-- Large -->
@@ -105,7 +99,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Robuuste eye-catchers</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het Large verse bloemen abonnement (€ 39,50 per keer).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Large" data-frequency="monthly" data-price="€ 39,50" data-label="Large Verse Bloemen">Kies dit plan</button>
       </div>
 
     </div>
@@ -131,7 +125,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Seizoensgebonden styling</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Onderhoudsvrij</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het kunstbloemen abonnement per kwartaal (€ 49,95).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="artificial" data-size="Kwartaal" data-frequency="quarterly" data-price="€ 49,95" data-label="Kunstbloemen per Kwartaal">Kies dit plan</button>
       </div>
 
       <!-- Per Halfjaar -->
@@ -145,7 +139,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Luxe arrangement</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Persoonlijke kleurkeuze</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het kunstbloemen abonnement per halfjaar (€ 89,95).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+        <button type="button" class="sub-btn mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg" data-type="artificial" data-size="Halfjaar" data-frequency="biannual" data-price="€ 89,95" data-label="Kunstbloemen per Halfjaar">Kies dit plan</button>
       </div>
 
       <!-- Per Jaar -->
@@ -158,7 +152,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Voordeligste prijs per wisseling</li>
           <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Maximaal ontzorgd</li>
         </ul>
-        <a href={getWhatsAppUrl('Hi Celine! Ik heb interesse in het kunstbloemen jaarabonnement (€ 159,95).')} target="_blank" rel="noopener noreferrer" class="mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg text-center block">Kies dit plan</a>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="artificial" data-size="Jaar" data-frequency="yearly" data-price="€ 159,95" data-label="Kunstbloemen Jaarabonnement">Kies dit plan</button>
       </div>
 
     </div>
@@ -167,7 +161,7 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
   <!-- Zakelijk Section -->
   <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 rounded-3xl bg-forest p-8 md:p-12 lg:p-20 text-white overflow-hidden relative">
-      <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true">
         <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <circle cx="90" cy="10" r="30" fill="white" />
         </svg>
@@ -188,5 +182,40 @@ import { getWhatsAppUrl } from '../utils/whatsapp';
     </div>
   </section>
 
+  <!-- Subscription Form (React, renders as portal) -->
+  <SubscriptionForm client:load />
+
   <CtaSection />
+
+  <!-- Wire up buttons to open the subscription form -->
+  <script>
+    const initSubButtons = () => {
+      const controller = new AbortController();
+      const { signal } = controller;
+      const marker = document.querySelector('.sub-btn');
+      if (!marker) return;
+      const prev = (marker as any).__subCleanup;
+      if (prev) prev();
+      (marker as any).__subCleanup = () => controller.abort();
+
+      document.querySelectorAll('.sub-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const el = btn as HTMLElement;
+          const plan = {
+            type: el.dataset.type,
+            size: el.dataset.size,
+            frequency: el.dataset.frequency,
+            price: el.dataset.price,
+            label: el.dataset.label,
+          };
+          if ((window as any).__openSubscription) {
+            (window as any).__openSubscription(plan);
+          }
+        }, { signal });
+      });
+    };
+
+    initSubButtons();
+    document.addEventListener('astro:page-load', initSubButtons);
+  </script>
 </Layout>
