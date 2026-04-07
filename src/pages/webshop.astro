@@ -1,68 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
+import { getVisibleProducts } from '../lib/data';
 
-const products = [
-  {
-    id: "signature-vaas",
-    name: "Celine's Signature Vaas",
-    desc: "Mondgeblazen glas van hoge kwaliteit, perfect voor weelderige veldboeketten. Een tijdloze klassieker die in ieder interieur past.",
-    price: 34.95,
-    priceLabel: "€ 34,95",
-    image: "/images/verhuur/vaas-verhuur.jpeg",
-    category: "vazen"
-  },
-  {
-    id: "mini-vaasjes-set",
-    name: "Set van 3 Mini-Vaasjes",
-    desc: "Eenvoudig glas, ideaal voor de vrolijke overblijvers van je boeket.",
-    price: 18.95,
-    priceLabel: "€ 18,95",
-    image: "/images/verhuur/vaas-verhuur.jpeg",
-    category: "vazen"
-  },
-  {
-    id: "ambachtelijke-schaal",
-    name: "Ambachtelijke Schaal",
-    desc: "Een robuuste basis voor natuurlijke tafelstukken en decoratie.",
-    price: 49.95,
-    priceLabel: "€ 49,95",
-    image: "/images/verhuur/aankleding-tafel.jpeg",
-    category: "decoratie"
-  },
-  {
-    id: "luxe-kandelaar-goud",
-    name: "Luxe Kandelaar (Goud)",
-    desc: "Mat-gouden afwerking voor een subtiel sprankje sfeer op tafel.",
-    price: 19.95,
-    priceLabel: "€ 19,95",
-    image: "/images/verhuur/kandelaar-laag-goud-verhuur.jpeg",
-    category: "decoratie"
-  },
-  {
-    id: "slank-decoratiestuk",
-    name: "Slank Decoratiestuk",
-    desc: "Minimalistisch design kandelaar voor een modern accent in huis.",
-    price: 19.95,
-    priceLabel: "€ 19,95",
-    image: "/images/verhuur/kandelaar-recht-verhuur.jpeg",
-    category: "decoratie"
-  },
-  {
-    id: "subtiele-ring",
-    name: "Subtiele Ring",
-    desc: "Elegante ronde houder voor kaarsen of kleine droogbloemen.",
-    price: 14.95,
-    priceLabel: "€ 14,95",
-    image: "/images/verhuur/kandelaar-rondje-verhuur.jpeg",
-    category: "decoratie"
-  }
-];
+const allProducts = await getVisibleProducts();
 
+const products = allProducts.map((p) => ({
+  id: p.id,
+  name: p.name,
+  desc: p.description,
+  price: p.price,
+  priceLabel: p.priceLabel,
+  image: p.image,
+  category: p.category,
+}));
+
+// Derive categories from actual products
+const categorySet = new Set(products.map((p) => p.category));
 const categories = [
   { id: 'alles', label: 'Alles' },
-  { id: 'vazen', label: 'Vazen' },
-  { id: 'decoratie', label: 'Decoratie' },
+  ...Array.from(categorySet).map((c) => ({ id: c, label: c.charAt(0).toUpperCase() + c.slice(1) })),
 ];
 ---
 

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "signature-vaas",
+    "name": "Celine's Signature Vaas",
+    "description": "Mondgeblazen glas van hoge kwaliteit, perfect voor weelderige veldboeketten. Een tijdloze klassieker die in ieder interieur past.",
+    "price": 34.95,
+    "priceLabel": "€ 34,95",
+    "image": "/images/verhuur/vaas-verhuur.jpeg",
+    "category": "vazen",
+    "available": true,
+    "sortOrder": 0
+  },
+  {
+    "id": "mini-vaasjes-set",
+    "name": "Set van 3 Mini-Vaasjes",
+    "description": "Eenvoudig glas, ideaal voor de vrolijke overblijvers van je boeket.",
+    "price": 18.95,
+    "priceLabel": "€ 18,95",
+    "image": "/images/verhuur/vaas-verhuur.jpeg",
+    "category": "vazen",
+    "available": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "ambachtelijke-schaal",
+    "name": "Ambachtelijke Schaal",
+    "description": "Een robuuste basis voor natuurlijke tafelstukken en decoratie.",
+    "price": 49.95,
+    "priceLabel": "€ 49,95",
+    "image": "/images/verhuur/aankleding-tafel.jpeg",
+    "category": "decoratie",
+    "available": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "luxe-kandelaar-goud",
+    "name": "Luxe Kandelaar (Goud)",
+    "description": "Mat-gouden afwerking voor een subtiel sprankje sfeer op tafel.",
+    "price": 19.95,
+    "priceLabel": "€ 19,95",
+    "image": "/images/verhuur/kandelaar-laag-goud-verhuur.jpeg",
+    "category": "decoratie",
+    "available": true,
+    "sortOrder": 3
+  },
+  {
+    "id": "slank-decoratiestuk",
+    "name": "Slank Decoratiestuk",
+    "description": "Minimalistisch design kandelaar voor een modern accent in huis.",
+    "price": 19.95,
+    "priceLabel": "€ 19,95",
+    "image": "/images/verhuur/kandelaar-recht-verhuur.jpeg",
+    "category": "decoratie",
+    "available": true,
+    "sortOrder": 4
+  },
+  {
+    "id": "subtiele-ring",
+    "name": "Subtiele Ring",
+    "description": "Elegante ronde houder voor kaarsen of kleine droogbloemen.",
+    "price": 14.95,
+    "priceLabel": "€ 14,95",
+    "image": "/images/verhuur/kandelaar-rondje-verhuur.jpeg",
+    "category": "decoratie",
+    "available": true,
+    "sortOrder": 5
+  }
+]

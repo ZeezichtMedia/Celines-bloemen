@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Bouquet } from '../../lib/types';
+import type { Bouquet, Product } from '../../lib/types';
 
 // ============================================================
 // SVG Icons
@@ -20,9 +20,10 @@ const Icon = {
   play: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
   x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
   upload: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+  shop: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
 };
 
-type Tab = 'bouquets' | 'orders' | 'subscriptions';
+type Tab = 'bouquets' | 'products' | 'orders' | 'subscriptions';
 const SERIF = { fontFamily: "'Cormorant Garamond', Georgia, serif" };
 
 // ============================================================
@@ -80,6 +81,7 @@ export default function AdminApp() {
   const tabs: { id: Tab; label: string; icon: JSX.Element }[] = [
     { id: 'orders', label: 'Bestellingen', icon: Icon.orders },
     { id: 'bouquets', label: 'Boeketten', icon: Icon.flower },
+    { id: 'products', label: 'Webshop', icon: Icon.shop },
     { id: 'subscriptions', label: 'Abonnementen', icon: Icon.repeat },
   ];
 
@@ -113,6 +115,7 @@ export default function AdminApp() {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {tab === 'bouquets' && <BouquetsTab showToast={showToast} />}
+        {tab === 'products' && <ProductsTab showToast={showToast} />}
         {tab === 'orders' && <OrdersTab showToast={showToast} />}
         {tab === 'subscriptions' && <SubscriptionsTab showToast={showToast} />}
       </div>
@@ -191,6 +194,176 @@ function BouquetsTab({ showToast }: { showToast: (m: string) => void }) {
         </div>
       )}
     </>
+  );
+}
+
+// ============================================================
+// Products Tab (Webshop)
+// ============================================================
+function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [editing, setEditing] = useState<Product | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { fetch('/api/admin/products').then((r) => r.json()).then(setProducts).catch(() => {}); }, []);
+
+  const saveProduct = async (product: Product) => {
+    setSaving(true);
+    const updated = products.some((p) => p.id === product.id) ? products.map((p) => (p.id === product.id ? product : p)) : [...products, product];
+    const res = await fetch('/api/admin/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+    if (res.ok) { setProducts(updated); setEditing(null); showToast('Opgeslagen'); }
+    setSaving(false);
+  };
+
+  const deleteProduct = async (id: string) => {
+    if (!confirm('Weet je zeker dat je dit product wilt verwijderen?')) return;
+    await fetch('/api/admin/products', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    setProducts(products.filter((p) => p.id !== id));
+    showToast('Verwijderd');
+  };
+
+  if (editing) {
+    return (
+      <>
+        <button onClick={() => setEditing(null)} className="flex items-center gap-1.5 text-[#a06d69] text-sm mb-6 hover:underline">{Icon.back} Terug naar overzicht</button>
+        <ProductEditForm product={editing} onSave={saveProduct} saving={saving} isNew={!editing.id} />
+      </>
+    );
+  }
+
+  const newProduct = (): Product => ({ id: '', name: '', description: '', price: 0, priceLabel: '€ 0,00', image: '/images/verhuur/vaas-verhuur.jpeg', category: 'decoratie', available: true, sortOrder: products.length });
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 style={SERIF} className="text-3xl text-[#2B0000]">Webshop Producten</h2>
+          <p className="text-[#2B0000]/40 text-sm mt-1">{products.length} product{products.length !== 1 ? 'en' : ''}</p>
+        </div>
+        <button onClick={() => setEditing(newProduct())}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#a06d69] text-white text-xs tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors">
+          {Icon.plus} Nieuw product
+        </button>
+      </div>
+      {products.length === 0 ? (
+        <EmptyState icon={Icon.shop} text="Nog geen producten" />
+      ) : (
+        <div className="space-y-2">
+          {products.map((p) => (
+            <div key={p.id} className="bg-white rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow border border-transparent hover:border-[#E3D4C6]">
+              <img src={p.image} alt={p.name} className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h3 style={SERIF} className="text-lg text-[#2B0000] truncate">{p.name}</h3>
+                <p className="text-[#2B0000]/40 text-xs mt-0.5">{p.category} · {p.priceLabel}</p>
+              </div>
+              <button onClick={() => saveProduct({ ...p, available: !p.available })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex-shrink-0 ${p.available ? 'bg-green-50 text-green-700 hover:bg-green-100' : 'bg-[#F2E5D9] text-[#2B0000]/40 hover:bg-[#E3D4C6]'}`}>
+                {p.available ? Icon.eye : Icon.eyeOff}
+                {p.available ? 'Zichtbaar' : 'Verborgen'}
+              </button>
+              <IconBtn onClick={() => setEditing(p)} title="Bewerken" className="text-[#2B0000]/25 hover:text-[#a06d69]">{Icon.edit}</IconBtn>
+              <IconBtn onClick={() => deleteProduct(p.id)} title="Verwijderen" className="text-[#2B0000]/25 hover:text-red-500">{Icon.trash}</IconBtn>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+function ProductEditForm({ product, onSave, saving, isNew }: { product: Product; onSave: (p: Product) => void; saving: boolean; isNew: boolean }) {
+  const [form, setForm] = useState<Product>(product);
+  const [uploading, setUploading] = useState(false);
+  const set = (key: keyof Product, value: any) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+    if (res.ok) { const { url } = await res.json(); set('image', url); }
+    setUploading(false);
+  };
+
+  const updatePrice = (val: string) => {
+    const num = parseFloat(val) || 0;
+    set('price', num);
+    set('priceLabel', `€ ${num.toFixed(2).replace('.', ',')}`);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isNew) form.id = form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    onSave(form);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6">
+      <h2 style={SERIF} className="text-2xl text-[#2B0000]">{isNew ? 'Nieuw product' : `${form.name} bewerken`}</h2>
+
+      <div className="flex items-start gap-6">
+        <div className="w-28 h-28 rounded-xl overflow-hidden bg-[#F2E5D9] flex-shrink-0 border border-[#E3D4C6]">
+          <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
+        </div>
+        <div className="pt-1">
+          <Label>Foto</Label>
+          <label className="flex items-center gap-2 cursor-pointer mt-1.5 px-4 py-2.5 bg-[#F2E5D9] text-[#2B0000] text-xs tracking-wider uppercase rounded-lg hover:bg-[#E3D4C6] transition-colors w-fit">
+            {Icon.upload}
+            {uploading ? 'Uploaden...' : 'Foto kiezen'}
+            <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Naam" value={form.name} onChange={(v) => set('name', v)} required />
+        <div>
+          <Label>Categorie</Label>
+          <select value={form.category} onChange={(e) => set('category', e.target.value)}
+            className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20">
+            <option value="vazen">Vazen</option>
+            <option value="decoratie">Decoratie</option>
+            <option value="kunstbloemen">Kunstbloemen</option>
+            <option value="cadeaus">Cadeaus</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <Label>Beschrijving</Label>
+        <textarea value={form.description} onChange={(e) => set('description', e.target.value)} rows={3} required
+          className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 resize-none" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Prijs (in euro)</Label>
+          <input type="number" step="0.01" min="0" value={form.price} onChange={(e) => updatePrice(e.target.value)}
+            className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" required />
+        </div>
+        <Field label="Volgorde" value={String(form.sortOrder)} onChange={(v) => set('sortOrder', parseInt(v) || 0)} type="number" />
+      </div>
+
+      <div className="flex items-center">
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <div className={`w-11 h-6 rounded-full relative transition-colors ${form.available ? 'bg-[#a06d69]' : 'bg-[#E3D4C6]'}`} onClick={() => set('available', !form.available)}>
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.available ? 'translate-x-[22px]' : 'translate-x-0.5'}`} />
+          </div>
+          <span className="text-sm text-[#2B0000]">{form.available ? 'Zichtbaar in webshop' : 'Verborgen'}</span>
+        </label>
+      </div>
+
+      <div className="pt-4 border-t border-[#E3D4C6] flex items-center justify-between">
+        <p className="text-xs text-[#2B0000]/30">Wijzigingen worden direct zichtbaar op de website</p>
+        <button type="submit" disabled={saving}
+          className="flex items-center gap-2 px-6 py-3 bg-[#a06d69] text-white text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50">
+          {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : Icon.check}
+          {saving ? 'Opslaan...' : 'Opslaan'}
+        </button>
+      </div>
+    </form>
   );
 }
 
