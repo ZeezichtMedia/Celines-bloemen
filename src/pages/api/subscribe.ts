@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, schema } from '../../lib/db';
 import { createFirstPayment, priceToAmount } from '../../lib/mollie';
+import { subscribeSchema, validateOrError } from '../../lib/validation';
 import { eq } from 'drizzle-orm';
 
 export const prerender = false;
@@ -8,21 +9,26 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const {
-      customer,
-      plan,
-      delivery,
-    } = body;
 
-    // Insert subscription (pending until first payment completes)
+    // Validate input
+    const { data, error } = validateOrError(subscribeSchema, body);
+    if (error || !data) {
+      return new Response(JSON.stringify({ error }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { customer, plan, delivery } = data;
+
     const [sub] = await db.insert(schema.subscriptions).values({
       status: 'pending',
       customerName: customer.name,
       customerEmail: customer.email,
       customerPhone: customer.phone || null,
-      deliveryAddress: delivery.address || null,
-      deliveryCity: delivery.city || null,
-      deliveryPostalCode: delivery.postalCode || null,
+      deliveryAddress: delivery.address,
+      deliveryCity: delivery.city,
+      deliveryPostalCode: delivery.postalCode,
       planType: plan.type,
       planSize: plan.size,
       frequency: plan.frequency,
@@ -31,7 +37,6 @@ export const POST: APIRoute = async ({ request }) => {
       customerNote: customer.note || null,
     }).returning();
 
-    // Create first Mollie payment (sets up mandate)
     const { payment, customerId } = await createFirstPayment({
       customerName: customer.name,
       customerEmail: customer.email,
@@ -42,7 +47,6 @@ export const POST: APIRoute = async ({ request }) => {
       },
     });
 
-    // Store Mollie customer ID
     await db.update(schema.subscriptions)
       .set({ mollieCustomerId: customerId })
       .where(eq(schema.subscriptions.id, sub.id));
@@ -55,10 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err: any) {
     console.error('Subscribe error:', err?.message || err);
-    return new Response(JSON.stringify({
-      error: 'Er ging iets mis',
-      detail: err?.message || 'Onbekende fout',
-    }), {
+    return new Response(JSON.stringify({ error: 'Er ging iets mis bij het aanmaken van je abonnement' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

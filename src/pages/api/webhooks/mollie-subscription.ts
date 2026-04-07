@@ -8,66 +8,67 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    // Mollie sends webhooks as application/x-www-form-urlencoded
     const body = await request.text();
     const params = new URLSearchParams(body);
     const paymentId = params.get('id');
 
-    if (!paymentId) {
-      console.error('Subscription webhook: no payment ID');
-      return new Response('OK');
+    if (!paymentId) return new Response('OK');
+
+    // SECURITY: Verify payment with Mollie API
+    let payment;
+    try {
+      payment = await getPayment(paymentId);
+    } catch (err) {
+      console.error('Sub webhook: failed to verify payment:', paymentId);
+      return new Response('Payment verification failed', { status: 500 });
     }
 
-    console.log('Subscription webhook received for payment:', paymentId);
-
-    const payment = await getPayment(paymentId);
     const meta = payment.metadata as any;
 
-    console.log('Payment status:', payment.status, 'metadata:', JSON.stringify(meta));
-
-    // First payment for subscription setup
     if (meta?.type === 'subscription_first' && payment.status === 'paid') {
       const subId = parseInt(meta.subscriptionId);
       const customerId = meta.customerId;
 
-      if (!subId || !customerId) {
-        console.error('Subscription webhook: missing subId or customerId in metadata');
-        return new Response('OK');
-      }
+      if (!subId || !customerId) return new Response('OK');
 
       const [sub] = await db.select()
         .from(schema.subscriptions)
         .where(eq(schema.subscriptions.id, subId))
         .limit(1);
 
-      if (!sub) {
-        console.error('Subscription webhook: subscription not found for id', subId);
+      if (!sub) return new Response('OK');
+
+      // IDEMPOTENCY: Skip if already activated
+      if (sub.status === 'active' && sub.mollieSubscriptionId) {
         return new Response('OK');
       }
 
-      console.log('Creating Mollie subscription for customer', customerId, 'amount', Number(sub.pricePerDelivery).toFixed(2));
+      try {
+        const mollieSubscription = await createSubscription({
+          customerId,
+          amount: Number(sub.pricePerDelivery).toFixed(2),
+          interval: frequencyToInterval(sub.frequency),
+          description: `Bloemenabonnement ${sub.planSize} — Celine's Bloemen`,
+          subscriptionId: sub.id,
+        });
 
-      // Create recurring subscription in Mollie
-      const mollieSubscription = await createSubscription({
-        customerId,
-        amount: Number(sub.pricePerDelivery).toFixed(2),
-        interval: frequencyToInterval(sub.frequency),
-        description: `Bloemenabonnement ${sub.planSize} — Celine's Bloemen`,
-        subscriptionId: sub.id,
-      });
+        await db.update(schema.subscriptions)
+          .set({
+            status: 'active',
+            mollieCustomerId: customerId,
+            mollieSubscriptionId: mollieSubscription.id,
+            updatedAt: new Date(),
+          })
+          .where(eq(schema.subscriptions.id, sub.id));
+      } catch (mollieErr) {
+        console.error('Failed to create Mollie subscription:', mollieErr);
+        // Mark as error state so admin can investigate
+        await db.update(schema.subscriptions)
+          .set({ status: 'pending', mollieCustomerId: customerId, updatedAt: new Date() })
+          .where(eq(schema.subscriptions.id, sub.id));
+        return new Response('Subscription creation failed', { status: 500 });
+      }
 
-      console.log('Mollie subscription created:', mollieSubscription.id);
-
-      // Update subscription record
-      await db.update(schema.subscriptions)
-        .set({
-          status: 'active',
-          mollieCustomerId: customerId,
-          mollieSubscriptionId: mollieSubscription.id,
-        })
-        .where(eq(schema.subscriptions.id, sub.id));
-
-      // Send confirmation email
       try {
         await sendSubscriptionConfirmation({
           to: sub.customerEmail,
@@ -85,7 +86,6 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response('OK');
   } catch (err: any) {
     console.error('Subscription webhook error:', err?.message || err);
-    // Always return 200 to Mollie, otherwise they retry
-    return new Response('OK');
+    return new Response('Internal error', { status: 500 });
   }
 };

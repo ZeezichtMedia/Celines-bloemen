@@ -12,39 +12,39 @@ export const POST: APIRoute = async ({ request }) => {
     const params = new URLSearchParams(body);
     const paymentId = params.get('id');
 
-    if (!paymentId) {
-      console.error('Order webhook: no payment ID');
-      return new Response('OK');
+    if (!paymentId) return new Response('OK');
+
+    // SECURITY: Always fetch payment from Mollie API to verify status
+    // Never trust the webhook payload alone
+    let payment;
+    try {
+      payment = await getPayment(paymentId);
+    } catch (err) {
+      console.error('Webhook: failed to verify payment with Mollie:', paymentId);
+      // Return 500 so Mollie retries
+      return new Response('Payment verification failed', { status: 500 });
     }
 
-    console.log('Order webhook received for payment:', paymentId);
-
-    const payment = await getPayment(paymentId);
     const orderNumber = (payment.metadata as any)?.orderNumber;
-
-    if (!orderNumber) {
-      console.log('Order webhook: no orderNumber in metadata, skipping');
-      return new Response('OK');
-    }
+    if (!orderNumber) return new Response('OK');
 
     const [order] = await db.select()
       .from(schema.orders)
       .where(eq(schema.orders.orderNumber, orderNumber))
       .limit(1);
 
-    if (!order) {
-      console.error('Order webhook: order not found for', orderNumber);
-      return new Response('OK');
-    }
+    if (!order) return new Response('OK');
 
-    console.log('Payment status:', payment.status, 'for order', orderNumber);
+    // IDEMPOTENCY: Skip if already processed
+    if (payment.status === 'paid' && order.status !== 'pending') {
+      return new Response('OK'); // Already processed
+    }
 
     if (payment.status === 'paid') {
       await db.update(schema.orders)
-        .set({ status: 'paid', paidAt: new Date() })
+        .set({ status: 'paid', paidAt: new Date(), updatedAt: new Date() })
         .where(eq(schema.orders.id, order.id));
 
-      // Send confirmation email
       try {
         const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
         await sendOrderConfirmation({
@@ -58,16 +58,19 @@ export const POST: APIRoute = async ({ request }) => {
         });
       } catch (emailErr) {
         console.error('Order email failed:', emailErr);
+        // Don't fail webhook for email errors
       }
-    } else if (payment.status === 'failed' || payment.status === 'cancelled' || payment.status === 'expired') {
-      await db.update(schema.orders)
-        .set({ status: 'cancelled' })
-        .where(eq(schema.orders.id, order.id));
+    } else if (['failed', 'cancelled', 'expired'].includes(payment.status)) {
+      if (order.status === 'pending') {
+        await db.update(schema.orders)
+          .set({ status: 'cancelled', updatedAt: new Date() })
+          .where(eq(schema.orders.id, order.id));
+      }
     }
 
     return new Response('OK');
   } catch (err: any) {
     console.error('Order webhook error:', err?.message || err);
-    return new Response('OK');
+    return new Response('Internal error', { status: 500 });
   }
 };

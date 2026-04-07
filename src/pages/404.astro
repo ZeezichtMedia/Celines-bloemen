@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Pagina niet gevonden - Celine's bloemen" description="Deze pagina bestaat niet.">
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-sand-600 px-4 md:px-6 min-h-[70vh] flex items-center">
+    <div class="max-w-2xl mx-auto text-center space-y-6">
+      <span class="font-serif text-8xl md:text-9xl text-sage-500/30 block">404</span>
+      <h1 class="font-serif text-3xl md:text-5xl text-forest leading-tight">Pagina niet gevonden</h1>
+      <p class="font-sans text-base text-forest/60 font-light max-w-md mx-auto leading-relaxed">
+        Sorry, deze pagina bestaat niet of is verplaatst. Misschien vind je wat je zoekt via de links hieronder.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <a href="/" class="px-8 py-3 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase rounded-sm hover:bg-sage-600 transition-colors">
+          Terug naar home
+        </a>
+        <a href="/bestellen" class="px-8 py-3 bg-transparent border border-forest/20 text-forest font-sans text-sm tracking-widest uppercase rounded-sm hover:bg-forest/5 transition-colors">
+          Bekijk boeketten
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

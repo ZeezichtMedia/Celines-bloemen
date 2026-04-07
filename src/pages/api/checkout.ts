@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, schema } from '../../lib/db';
 import { createPayment, priceToAmount } from '../../lib/mollie';
+import { checkoutSchema, validateOrError } from '../../lib/validation';
 import { eq } from 'drizzle-orm';
 
 export const prerender = false;
@@ -17,18 +18,33 @@ function generateOrderNumber(): string {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const {
-      customer,
-      items,
-      delivery,
-      subtotal,
-      total,
-    } = body;
 
+    // Validate input
+    const { data, error } = validateOrError(checkoutSchema, body);
+    if (error || !data) {
+      return new Response(JSON.stringify({ error }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { customer, items, delivery, subtotal, total } = data;
     const orderNumber = generateOrderNumber();
     const totalAmount = priceToAmount(total);
 
-    // Insert order
+    // Validate delivery date is in the future if provided
+    if (delivery.date) {
+      const deliveryDate = new Date(delivery.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (deliveryDate <= today) {
+        return new Response(JSON.stringify({ error: 'Bezorgdatum moet in de toekomst liggen' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     const [order] = await db.insert(schema.orders).values({
       orderNumber,
       status: 'pending',
@@ -48,7 +64,6 @@ export const POST: APIRoute = async ({ request }) => {
       customerNote: customer.note || null,
     }).returning();
 
-    // Create Mollie payment
     const payment = await createPayment({
       orderId: order.id,
       orderNumber,
@@ -56,7 +71,6 @@ export const POST: APIRoute = async ({ request }) => {
       description: `Bestelling ${orderNumber} — Celine's Bloemen`,
     });
 
-    // Store payment ID
     await db.update(schema.orders)
       .set({ molliePaymentId: payment.id })
       .where(eq(schema.orders.id, order.id));
@@ -69,10 +83,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err: any) {
     console.error('Checkout error:', err?.message || err);
-    return new Response(JSON.stringify({
-      error: 'Er ging iets mis bij het afrekenen',
-      detail: err?.message || 'Onbekende fout',
-    }), {
+    return new Response(JSON.stringify({ error: 'Er ging iets mis bij het afrekenen' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
