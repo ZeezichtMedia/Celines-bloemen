@@ -201,6 +201,7 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [expanded, setExpanded] = useState<number | null>(null);
 
   const reload = () => fetch('/api/admin/orders').then((r) => r.json()).then(setOrders).catch(() => {});
   useEffect(() => { reload().finally(() => setLoading(false)); }, []);
@@ -257,36 +258,104 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
         <div className="space-y-3">
           {orders.map((o) => {
             const s = statusConfig[o.status] || statusConfig.pending;
+            const isOpen = expanded === o.id;
+            const items = parseItems(o.items);
+            const deliveryLabels: Record<string, string> = { pickup: 'Ophalen in winkel', local: 'Lokale bezorging', shipping: 'Verzending' };
+            const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+
             return (
-              <div key={o.id} className="bg-white rounded-xl p-5 border border-transparent hover:border-[#E3D4C6] transition-colors">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <div className="flex items-center gap-3">
+              <div key={o.id} className="bg-white rounded-xl border border-transparent hover:border-[#E3D4C6] transition-colors overflow-hidden">
+                {/* Summary row — clickable */}
+                <button type="button" onClick={() => setExpanded(isOpen ? null : o.id)} className="w-full p-5 flex items-start justify-between gap-4 text-left">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <span className="font-mono text-sm font-semibold text-[#2B0000]">{o.orderNumber}</span>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${s.color}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                         {s.label}
                       </span>
+                      <span className="text-xs text-[#2B0000]/25">{dateStr}</span>
                     </div>
-                    <p className="text-sm text-[#2B0000]/50 mt-1">{o.customerName} · {o.customerEmail}</p>
-                    {o.deliveryMethod !== 'pickup' && o.deliveryCity && (
-                      <p className="text-xs text-[#2B0000]/30 mt-0.5">{o.deliveryAddress}, {o.deliveryCity}</p>
-                    )}
+                    <p className="text-sm text-[#2B0000]/50 mt-1">{o.customerName} · {o.customerEmail}{o.customerPhone ? ` · ${o.customerPhone}` : ''}</p>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <span style={SERIF} className="text-2xl text-[#2B0000]">{formatPrice(o.total)}</span>
-                    <IconBtn onClick={() => deleteOrder(o.id)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-[#2B0000]/30 transition-transform ${isOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5 flex-wrap pt-3 border-t border-[#F2E5D9]">
-                  <span className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mr-1">Status:</span>
-                  {['paid', 'preparing', 'shipped', 'delivered'].map((st) => (
-                    <button key={st} onClick={() => updateStatus(o.id, st)}
-                      className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${o.status === st ? 'bg-[#2B0000] text-white' : 'bg-[#F2E5D9] text-[#2B0000]/50 hover:bg-[#E3D4C6] hover:text-[#2B0000]/70'}`}>
-                      {statusConfig[st].label}
-                    </button>
-                  ))}
-                </div>
+                </button>
+
+                {/* Expandable detail */}
+                {isOpen && (
+                  <div className="px-5 pb-5 space-y-4 border-t border-[#F2E5D9]">
+
+                    {/* Products */}
+                    <div className="pt-4">
+                      <h4 className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mb-2">Producten</h4>
+                      <div className="space-y-2">
+                        {items.map((item: any, i: number) => (
+                          <div key={i} className="flex justify-between items-center text-sm">
+                            <span className="text-[#2B0000]">{item.name}{item.size ? ` (${item.size})` : ''} <span className="text-[#2B0000]/40">x{item.quantity}</span></span>
+                            <span className="text-[#2B0000]/70 font-medium">{item.price}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-between items-center pt-2 mt-2 border-t border-[#F2E5D9] text-sm">
+                        <span className="text-[#2B0000]/50">Subtotaal</span>
+                        <span className="text-[#2B0000]">{formatPrice(o.subtotal)}</span>
+                      </div>
+                      {Number(o.deliveryCost) > 0 && (
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-[#2B0000]/50">Bezorgkosten</span>
+                          <span className="text-[#2B0000]">{formatPrice(o.deliveryCost)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center text-sm font-semibold">
+                        <span className="text-[#2B0000]">Totaal</span>
+                        <span className="text-[#2B0000]">{formatPrice(o.total)}</span>
+                      </div>
+                    </div>
+
+                    {/* Delivery info */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mb-1">Bezorging</h4>
+                        <p className="text-sm text-[#2B0000]">{deliveryLabels[o.deliveryMethod] || o.deliveryMethod}</p>
+                        {o.deliveryDate && <p className="text-sm text-[#2B0000]/60">Datum: {o.deliveryDate}</p>}
+                        {o.deliveryAddress && <p className="text-sm text-[#2B0000]/60">{o.deliveryAddress}</p>}
+                        {(o.deliveryPostalCode || o.deliveryCity) && <p className="text-sm text-[#2B0000]/60">{o.deliveryPostalCode} {o.deliveryCity}</p>}
+                        {o.deliveryRegion && <p className="text-xs text-[#2B0000]/40">Regio: {o.deliveryRegion}</p>}
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mb-1">Klant</h4>
+                        <p className="text-sm text-[#2B0000]">{o.customerName}</p>
+                        <p className="text-sm text-[#2B0000]/60">{o.customerEmail}</p>
+                        {o.customerPhone && <p className="text-sm text-[#2B0000]/60">{o.customerPhone}</p>}
+                      </div>
+                    </div>
+
+                    {/* Notes */}
+                    {o.customerNote && (
+                      <div>
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mb-1">Opmerking klant</h4>
+                        <p className="text-sm text-[#2B0000]/70 bg-[#F2E5D9] rounded-lg p-3 italic">{o.customerNote}</p>
+                      </div>
+                    )}
+
+                    {/* Status + actions */}
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-[#F2E5D9] flex-wrap">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] uppercase tracking-widest text-[#2B0000]/30 font-semibold mr-1">Status:</span>
+                        {['paid', 'preparing', 'shipped', 'delivered'].map((st) => (
+                          <button key={st} onClick={() => updateStatus(o.id, st)}
+                            className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${o.status === st ? 'bg-[#2B0000] text-white' : 'bg-[#F2E5D9] text-[#2B0000]/50 hover:bg-[#E3D4C6] hover:text-[#2B0000]/70'}`}>
+                            {statusConfig[st].label}
+                          </button>
+                        ))}
+                      </div>
+                      <IconBtn onClick={() => deleteOrder(o.id)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -528,4 +597,13 @@ function formatPrice(val: any): string {
   const n = Number(val);
   if (isNaN(n)) return '€ 0,00';
   return `€ ${n.toFixed(2).replace('.', ',')}`;
+}
+
+function parseItems(items: any): any[] {
+  if (!items) return [];
+  if (typeof items === 'string') {
+    try { return JSON.parse(items); } catch { return []; }
+  }
+  if (Array.isArray(items)) return items;
+  return [];
 }
