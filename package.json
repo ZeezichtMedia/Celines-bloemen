@@ -13,6 +13,7 @@
     "@astrojs/vercel": "^8.2.11",
     "@gsap/react": "^2.1.2",
     "@mollie/api-client": "^4.5.0",
+    "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/vite": "^4.2.1",
     "@vercel/blob": "^2.3.3",
     "@vercel/postgres": "^0.10.0",
