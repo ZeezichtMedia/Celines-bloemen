@@ -221,11 +221,28 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
     showToast(data.synced > 0 ? `${data.synced} bestelling(en) bijgewerkt` : 'Alles is up-to-date');
   };
 
-  const deleteOrder = async (id: number) => {
-    if (!confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')) return;
+  const deletableStatuses = ['delivered', 'cancelled', 'pending'];
+
+  const canDelete = (status: string) => deletableStatuses.includes(status);
+
+  const deleteOrder = async (id: number, status: string) => {
+    if (!canDelete(status)) return;
+    const labels: Record<string, string> = { delivered: 'bezorgde', cancelled: 'geannuleerde', pending: 'onbetaalde' };
+    if (!confirm(`Weet je zeker dat je deze ${labels[status] || ''} bestelling wilt verwijderen? Dit kan niet ongedaan worden.`)) return;
     await fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
     setOrders(orders.filter((o) => o.id !== id));
     showToast('Bestelling verwijderd');
+  };
+
+  const deleteOldOrders = async () => {
+    const old = orders.filter((o) => canDelete(o.status));
+    if (old.length === 0) { showToast('Geen oude bestellingen om te verwijderen'); return; }
+    if (!confirm(`${old.length} oude bestelling${old.length !== 1 ? 'en' : ''} verwijderen?\n\nAlleen bezorgde, geannuleerde en onbetaalde bestellingen worden verwijderd. Actieve bestellingen blijven staan.`)) return;
+    for (const o of old) {
+      await fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: o.id }) });
+    }
+    setOrders(orders.filter((o) => !canDelete(o.status)));
+    showToast(`${old.length} bestelling${old.length !== 1 ? 'en' : ''} verwijderd`);
   };
 
   const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
@@ -246,11 +263,19 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
           <h2 style={SERIF} className="text-3xl text-[#2B0000]">Bestellingen</h2>
           <p className="text-[#2B0000]/40 text-sm mt-1">{orders.length} bestelling{orders.length !== 1 ? 'en' : ''}</p>
         </div>
-        <button onClick={syncAll} disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#E3D4C6] text-[#2B0000]/70 text-xs tracking-wider uppercase rounded-xl hover:bg-[#F2E5D9] transition-colors disabled:opacity-50">
-          {syncing ? <span className="w-4 h-4 border-2 border-[#a06d69] border-t-transparent rounded-full animate-spin" /> : Icon.repeat}
-          {syncing ? 'Synchroniseren...' : 'Sync met Mollie'}
-        </button>
+        <div className="flex items-center gap-2">
+          {orders.some((o) => canDelete(o.status)) && (
+            <button onClick={deleteOldOrders}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-500 text-xs tracking-wider uppercase rounded-xl hover:bg-red-50 transition-colors">
+              {Icon.trash} Opschonen
+            </button>
+          )}
+          <button onClick={syncAll} disabled={syncing}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#E3D4C6] text-[#2B0000]/70 text-xs tracking-wider uppercase rounded-xl hover:bg-[#F2E5D9] transition-colors disabled:opacity-50">
+            {syncing ? <span className="w-4 h-4 border-2 border-[#a06d69] border-t-transparent rounded-full animate-spin" /> : Icon.repeat}
+            {syncing ? 'Synchroniseren...' : 'Sync met Mollie'}
+          </button>
+        </div>
       </div>
       {orders.length === 0 ? (
         <EmptyState icon={Icon.orders} text="Nog geen bestellingen" />
@@ -352,7 +377,11 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
                           </button>
                         ))}
                       </div>
-                      <IconBtn onClick={() => deleteOrder(o.id)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
+                      {canDelete(o.status) ? (
+                        <IconBtn onClick={() => deleteOrder(o.id, o.status)} title="Verwijderen" className="text-[#2B0000]/20 hover:text-red-500">{Icon.trash}</IconBtn>
+                      ) : (
+                        <span className="p-2 text-[#2B0000]/10 cursor-not-allowed" title="Actieve bestellingen kunnen niet verwijderd worden">{Icon.trash}</span>
+                      )}
                     </div>
                   </div>
                 )}
