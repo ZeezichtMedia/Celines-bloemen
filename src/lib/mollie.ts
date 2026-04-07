@@ -135,6 +135,9 @@ export function formatPrice(cents: number): string {
 }
 
 export function priceToAmount(priceStr: string): string {
-  // "€ 29,95" -> "29.95"
-  return priceStr.replace('€', '').replace(',', '.').trim();
+  // "€ 29,95" -> "29.95", ensures 2 decimal places for Mollie
+  const cleaned = priceStr.replace('€', '').replace(',', '.').trim();
+  const num = parseFloat(cleaned);
+  if (isNaN(num)) return '0.00';
+  return num.toFixed(2);
 }

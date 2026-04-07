@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, schema } from '../../lib/db';
 import { createPayment, priceToAmount } from '../../lib/mollie';
+import { eq } from 'drizzle-orm';
 
 export const prerender = false;
 
@@ -25,6 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
     } = body;
 
     const orderNumber = generateOrderNumber();
+    const totalAmount = priceToAmount(total);
 
     // Insert order
     const [order] = await db.insert(schema.orders).values({
@@ -39,10 +41,10 @@ export const POST: APIRoute = async ({ request }) => {
       deliveryCity: delivery.city || null,
       deliveryPostalCode: delivery.postalCode || null,
       deliveryRegion: delivery.region || null,
-      deliveryCost: delivery.cost || '0',
+      deliveryCost: priceToAmount(delivery.cost || '€ 0,00'),
       items: JSON.stringify(items),
       subtotal: priceToAmount(subtotal),
-      total: priceToAmount(total),
+      total: totalAmount,
       customerNote: customer.note || null,
     }).returning();
 
@@ -50,14 +52,14 @@ export const POST: APIRoute = async ({ request }) => {
     const payment = await createPayment({
       orderId: order.id,
       orderNumber,
-      amount: priceToAmount(total),
+      amount: totalAmount,
       description: `Bestelling ${orderNumber} — Celine's Bloemen`,
     });
 
     // Store payment ID
     await db.update(schema.orders)
       .set({ molliePaymentId: payment.id })
-      .where(schema.orders.id.equals(order.id));
+      .where(eq(schema.orders.id, order.id));
 
     return new Response(JSON.stringify({
       orderNumber,
@@ -65,9 +67,12 @@ export const POST: APIRoute = async ({ request }) => {
     }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) {
-    console.error('Checkout error:', err);
-    return new Response(JSON.stringify({ error: 'Er ging iets mis bij het afrekenen' }), {
+  } catch (err: any) {
+    console.error('Checkout error:', err?.message || err);
+    return new Response(JSON.stringify({
+      error: 'Er ging iets mis bij het afrekenen',
+      detail: err?.message || 'Onbekende fout',
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
