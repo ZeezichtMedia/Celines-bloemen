@@ -1,0 +1,47 @@
+---
+---
+
+<button
+  id="scroll-to-top"
+  class="fixed bottom-6 left-6 z-[80] w-12 h-12 bg-forest/80 text-white rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm opacity-0 translate-y-4 pointer-events-none transition-all duration-300 hover:bg-sage-500 hover:scale-110"
+  aria-label="Terug naar boven"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  const initScrollToTop = () => {
+    const btn = document.getElementById('scroll-to-top');
+    if (!btn) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const prev = (btn as any).__scrollCleanup;
+    if (prev) prev();
+    (btn as any).__scrollCleanup = () => controller.abort();
+
+    const toggleVisibility = () => {
+      if (window.scrollY > 400) {
+        btn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        btn.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        btn.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        btn.classList.remove('opacity-100', 'translate-y-0');
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true, signal });
+
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, { signal });
+
+    // Check initial state
+    toggleVisibility();
+  };
+
+  initScrollToTop();
+  document.addEventListener('astro:page-load', initScrollToTop);
+</script>

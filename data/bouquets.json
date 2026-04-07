@@ -1,0 +1,50 @@
+[
+  {
+    "id": "vrolijk-veld",
+    "name": "Vrolijk Veld",
+    "color": "Geel / Blauw / Oranje",
+    "description": "Een energieke mix van zonnebloemen en veldbloemen. Haal de zomer in huis met deze kleurrijke explosie.",
+    "image": "/images/bestellen/vrolijk-veld.png",
+    "priceSmall": "€ 22,50",
+    "priceMid": "€ 29,95",
+    "priceLarge": "€ 39,95",
+    "available": true,
+    "sortOrder": 0
+  },
+  {
+    "id": "zacht-pastel",
+    "name": "Zacht Pastel",
+    "color": "Roze / Beige / Wit",
+    "description": "Dromerige pastelkleuren voor een romantisch gevoel. Met weelderige pioenrozen en zachte ranonkels.",
+    "image": "/images/bestellen/zacht-pastel.png",
+    "priceSmall": "€ 24,95",
+    "priceMid": "€ 34,95",
+    "priceLarge": "€ 44,95",
+    "available": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "puur-wit",
+    "name": "Puur Wit",
+    "color": "Wit / Groen",
+    "description": "Tijdloze elegantie en rust. Een minimalistisch boeket met witte lelies en diepgroen blad.",
+    "image": "/images/bestellen/puur-wit.png",
+    "priceSmall": "€ 22,50",
+    "priceMid": "€ 29,95",
+    "priceLarge": "€ 39,95",
+    "available": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "warm-terracotta",
+    "name": "Warm Terracotta",
+    "color": "Oranje / Bruin",
+    "description": "Gezelligheid en warmte. Een robuust boeket met herfstkleuren, dahlia's en gedroogde grassen.",
+    "image": "/images/bestellen/warm-terracotta.png",
+    "priceSmall": "€ 19,95",
+    "priceMid": "€ 27,95",
+    "priceLarge": "€ 37,95",
+    "available": true,
+    "sortOrder": 3
+  }
+]

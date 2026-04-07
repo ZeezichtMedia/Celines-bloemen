@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CheckoutForm from '../components/shop/CheckoutForm';
+---
+
+<Layout title="Afrekenen - Celine's bloemen" description="Rond je bestelling af en betaal veilig met iDEAL.">
+  <section class="pt-32 pb-8 md:pt-36 md:pb-12 bg-sand-600 px-4 md:px-6">
+    <div class="max-w-4xl mx-auto text-center space-y-3">
+      <h1 class="font-serif text-4xl md:text-5xl text-forest leading-tight">Afrekenen</h1>
+      <p class="font-sans text-base text-forest/60 font-light">Vul je gegevens in en betaal veilig met iDEAL</p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-16 bg-sand-500 px-4 md:px-6">
+    <CheckoutForm client:load />
+  </section>
+</Layout>

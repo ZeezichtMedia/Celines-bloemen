@@ -1,4 +1,6 @@
 ---
+import CartWidget from '../shop/CartWidget';
+
 const links = [
   { name: 'Winkel', url: '/winkel' },
   { name: 'Boeket Bestellen', url: '/bestellen' },
@@ -12,70 +14,75 @@ const currentPath = Astro.url.pathname;
 
 <header class="w-full bg-sand-500/90 backdrop-blur-md sticky top-0 z-50 border-b border-sand-600 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-    
+
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-4 group">
-      <div class="w-20 md:w-28 h-auto flex-shrink-0">
-        <img 
-          src="/images/logo/logo-transparent.png" 
-          alt="Celine's Bloemen Logo" 
+    <a href="/" class="flex items-center gap-3 lg:gap-4 group">
+      <div class="w-16 sm:w-20 lg:w-28 h-auto flex-shrink-0">
+        <img
+          src="/images/logo/logo-transparent.png"
+          alt="Celine's Bloemen Logo"
           class="w-full h-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
         />
       </div>
       <div class="flex flex-col">
-        <span class="font-serif text-2xl md:text-3xl font-medium tracking-wide text-forest group-hover:text-sage-600 transition-colors duration-300 leading-tight">Celine's Bloemen</span>
-        <span class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-sage-500">Puur Natuur Bloemwerk</span>
+        <span class="font-serif text-xl sm:text-2xl lg:text-3xl font-medium tracking-wide text-forest group-hover:text-sage-600 transition-colors duration-300 leading-tight">Celine's Bloemen</span>
+        <span class="text-[10px] lg:text-xs uppercase tracking-[0.2em] text-sage-500">Puur Natuur Bloemwerk</span>
       </div>
     </a>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-8">
+    <nav class="hidden lg:flex items-center gap-4 xl:gap-6" aria-label="Hoofdnavigatie">
       {links.map((link) => (
-        <a 
-          href={link.url} 
-          class={`text-sm tracking-widest uppercase transition-colors duration-300 font-medium ${
-            currentPath === link.url 
-              ? 'text-sage-600 border-b-2 border-sage-500 pb-1' 
+        <a
+          href={link.url}
+          class={`text-xs xl:text-sm tracking-wider xl:tracking-widest uppercase transition-colors duration-300 font-medium whitespace-nowrap ${
+            currentPath === link.url
+              ? 'text-sage-600 border-b-2 border-sage-500 pb-1'
               : 'text-forest/80 hover:text-sage-600'
           }`}
+          aria-current={currentPath === link.url ? 'page' : undefined}
         >
           {link.name}
         </a>
       ))}
-      <a href="/contact" class="px-6 py-2.5 bg-sage-500 text-white text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm">
+      <a href="/contact" class="px-4 xl:px-6 py-2.5 bg-sage-500 text-white text-xs xl:text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm whitespace-nowrap">
         Contact
       </a>
     </nav>
 
-    <!-- Mobile Menu Button -->
-    <button id="mobile-menu-button" class="md:hidden relative z-[60] flex flex-col justify-center items-center w-12 h-12 group bg-forest/5 rounded-full outline-none transform active:scale-95 transition-transform" aria-label="Toggle menu">
-      <div class="w-6 h-px bg-forest mb-1.5 transition-all duration-300 origin-center menu-line-1"></div>
-      <div class="w-6 h-px bg-forest transition-all duration-300 origin-center menu-line-2"></div>
-    </button>
+    <!-- Cart + Mobile Menu (always visible) -->
+    <div class="flex items-center gap-2">
+      <CartWidget client:load />
+      <button id="mobile-menu-button" class="lg:hidden relative z-[60] flex flex-col justify-center items-center w-12 h-12 group bg-forest/5 rounded-full outline-none transform active:scale-95 transition-transform" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
+        <div class="w-6 h-px bg-forest mb-1.5 transition-all duration-300 origin-center menu-line-1"></div>
+        <div class="w-6 h-px bg-forest transition-all duration-300 origin-center menu-line-2"></div>
+      </button>
+    </div>
   </div>
 </header>
 
-<!-- Mobile Menu Overlay — buiten de header zodat fixed positioning goed werkt -->
-<div id="mobile-menu" class="fixed inset-0 bg-sand-500 z-[70] flex flex-col items-center justify-center translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 bg-sand-500 z-[70] flex flex-col items-center justify-center translate-x-full transition-transform duration-500 ease-in-out lg:hidden" role="dialog" aria-modal="true" aria-label="Navigatiemenu">
   <!-- Close Button -->
-  <button id="mobile-menu-close" class="absolute top-6 right-6 z-20 flex flex-col justify-center items-center w-12 h-12 bg-forest/5 rounded-full" aria-label="Sluit menu">
+  <button id="mobile-menu-close" class="absolute top-6 right-6 z-20 flex flex-col justify-center items-center w-12 h-12 bg-forest/5 rounded-full" aria-label="Menu sluiten">
     <div class="w-6 h-px bg-forest rotate-45 translate-y-px transition-all duration-300"></div>
     <div class="w-6 h-px bg-forest -rotate-45 -translate-y-px transition-all duration-300"></div>
   </button>
 
-  <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+  <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden" aria-hidden="true">
       <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <circle cx="10" cy="90" r="40" fill="var(--color-sage-500)" />
       </svg>
   </div>
-  
-  <nav class="flex flex-col items-center gap-6 sm:gap-10 relative z-10 px-6 text-center">
+
+  <nav class="flex flex-col items-center gap-6 sm:gap-10 relative z-10 px-6 text-center" aria-label="Mobiele navigatie">
     {links.map((link) => (
-      <a 
-        href={link.url} 
+      <a
+        href={link.url}
         class={`font-serif text-3xl sm:text-4xl tracking-tight transition-all duration-500 ${
           currentPath === link.url ? 'text-sage-600 italic translate-x-1 sm:translate-x-2' : 'text-forest hover:text-sage-600'
         }`}
+        aria-current={currentPath === link.url ? 'page' : undefined}
       >
         {link.name}
       </a>
@@ -86,50 +93,75 @@ const currentPath = Astro.url.pathname;
   </nav>
 
   <!-- Decorative Bottom Quote -->
-  <div class="absolute bottom-12 left-0 w-full text-center px-6">
-      <p class="font-serif italic text-forest/30 text-lg italic">Puur natuur bloemwerk</p>
+  <div class="absolute bottom-12 left-0 w-full text-center px-6" aria-hidden="true">
+      <p class="font-serif italic text-forest/30 text-lg">Puur natuur bloemwerk</p>
   </div>
 </div>
 
 <script>
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenuClose = document.getElementById('mobile-menu-close');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const line1 = mobileMenuButton?.querySelector('.menu-line-1');
-  const line2 = mobileMenuButton?.querySelector('.menu-line-2');
+  const initHeader = () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const line1 = mobileMenuButton?.querySelector('.menu-line-1');
+    const line2 = mobileMenuButton?.querySelector('.menu-line-2');
 
-  let isMenuOpen = false;
+    if (!mobileMenuButton || !mobileMenu) return;
 
-  const toggleMenu = () => {
-    isMenuOpen = !isMenuOpen;
-    
-    if (isMenuOpen) {
-      mobileMenu?.classList.remove('translate-x-full');
-      mobileMenu?.classList.add('translate-x-0');
-      
+    // Abort previous listeners if re-initialized (page transitions)
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    // Store cleanup reference on the element
+    const prev = (mobileMenuButton as any).__headerCleanup;
+    if (prev) prev();
+    (mobileMenuButton as any).__headerCleanup = () => controller.abort();
+
+    let isMenuOpen = false;
+
+    const openMenu = () => {
+      isMenuOpen = true;
+      mobileMenu.classList.remove('translate-x-full');
+      mobileMenu.classList.add('translate-x-0');
       line1?.classList.add('rotate-45', 'translate-y-[4px]');
       line2?.classList.add('-rotate-45', '-translate-y-[4px]');
-      
+      mobileMenuButton.setAttribute('aria-expanded', 'true');
+      mobileMenuButton.setAttribute('aria-label', 'Menu sluiten');
       document.body.style.overflow = 'hidden';
-    } else {
-      mobileMenu?.classList.remove('translate-x-0');
-      mobileMenu?.classList.add('translate-x-full');
-      
+    };
+
+    const closeMenu = () => {
+      isMenuOpen = false;
+      mobileMenu.classList.remove('translate-x-0');
+      mobileMenu.classList.add('translate-x-full');
       line1?.classList.remove('rotate-45', 'translate-y-[4px]');
       line2?.classList.remove('-rotate-45', '-translate-y-[4px]');
-      
+      mobileMenuButton.setAttribute('aria-expanded', 'false');
+      mobileMenuButton.setAttribute('aria-label', 'Menu openen');
       document.body.style.overflow = '';
-    }
+    };
+
+    const toggleMenu = () => {
+      if (isMenuOpen) closeMenu();
+      else openMenu();
+    };
+
+    mobileMenuButton.addEventListener('click', toggleMenu, { signal });
+    mobileMenuClose?.addEventListener('click', closeMenu, { signal });
+
+    // Close on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (isMenuOpen) closeMenu();
+      }, { signal });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMenuOpen) closeMenu();
+    }, { signal });
   };
 
-  mobileMenuButton?.addEventListener('click', toggleMenu);
-  mobileMenuClose?.addEventListener('click', toggleMenu);
-
-  // Close menu on link click
-  const mobileLinks = mobileMenu?.querySelectorAll('a');
-  mobileLinks?.forEach(link => {
-    link.addEventListener('click', () => {
-      if(isMenuOpen) toggleMenu();
-    });
-  });
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
 </script>

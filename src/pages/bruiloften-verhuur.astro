@@ -68,6 +68,12 @@ import { siteConfig } from '../config';
         const form = document.getElementById('brochure-form') as HTMLFormElement;
         if (!form) return;
 
+        const controller = new AbortController();
+        const { signal } = controller;
+        const prev = (form as any).__formCleanup;
+        if (prev) prev();
+        (form as any).__formCleanup = () => controller.abort();
+
         form.addEventListener('submit', (e) => {
           e.preventDefault();
           const name = (document.getElementById('brochure-name') as HTMLInputElement).value;
@@ -77,16 +83,16 @@ import { siteConfig } from '../config';
           const notes = (document.getElementById('brochure-notes') as HTMLTextAreaElement).value;
 
           const waNumber = form.dataset.whatsapp || '31612345678';
-          let msg = `Hi Celine! Wij willen graag de trouwbrochure aanvragen.%0A%0A`;
-          msg += `Namen: ${name}%0A`;
-          if (date) msg += `Trouwdatum: ${date}%0A`;
-          if (location) msg += `Locatie: ${location}%0A`;
-          msg += `Contact: ${contact}%0A`;
-          if (notes) msg += `Opmerkingen: ${notes}%0A`;
-          msg += `%0AKunnen jullie de brochure sturen?`;
+          let msg = `Hi Celine! Wij willen graag de trouwbrochure aanvragen.\n\n`;
+          msg += `Namen: ${name}\n`;
+          if (date) msg += `Trouwdatum: ${date}\n`;
+          if (location) msg += `Locatie: ${location}\n`;
+          msg += `Contact: ${contact}\n`;
+          if (notes) msg += `Opmerkingen: ${notes}\n`;
+          msg += `\nKunnen jullie de brochure sturen?`;
 
-          window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-        });
+          window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+        }, { signal });
       };
       initBrochureForm();
       document.addEventListener('astro:page-load', initBrochureForm);
@@ -102,60 +108,60 @@ import { siteConfig } from '../config';
         <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
       </div>
 
-      <div class="relative stagger-reveal">
+      <ol class="relative stagger-reveal list-none p-0 m-0">
         <!-- Vertical line -->
-        <div class="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-sand-600/40"></div>
+        <div class="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-sand-600/40" aria-hidden="true"></div>
 
         <!-- Step 1 -->
-        <div class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
+        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
           <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-16 md:pl-0">
             <h3 class="font-serif text-2xl text-forest mb-2">Brochure aanvragen</h3>
             <p class="font-sans font-light text-forest/70 text-sm md:text-base">Vul het formulier in en ontvang de trouwbrochure met alle mogelijkheden en inspiratie.</p>
           </div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2"></div>
+          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
           <div class="md:w-1/2 md:pl-12 order-3"></div>
-        </div>
+        </li>
 
         <!-- Step 2 -->
-        <div class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
+        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
           <div class="md:w-1/2 md:pr-12 order-2 md:order-1"></div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-terra-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2"></div>
+          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-terra-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
           <div class="md:w-1/2 md:pl-12 md:text-left order-3 pl-16 md:pl-12">
             <h3 class="font-serif text-2xl text-forest mb-2">Datum vastzetten</h3>
             <p class="font-sans font-light text-forest/70 text-sm md:text-base">We reserveren jullie datum zodat ik helemaal beschikbaar ben voor jullie grote dag.</p>
           </div>
-        </div>
+        </li>
 
         <!-- Step 3 -->
-        <div class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
+        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
           <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-16 md:pl-0">
             <h3 class="font-serif text-2xl text-forest mb-2">Inspiratie opdoen</h3>
             <p class="font-sans font-light text-forest/70 text-sm md:text-base">Verzamel Pinterest-borden, foto's en kleuren. Ik denk graag mee over het perfecte floral concept.</p>
           </div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2"></div>
+          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
           <div class="md:w-1/2 md:pl-12 order-3"></div>
-        </div>
+        </li>
 
         <!-- Step 4 -->
-        <div class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
+        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
           <div class="md:w-1/2 md:pr-12 order-2 md:order-1"></div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-terra-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2"></div>
+          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-terra-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
           <div class="md:w-1/2 md:pl-12 md:text-left order-3 pl-16 md:pl-12">
             <h3 class="font-serif text-2xl text-forest mb-2">Kennismakingsgesprek</h3>
             <p class="font-sans font-light text-forest/70 text-sm md:text-base">We zitten samen om tafel, onder het genot van een kopje koffie, om al jullie dromen en wensen te bespreken.</p>
           </div>
-        </div>
+        </li>
 
         <!-- Step 5 -->
-        <div class="relative flex flex-col md:flex-row items-start md:items-center">
+        <li class="relative flex flex-col md:flex-row items-start md:items-center">
           <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-16 md:pl-0">
             <h3 class="font-serif text-2xl text-forest mb-2">Jullie bruiloft!</h3>
             <p class="font-sans font-light text-forest/70 text-sm md:text-base">Ik zorg voor al het bloemwerk en de styling, zodat jullie je volledig kunnen focussen op het genieten.</p>
           </div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-600 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2 ring-4 ring-sage-500/30"></div>
+          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-600 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2 ring-4 ring-sage-500/30" aria-hidden="true"></div>
           <div class="md:w-1/2 md:pl-12 order-3"></div>
-        </div>
-      </div>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -241,12 +247,25 @@ import { siteConfig } from '../config';
     </div>
 
     <script>
-      document.querySelectorAll('.brochure-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          document.querySelector('#brochure-form')?.scrollIntoView({ behavior: 'smooth' });
+      const initBrochureLinks = () => {
+        const links = document.querySelectorAll('.brochure-link');
+        if (!links.length) return;
+
+        const controller = new AbortController();
+        const { signal } = controller;
+        const prev = (links[0] as any).__linkCleanup;
+        if (prev) prev();
+        (links[0] as any).__linkCleanup = () => controller.abort();
+
+        links.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#brochure-form')?.scrollIntoView({ behavior: 'smooth' });
+          }, { signal });
         });
-      });
+      };
+      initBrochureLinks();
+      document.addEventListener('astro:page-load', initBrochureLinks);
     </script>
   </section>
 
@@ -275,7 +294,7 @@ import { siteConfig } from '../config';
       <p class="font-sans font-light text-white/80 text-base md:text-lg leading-relaxed">
         Ieder bloemwerk wordt op maat samengesteld. Vraag de trouwbrochure aan of neem direct contact op voor een vrijblijvend kennismakingsgesprek.
       </p>
-      <a href="#" onclick="document.querySelector('#brochure-form')?.scrollIntoView({behavior:'smooth'}); return false;" class="inline-block px-8 py-4 md:px-10 md:py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-[10px] md:text-xs hover:bg-sand-500 transition-colors shadow-xl">
+      <a href="#brochure-form" class="brochure-link inline-block px-8 py-4 md:px-10 md:py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-[10px] md:text-xs hover:bg-sand-500 transition-colors shadow-xl">
         Brochure aanvragen
       </a>
     </div>

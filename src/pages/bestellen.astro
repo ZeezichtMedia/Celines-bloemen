@@ -2,37 +2,21 @@
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { siteConfig } from '../config';
+import { getVisibleBouquets } from '../lib/data';
 
-const bouquets = [
-  {
-    name: 'Vrolijk Veld',
-    color: 'Geel / Blauw / Oranje',
-    description: 'Een energieke mix van zonnebloemen en veldbloemen. Haal de zomer in huis met deze kleurrijke explosie.',
-    prices: { klein: '€ 22,50', middel: '€ 29,95', groot: '€ 39,95' },
-    image: '/images/bestellen/vrolijk-veld.png'
+const allBouquets = await getVisibleBouquets();
+
+const bouquets = allBouquets.map((b) => ({
+  name: b.name,
+  color: b.color,
+  description: b.description,
+  image: b.image,
+  prices: {
+    klein: b.priceSmall,
+    middel: b.priceMid,
+    groot: b.priceLarge,
   },
-  {
-    name: 'Zacht Pastel',
-    color: 'Roze / Beige / Wit',
-    description: 'Dromerige pastelkleuren voor een romantisch gevoel. Met weelderige pioenrozen en zachte ranonkels.',
-    prices: { klein: '€ 24,95', middel: '€ 34,95', groot: '€ 44,95' },
-    image: '/images/bestellen/zacht-pastel.png'
-  },
-  {
-    name: 'Puur Wit',
-    color: 'Wit / Groen',
-    description: 'Tijdloze elegantie en rust. Een minimalistisch boeket met witte lelies en diepgroen blad.',
-    prices: { klein: '€ 22,50', middel: '€ 29,95', groot: '€ 39,95' },
-    image: '/images/bestellen/puur-wit.png'
-  },
-  {
-    name: 'Warm Terracotta',
-    color: 'Oranje / Bruin',
-    description: "Gezelligheid en warmte. Een robuust boeket met herfstkleuren, dahlia's en gedroogde grassen.",
-    prices: { klein: '€ 19,95', middel: '€ 27,95', groot: '€ 37,95' },
-    image: '/images/bestellen/warm-terracotta.png'
-  }
-];
+}));
 ---
 
 <Layout title="Boeket Bestellen - Celine's bloemen" description="Bestel dagverse, handgebonden boeketten. Lokaal bezorgd in de regio Walcheren.">
@@ -47,58 +31,84 @@ const bouquets = [
         Boeket <span class="italic text-terra-600">Bestellen</span>
       </h1>
       <p class="font-sans text-base md:text-lg text-forest/70 font-light max-w-xl mx-auto stagger-reveal leading-relaxed">
-        Dagvers, handgebonden en lokaal bezorgd op Walcheren. Kies je favoriete boeket en maat.
+        Dagvers, handgebonden en lokaal bezorgd op Walcheren. Kies je favoriete boeket, selecteer een maat en reken veilig af met iDEAL.
       </p>
     </div>
   </section>
 
-  <!-- Boeketten Grid — direct zichtbaar -->
+  <!-- Boeketten Grid -->
   <section id="boeketten" class="py-12 md:py-20 bg-sand-500 px-4 md:px-6">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
 
         {bouquets.map((bouquet) => (
-          <div class="bouquet-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col md:flex-row h-full border border-sand-600/20">
-            <div class="md:w-5/12 aspect-[4/3] md:aspect-auto relative overflow-hidden">
-               <div class="absolute inset-0 bg-forest/5 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
+          <div
+            class="bouquet-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col sm:flex-row h-full border border-sand-600/20"
+            data-name={bouquet.name}
+            data-image={bouquet.image}
+            data-price-klein={bouquet.prices.klein}
+            data-price-middel={bouquet.prices.middel}
+            data-price-groot={bouquet.prices.groot}
+          >
+            <div class="sm:w-5/12 aspect-[4/3] sm:aspect-auto relative overflow-hidden flex-shrink-0">
                <img
                  src={bouquet.image}
-                 alt={bouquet.name}
+                 alt={`Boeket ${bouquet.name} - ${bouquet.color}`}
                  loading="lazy"
                  class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500 ease-out"
                />
             </div>
-            <div class="md:w-7/12 p-6 md:p-8 flex flex-col justify-center">
-              <span class="text-[10px] md:text-xs font-sans tracking-[0.3em] uppercase text-sage-500 mb-2 font-bold">{bouquet.color}</span>
-              <h3 class="font-serif text-2xl md:text-3xl text-forest mb-3">{bouquet.name}</h3>
-              <p class="font-sans font-light text-forest/70 mb-5 leading-relaxed text-sm md:text-base">{bouquet.description}</p>
+            <div class="sm:w-7/12 p-5 sm:p-6 md:p-8 flex flex-col justify-center">
+              <span class="text-[10px] md:text-xs font-sans tracking-[0.3em] uppercase text-sage-500 mb-1.5 font-bold">{bouquet.color}</span>
+              <h3 class="font-serif text-2xl md:text-3xl text-forest mb-2">{bouquet.name}</h3>
+              <p class="font-sans font-light text-forest/70 mb-4 leading-relaxed text-sm md:text-base">{bouquet.description}</p>
 
-              <!-- Size options -->
-              <div class="grid grid-cols-3 gap-2 mb-5">
-                <div class="text-center p-2 bg-sand-500/50 rounded-lg border border-sand-600/30">
-                  <span class="block text-[10px] uppercase tracking-widest text-forest/50 font-bold mb-1">Klein</span>
-                  <span class="block font-serif text-sm text-sage-600 font-medium">{bouquet.prices.klein}</span>
+              <!-- Interactive Size Selection -->
+              <fieldset class="mb-4">
+                <legend class="sr-only">Kies een maat voor {bouquet.name}</legend>
+                <div class="grid grid-cols-3 gap-1.5" role="radiogroup">
+                  <button
+                    type="button"
+                    class="size-btn text-center py-2 px-1.5 rounded-lg border transition-all duration-200 cursor-pointer bg-sand-500/50 border-sand-600/30 hover:border-sage-500"
+                    data-size="klein"
+                    data-price={bouquet.prices.klein}
+                    aria-label={`Klein - ${bouquet.prices.klein}`}
+                  >
+                    <span class="block font-sans text-[10px] uppercase tracking-widest text-forest/50 font-bold">Klein</span>
+                    <span class="block font-sans text-xs text-sage-600 font-semibold mt-0.5">{bouquet.prices.klein}</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="size-btn text-center py-2 px-1.5 rounded-lg border transition-all duration-200 cursor-pointer bg-forest text-white border-forest"
+                    data-size="middel"
+                    data-price={bouquet.prices.middel}
+                    aria-label={`Middel - ${bouquet.prices.middel}`}
+                    aria-pressed="true"
+                  >
+                    <span class="block font-sans text-[10px] uppercase tracking-widest font-bold text-white/60">Middel</span>
+                    <span class="block font-sans text-xs font-semibold text-white mt-0.5">{bouquet.prices.middel}</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="size-btn text-center py-2 px-1.5 rounded-lg border transition-all duration-200 cursor-pointer bg-sand-500/50 border-sand-600/30 hover:border-sage-500"
+                    data-size="groot"
+                    data-price={bouquet.prices.groot}
+                    aria-label={`Groot - ${bouquet.prices.groot}`}
+                  >
+                    <span class="block font-sans text-[10px] uppercase tracking-widest text-forest/50 font-bold">Groot</span>
+                    <span class="block font-sans text-xs text-sage-600 font-semibold mt-0.5">{bouquet.prices.groot}</span>
+                  </button>
                 </div>
-                <div class="text-center p-2 bg-forest/5 rounded-lg border border-forest/20">
-                  <span class="block text-[10px] uppercase tracking-widest text-forest/50 font-bold mb-1">Middel</span>
-                  <span class="block font-serif text-sm text-sage-600 font-medium">{bouquet.prices.middel}</span>
-                </div>
-                <div class="text-center p-2 bg-sand-500/50 rounded-lg border border-sand-600/30">
-                  <span class="block text-[10px] uppercase tracking-widest text-forest/50 font-bold mb-1">Groot</span>
-                  <span class="block font-serif text-sm text-sage-600 font-medium">{bouquet.prices.groot}</span>
-                </div>
-              </div>
+              </fieldset>
 
               <button
-                class="order-btn group/btn w-full px-6 py-4 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full flex items-center justify-center gap-3"
-                data-cursor="hover"
-                data-name={bouquet.name}
-                data-price-klein={bouquet.prices.klein}
-                data-price-middel={bouquet.prices.middel}
-                data-price-groot={bouquet.prices.groot}
+                type="button"
+                class="add-to-cart-btn group/btn w-full px-6 py-3.5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full flex items-center justify-center gap-3"
+                aria-label={`Voeg ${bouquet.name} toe aan winkelwagen`}
               >
-                <span class="relative z-10">Bestellen</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transform group-hover/btn:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span>In winkelwagen</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover/btn:translate-x-1 transition-transform" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </button>
             </div>
           </div>
@@ -119,28 +129,28 @@ const bouquets = [
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-reveal">
         <div class="text-center space-y-3">
           <div class="w-14 h-14 bg-sand-500 rounded-full flex items-center justify-center mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600"><path d="M12 2v6m0 12v-6m-6-6H2m20 0h-4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600" aria-hidden="true"><path d="M12 2v6m0 12v-6m-6-6H2m20 0h-4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
           </div>
           <h3 class="font-serif text-xl text-forest">Snijd de stelen</h3>
           <p class="font-sans text-sm text-forest/70 font-light leading-relaxed">Snijd de stelen schuin af (circa 2 cm) voordat je ze in de vaas zet. Herhaal dit om de twee dagen.</p>
         </div>
         <div class="text-center space-y-3">
           <div class="w-14 h-14 bg-sand-500 rounded-full flex items-center justify-center mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12h8m-4-4v8"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600" aria-hidden="true"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12h8m-4-4v8"/></svg>
           </div>
           <h3 class="font-serif text-xl text-forest">Vers water</h3>
           <p class="font-sans text-sm text-forest/70 font-light leading-relaxed">Ververs het water elke twee dagen. Schoon water voorkomt bacteriegroei en houdt bloemen fris.</p>
         </div>
         <div class="text-center space-y-3">
           <div class="w-14 h-14 bg-sand-500 rounded-full flex items-center justify-center mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </div>
           <h3 class="font-serif text-xl text-forest">Geen direct zonlicht</h3>
           <p class="font-sans text-sm text-forest/70 font-light leading-relaxed">Zet je boeket op een plek zonder direct zonlicht of tocht. Dat verlengt de bloei aanzienlijk.</p>
         </div>
         <div class="text-center space-y-3">
           <div class="w-14 h-14 bg-sand-500 rounded-full flex items-center justify-center mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sage-600" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
           </div>
           <h3 class="font-serif text-xl text-forest">Verwijder blad</h3>
           <p class="font-sans text-sm text-forest/70 font-light leading-relaxed">Verwijder bladeren die onder water staan. Zo blijft het water schoner en genieten je bloemen langer.</p>
@@ -159,269 +169,109 @@ const bouquets = [
     </div>
   </section>
 
-  <!-- Order Modal -->
-  <div id="order-modal" class="fixed inset-0 z-[100] flex px-4 py-8 sm:py-12 overflow-y-auto pointer-events-none opacity-0 transition-opacity duration-300">
-    <div class="fixed inset-0 bg-forest/60 backdrop-blur-sm modal-backdrop z-0 cursor-pointer"></div>
-
-    <div class="bg-white w-full max-w-lg m-auto rounded-[2rem] shadow-2xl relative z-10 p-6 sm:p-10 transform scale-95 opacity-0 transition-all duration-300 modal-content max-h-[90vh] overflow-y-auto">
-
-      <button class="absolute top-5 right-5 text-forest/30 hover:text-forest transition-colors modal-close bg-transparent border-none outline-none cursor-pointer z-20">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-
-      <div class="mb-8 text-center pt-2 gap-2 flex flex-col items-center">
-        <span class="text-[10px] font-sans tracking-[0.2em] uppercase text-sage-500 font-bold block mb-1">Bestelling</span>
-        <h2 class="font-serif text-3xl sm:text-4xl text-forest block tracking-tight leading-none mb-0 pb-0">Jouw <span id="modal-bouquet-name" class="italic"></span></h2>
-      </div>
-
-      <form id="order-form" class="space-y-8" data-whatsapp={siteConfig.whatsappNumber}>
-        <input type="hidden" id="bouquet-name-val" value="">
-
-        <!-- Size Selection -->
-        <div class="space-y-4">
-          <label class="font-sans text-xs tracking-widest uppercase text-forest/50 font-bold block">Maat</label>
-          <div class="grid grid-cols-3 gap-3">
-            <label class="cursor-pointer block">
-              <input type="radio" name="bouquet_size" value="klein" class="peer sr-only">
-              <div class="border border-sand-600/50 bg-white rounded-xl p-3 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all shadow-sm">
-                <span class="block font-serif text-base mb-0.5 leading-tight">Klein</span>
-                <span id="price-klein" class="block text-xs peer-checked:text-white/70 text-forest/50 font-medium"></span>
-              </div>
-            </label>
-            <label class="cursor-pointer block">
-              <input type="radio" name="bouquet_size" value="middel" class="peer sr-only" checked>
-              <div class="border border-sand-600/50 bg-white rounded-xl p-3 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all shadow-sm">
-                <span class="block font-serif text-base mb-0.5 leading-tight">Middel</span>
-                <span id="price-middel" class="block text-xs peer-checked:text-white/70 text-forest/50 font-medium"></span>
-              </div>
-            </label>
-            <label class="cursor-pointer block">
-              <input type="radio" name="bouquet_size" value="groot" class="peer sr-only">
-              <div class="border border-sand-600/50 bg-white rounded-xl p-3 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all shadow-sm">
-                <span class="block font-serif text-base mb-0.5 leading-tight">Groot</span>
-                <span id="price-groot" class="block text-xs peer-checked:text-white/70 text-forest/50 font-medium"></span>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Delivery Method -->
-        <div class="space-y-4">
-          <label class="font-sans text-xs tracking-widest uppercase text-forest/50 font-bold block">Afleveren / Ophalen</label>
-          <div class="grid grid-cols-2 gap-4">
-            <label class="cursor-pointer group h-full block">
-              <input type="radio" name="delivery_method" value="pickup" class="peer sr-only" checked>
-              <div class="h-full border border-sand-600/50 bg-white rounded-xl p-4 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all shadow-sm">
-                <span class="block font-serif text-lg mb-1 leading-tight">Ophalen</span>
-                <span class="block text-[10px] uppercase tracking-widest peer-checked:text-white/60 text-forest/40">In Arnemuiden</span>
-              </div>
-            </label>
-            <label class="cursor-pointer group h-full block">
-              <input type="radio" name="delivery_method" value="delivery" class="peer sr-only">
-              <div class="h-full border border-sand-600/50 bg-white rounded-xl p-4 text-center peer-checked:bg-forest peer-checked:text-white peer-checked:border-forest transition-all shadow-sm">
-                <span class="block font-serif text-lg mb-1 leading-tight">Bezorgen</span>
-                <span class="block text-[10px] uppercase tracking-widest peer-checked:text-white/60 text-forest/40">Vanaf €3</span>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Delivery Details -->
-        <div id="delivery-details" class="hidden space-y-6 animate-fade-in pt-6 mt-6 border-t border-sand-600/30">
-          <div class="space-y-3">
-            <label class="font-sans text-xs tracking-widest uppercase text-forest/50 font-bold block">Regio</label>
-            <select id="delivery-region" class="w-full bg-white border border-sand-600/50 rounded-lg p-3 text-forest text-sm font-sans focus:outline-none focus:border-forest transition-all appearance-none cursor-pointer shadow-sm">
-              <option value="3.00">Arnemuiden (+ € 3,00)</option>
-              <option value="5.00">Middelburg (+ € 5,00)</option>
-              <option value="8.00">Walcheren of Z-Beveland (+ € 8,00)</option>
-            </select>
-          </div>
-          <div class="space-y-3">
-            <label class="font-sans text-xs tracking-widest uppercase text-forest/50 font-bold block">Adres</label>
-            <input type="text" id="straat" class="w-full bg-white border border-sand-600/50 rounded-lg p-3 text-forest text-sm focus:outline-none focus:border-forest transition-all placeholder:text-forest/30 shadow-sm" placeholder="Straat + Huisnummer">
-            <input type="text" id="plaats" class="w-full bg-white border border-sand-600/50 rounded-lg p-3 text-forest text-sm focus:outline-none focus:border-forest transition-all placeholder:text-forest/30 shadow-sm" placeholder="Woonplaats">
-          </div>
-        </div>
-
-        <!-- Payment -->
-        <div class="space-y-4 pt-6 mt-6 border-t border-sand-600/30">
-          <label class="font-sans text-xs tracking-widest uppercase text-forest/50 font-bold block">Betaling</label>
-          <div id="payment-options" class="grid grid-cols-1 gap-2"></div>
-        </div>
-
-        <!-- Total & Submit -->
-        <div class="pt-10 border-t-2 border-sand-600/30 flex flex-col items-center gap-8">
-          <div class="text-center">
-            <span class="block font-sans text-xs text-forest/40 uppercase tracking-[0.2em] mb-2 font-bold">Totaalbedrag</span>
-            <span id="total-price" class="font-serif text-5xl text-forest">€ 0,00</span>
-          </div>
-          <button type="submit" class="w-full h-20 bg-sage-600 text-white font-sans tracking-[0.2em] uppercase text-sm hover:bg-forest transition-all duration-500 rounded-2xl shadow-xl hover:shadow-2xl flex items-center justify-center gap-4 group">
-            <span class="group-hover:translate-x-1 transition-transform">Verstuur via WhatsApp</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform scale-125"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          </button>
-          <p class="text-center text-xs text-forest/40 font-light max-w-sm">Je aanvraag wordt direct doorgezet via WhatsApp. Je ontvangt daarna een bevestiging.</p>
-        </div>
-      </form>
-    </div>
+  <!-- Toast notification -->
+  <div id="cart-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-forest text-white px-6 py-3 rounded-xl shadow-xl font-sans text-sm z-[100] opacity-0 translate-y-4 pointer-events-none transition-all duration-300 flex items-center gap-3">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="cart-toast-text">Toegevoegd aan winkelwagen</span>
   </div>
 
   <CtaSection />
 
   <script>
-    const initOrderModal = () => {
-      const modal = document.getElementById('order-modal');
-      if (!modal) return;
+    import { addToCart } from '../lib/cart';
 
-      const modalBackdrop = modal.querySelector('.modal-backdrop');
-      const modalContent = modal.querySelector('.modal-content');
-      const closeBtns = modal.querySelectorAll('.modal-close');
-      const orderBtns = document.querySelectorAll('.order-btn');
-      const form = document.getElementById('order-form') as HTMLFormElement;
+    const initBestellen = () => {
+      const controller = new AbortController();
+      const { signal } = controller;
 
-      const deliveryRadios = document.querySelectorAll('input[name="delivery_method"]');
-      const sizeRadios = document.querySelectorAll('input[name="bouquet_size"]');
-      const deliveryDetails = document.getElementById('delivery-details');
-      const regionSelect = document.getElementById('delivery-region') as HTMLSelectElement;
-      const paymentOptionsContainer = document.getElementById('payment-options');
+      // Cleanup previous listeners
+      const marker = document.getElementById('boeketten');
+      if (!marker) return;
+      const prev = (marker as any).__bestelCleanup;
+      if (prev) prev();
+      (marker as any).__bestelCleanup = () => controller.abort();
 
-      const nameValInput = document.getElementById('bouquet-name-val') as HTMLInputElement;
-      const modalNameSpan = document.getElementById('modal-bouquet-name');
-      const totalPriceSpan = document.getElementById('total-price');
-
-      const priceKleinSpan = document.getElementById('price-klein');
-      const priceMiddelSpan = document.getElementById('price-middel');
-      const priceGrootSpan = document.getElementById('price-groot');
-
-      let currentPrices = { klein: 0, middel: 0, groot: 0 };
-
-      const pickupPayments = [
-        {val: 'pin_winkel', text: 'Pinnen in de winkel'},
-        {val: 'contant_winkel', text: 'Contant in de winkel'}
-      ];
-
-      const deliveryPayments = [
-        {val: 'pin_deur', text: 'Mobiel pinnen aan de deur'},
-        {val: 'contant_deur', text: 'Contant aan de deur'},
-        {val: 'tikkie_vooraf', text: 'Tikkie via WhatsApp (Vooraf)'}
-      ];
-
-      const parsePrice = (str: string) => parseFloat(str.replace('€', '').replace(',', '.').trim());
-
-      const openModal = (btn: HTMLElement) => {
-        const name = btn.dataset.name || '';
-        const pK = btn.dataset.priceKlein || '€ 0';
-        const pM = btn.dataset.priceMiddel || '€ 0';
-        const pG = btn.dataset.priceGroot || '€ 0';
-
-        currentPrices = { klein: parsePrice(pK), middel: parsePrice(pM), groot: parsePrice(pG) };
-        nameValInput.value = name;
-        if (modalNameSpan) modalNameSpan.textContent = name;
-        if (priceKleinSpan) priceKleinSpan.textContent = pK;
-        if (priceMiddelSpan) priceMiddelSpan.textContent = pM;
-        if (priceGrootSpan) priceGrootSpan.textContent = pG;
-
-        // Reset to middel
-        const middelRadio = document.querySelector('input[name="bouquet_size"][value="middel"]') as HTMLInputElement;
-        if (middelRadio) middelRadio.checked = true;
-
-        updateTotalAndPayments();
-
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        setTimeout(() => {
-          modalContent?.classList.remove('scale-95', 'opacity-0');
-          modalContent?.classList.add('scale-100', 'opacity-100');
-        }, 10);
-        document.body.style.overflow = 'hidden';
-      };
-
-      const closeModal = () => {
-        modalContent?.classList.remove('scale-100', 'opacity-100');
-        modalContent?.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-          modal.classList.add('opacity-0', 'pointer-events-none');
-          document.body.style.overflow = '';
-        }, 300);
-      };
-
-      const updateTotalAndPayments = () => {
-        const methodEl = document.querySelector('input[name="delivery_method"]:checked') as HTMLInputElement;
-        const sizeEl = document.querySelector('input[name="bouquet_size"]:checked') as HTMLInputElement;
-        const isDelivery = methodEl?.value === 'delivery';
-        const size = (sizeEl?.value || 'middel') as keyof typeof currentPrices;
-
-        if (isDelivery) {
-          deliveryDetails?.classList.remove('hidden');
+      // --- Card size buttons ---
+      const setCardSizeActive = (btn: HTMLElement, active: boolean) => {
+        const spans = btn.querySelectorAll('span');
+        if (active) {
+          btn.classList.remove('bg-sand-500/50', 'border-sand-600/30');
+          btn.classList.add('bg-forest', 'text-white', 'border-forest');
+          btn.setAttribute('aria-pressed', 'true');
+          spans[0]?.classList.replace('text-forest/50', 'text-white/60');
+          spans[1]?.classList.replace('text-sage-600', 'text-white');
         } else {
-          deliveryDetails?.classList.add('hidden');
-        }
-
-        const options = isDelivery ? deliveryPayments : pickupPayments;
-        if (paymentOptionsContainer) {
-          paymentOptionsContainer.innerHTML = options.map((opt, i) => `
-            <label class="cursor-pointer group">
-              <input type="radio" name="payment_method" value="${opt.val}" class="peer sr-only" ${i === 0 ? 'checked' : ''}>
-              <div class="px-4 py-3 border border-sand-600/50 bg-sand-500/10 rounded-lg peer-checked:bg-forest/5 peer-checked:border-forest transition-all flex items-center justify-between">
-                <span class="font-sans text-sm text-forest/80">${opt.text}</span>
-              </div>
-            </label>
-          `).join('');
-        }
-
-        const basePrice = currentPrices[size] || 0;
-        const deliveryCost = isDelivery ? parseFloat(regionSelect.value) : 0;
-        const total = basePrice + deliveryCost;
-
-        if (totalPriceSpan) {
-          totalPriceSpan.textContent = `€ ${total.toFixed(2).replace('.', ',')}`;
+          btn.classList.remove('bg-forest', 'text-white', 'border-forest');
+          btn.classList.add('bg-sand-500/50', 'border-sand-600/30');
+          btn.removeAttribute('aria-pressed');
+          spans[0]?.classList.replace('text-white/60', 'text-forest/50');
+          spans[1]?.classList.replace('text-white', 'text-sage-600');
         }
       };
 
-      orderBtns.forEach(btn => {
-        btn.addEventListener('click', () => openModal(btn as HTMLElement));
-      });
+      document.querySelectorAll('.bouquet-card').forEach(card => {
+        const cardEl = card as HTMLElement;
+        const sizeBtns = cardEl.querySelectorAll('.size-btn');
 
-      closeBtns.forEach(btn => btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeModal();
-      }));
-      modalBackdrop?.addEventListener('click', closeModal);
+        // Size selection
+        sizeBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const size = (btn as HTMLElement).dataset.size!;
+            sizeBtns.forEach(b => setCardSizeActive(b as HTMLElement, (b as HTMLElement).dataset.size === size));
+          }, { signal });
+        });
 
-      deliveryRadios.forEach(radio => radio.addEventListener('change', updateTotalAndPayments));
-      sizeRadios.forEach(radio => radio.addEventListener('change', updateTotalAndPayments));
-      regionSelect?.addEventListener('change', updateTotalAndPayments);
+        // Add to cart
+        const addBtn = cardEl.querySelector('.add-to-cart-btn');
+        addBtn?.addEventListener('click', () => {
+          const name = cardEl.dataset.name || '';
+          const image = cardEl.dataset.image || '';
+          const activeBtn = cardEl.querySelector('.size-btn[aria-pressed="true"]') as HTMLElement;
+          const size = activeBtn?.dataset.size || 'middel';
+          const priceStr = activeBtn?.dataset.price || '€ 0,00';
+          const price = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
 
-      form?.addEventListener('submit', (e) => {
-        e.preventDefault();
+          addToCart({
+            productId: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            name,
+            size,
+            price,
+            priceLabel: priceStr,
+            image,
+          });
 
-        const name = nameValInput.value;
-        const sizeEl = document.querySelector('input[name="bouquet_size"]:checked') as HTMLInputElement;
-        const sizeName = sizeEl?.value || 'middel';
-        const total = totalPriceSpan?.textContent;
-        const methodEl = document.querySelector('input[name="delivery_method"]:checked') as HTMLInputElement;
-        const method = methodEl.value;
-        const paymentMethodEl = document.querySelector('input[name="payment_method"]:checked') as HTMLInputElement;
-        const paymentLabel = paymentMethodEl?.parentElement?.querySelector('span')?.textContent;
+          // Show toast
+          const toast = document.getElementById('cart-toast');
+          const toastText = document.getElementById('cart-toast-text');
+          if (toast && toastText) {
+            toastText.textContent = `${name} (${size}) toegevoegd`;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+              toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+              toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+          }
 
-        let msg = `Hi Celine! Ik wil graag het boeket '${name}' bestellen in maat ${sizeName} voor ${total}.%0A%0A`;
-
-        if (method === 'pickup') {
-          msg += `📦 Ik kom het ophalen in de winkel in Arnemuiden.%0A`;
-        } else {
-          const region = regionSelect.options[regionSelect.selectedIndex].text;
-          const straat = (document.getElementById('straat') as HTMLInputElement).value || 'Geen straat opgegeven';
-          const plaats = (document.getElementById('plaats') as HTMLInputElement).value || 'Geen plaats opgegeven';
-          msg += `🚚 Graag lokaal bezorgen:%0A- Regio: ${region}%0A- Adres: ${straat}, ${plaats}%0A`;
-        }
-
-        msg += `%0A💳 Betaling via: ${paymentLabel}.%0A%0AKan je dit bevestigen?`;
-
-        const waNumber = form?.dataset.whatsapp || '31612345678';
-        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-        closeModal();
+          // Brief button feedback
+          const btnEl = addBtn as HTMLElement;
+          const origText = btnEl.querySelector('span:nth-child(2)') as HTMLElement;
+          if (origText) {
+            const prev = origText.textContent;
+            origText.textContent = 'Toegevoegd!';
+            btnEl.classList.remove('bg-forest');
+            btnEl.classList.add('bg-sage-500');
+            setTimeout(() => {
+              origText.textContent = prev;
+              btnEl.classList.remove('bg-sage-500');
+              btnEl.classList.add('bg-forest');
+            }, 1500);
+          }
+        }, { signal });
       });
     };
 
-    initOrderModal();
-    document.addEventListener('astro:page-load', initOrderModal);
+    initBestellen();
+    document.addEventListener('astro:page-load', initBestellen);
   </script>
 </Layout>

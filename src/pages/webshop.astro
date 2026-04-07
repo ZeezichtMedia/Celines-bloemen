@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
-import { siteConfig } from '../config';
+import { getWhatsAppUrl } from '../utils/whatsapp';
 
 const products = [
   {
@@ -84,11 +84,13 @@ const categories = [
     <div class="max-w-7xl mx-auto">
 
       <!-- Category Tabs -->
-      <div class="flex flex-wrap justify-center gap-3 mb-12 md:mb-16">
+      <div class="flex flex-wrap justify-center gap-3 mb-12 md:mb-16" role="group" aria-label="Filter op categorie">
         {categories.map((cat) => (
           <button
             class="category-btn px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 border"
             data-category={cat.id}
+            aria-label={`Filter: ${cat.label}`}
+            aria-pressed={cat.id === 'alles' ? 'true' : 'false'}
           >
             {cat.label}
           </button>
@@ -99,7 +101,7 @@ const categories = [
       <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {products.map((product) => (
           <a
-            href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hi Celine, ik wil graag de '${product.name}' (${product.price}) bestellen!`}
+            href={getWhatsAppUrl(`Hi Celine, ik wil graag de '${product.name}' (${product.price}) bestellen!`)}
             target="_blank"
             class="product-card group block relative rounded-[2rem] overflow-hidden bg-white shadow-sm hover:shadow-2xl transition-all duration-700 stagger-reveal flex flex-col"
             data-category={product.category}
@@ -199,6 +201,14 @@ const categories = [
       const categoryBtns = document.querySelectorAll('.category-btn');
       const productCards = document.querySelectorAll('.product-card');
 
+      if (!categoryBtns.length) return;
+
+      const controller = new AbortController();
+      const { signal } = controller;
+      const prev = (categoryBtns[0] as any).__webshopCleanup;
+      if (prev) prev();
+      (categoryBtns[0] as any).__webshopCleanup = () => controller.abort();
+
       let activeCategory = 'alles';
 
       const updateFilter = (category: string) => {
@@ -206,13 +216,15 @@ const categories = [
 
         categoryBtns.forEach(btn => {
           const cat = (btn as HTMLElement).dataset.category;
-          if (cat === activeCategory) {
+          const isActive = cat === activeCategory;
+          if (isActive) {
             btn.classList.add('bg-forest', 'text-white', 'border-forest');
             btn.classList.remove('bg-white', 'text-forest', 'border-sand-600/50');
           } else {
             btn.classList.remove('bg-forest', 'text-white', 'border-forest');
             btn.classList.add('bg-white', 'text-forest', 'border-sand-600/50');
           }
+          btn.setAttribute('aria-pressed', String(isActive));
         });
 
         productCards.forEach(card => {
@@ -228,7 +240,7 @@ const categories = [
       categoryBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           updateFilter((btn as HTMLElement).dataset.category || 'alles');
-        });
+        }, { signal });
       });
 
       updateFilter('alles');
