@@ -1,4 +1,4 @@
-import createMollieClient from '@mollie/api-client';
+import { createMollieClient } from '@mollie/api-client';
 
 function getMollieClient() {
   const apiKey = process.env.MOLLIE_API_KEY;
