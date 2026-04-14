@@ -16,17 +16,13 @@ const currentPath = Astro.url.pathname;
   <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
 
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-3 lg:gap-4 group">
+    <a href="/" class="flex items-center group" aria-label="Celine's Bloemen">
       <div class="w-16 sm:w-20 lg:w-28 h-auto flex-shrink-0">
         <img
           src="/images/logo/logo-transparent.png"
           alt="Celine's Bloemen Logo"
           class="w-full h-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
         />
-      </div>
-      <div class="flex flex-col">
-        <span class="font-serif text-xl sm:text-2xl lg:text-3xl font-medium tracking-wide text-forest group-hover:text-sage-600 transition-colors duration-300 leading-tight">Celine's Bloemen</span>
-        <span class="text-[10px] lg:text-xs uppercase tracking-[0.2em] text-sage-500">Puur Natuur Bloemwerk</span>
       </div>
     </a>
 
@@ -51,7 +47,7 @@ const currentPath = Astro.url.pathname;
     </nav>
 
     <!-- Cart + Mobile Menu (always visible) -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 lg:ml-4 xl:ml-6">
       <CartWidget client:load />
       <button id="mobile-menu-button" class="lg:hidden relative z-[60] flex flex-col justify-center items-center w-12 h-12 group bg-forest/5 rounded-full outline-none transform active:scale-95 transition-transform" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
         <div class="w-6 h-px bg-forest mb-1.5 transition-all duration-300 origin-center menu-line-1"></div>
