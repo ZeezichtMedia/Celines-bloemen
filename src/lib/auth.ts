@@ -3,14 +3,18 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 const COOKIE_NAME = 'admin_session';
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours
 
+function getEnv(key: string): string | undefined {
+  return process.env[key] ?? (import.meta.env as Record<string, string | undefined>)[key];
+}
+
 function getSecret(): string {
-  const secret = process.env.SESSION_SECRET;
+  const secret = getEnv('SESSION_SECRET');
   if (!secret) throw new Error('SESSION_SECRET environment variable is required');
   return secret;
 }
 
 function getPassword(): string {
-  const password = process.env.ADMIN_PASSWORD;
+  const password = getEnv('ADMIN_PASSWORD');
   if (!password) throw new Error('ADMIN_PASSWORD environment variable is required');
   return password;
 }
