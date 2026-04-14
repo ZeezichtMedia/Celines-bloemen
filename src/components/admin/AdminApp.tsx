@@ -108,10 +108,10 @@ export default function AdminApp() {
     <div className="min-h-screen bg-[#F2E5D9]">
       <header className="bg-white/90 backdrop-blur-md border-b border-[#E3D4C6] sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/images/logo/logo-transparent.png" alt="Logo" className="w-10 h-auto" />
-            <span style={SERIF} className="text-xl text-[#2B0000] hidden sm:inline">Beheer</span>
-          </div>
+          <a href="/" className="flex items-center gap-3 group" title="Terug naar website">
+            <img src="/images/logo/logo-transparent.png" alt="Logo" className="w-10 h-auto group-hover:scale-105 transition-transform" />
+            <span style={SERIF} className="text-xl text-[#2B0000] hidden sm:inline group-hover:text-[#a06d69] transition-colors">Beheer</span>
+          </a>
           <div className="flex items-center gap-1 bg-[#F2E5D9]/60 rounded-xl p-1">
             {tabs.map((t) => (
               <button key={t.id} onClick={() => setTab(t.id)}
@@ -124,11 +124,17 @@ export default function AdminApp() {
               </button>
             ))}
           </div>
-          <button onClick={async () => { await fetch('/api/admin/logout', { method: 'POST' }); setAuthed(false); setPassword(''); }}
-            className="flex items-center gap-2 text-[#2B0000]/40 hover:text-[#2B0000] text-sm transition-colors">
-            {Icon.logout}
-            <span className="hidden sm:inline">Uitloggen</span>
-          </button>
+          <div className="flex items-center gap-4">
+            <a href="/" className="flex items-center gap-2 text-[#2B0000]/40 hover:text-[#2B0000] text-sm transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+              <span className="hidden sm:inline">Naar website</span>
+            </a>
+            <button onClick={async () => { await fetch('/api/admin/logout', { method: 'POST' }); setAuthed(false); setPassword(''); }}
+              className="flex items-center gap-2 text-[#2B0000]/40 hover:text-[#2B0000] text-sm transition-colors">
+              {Icon.logout}
+              <span className="hidden sm:inline">Uitloggen</span>
+            </button>
+          </div>
         </div>
       </header>
 
