@@ -24,6 +24,12 @@ const Icon = {
 };
 
 type Tab = 'bouquets' | 'products' | 'orders' | 'subscriptions';
+const TABS: Tab[] = ['bouquets', 'products', 'orders', 'subscriptions'];
+const readTabFromHash = (): Tab => {
+  if (typeof window === 'undefined') return 'orders';
+  const h = window.location.hash.replace('#', '') as Tab;
+  return TABS.includes(h) ? h : 'orders';
+};
 const SERIF = { fontFamily: "'Cormorant Garamond', Georgia, serif" };
 
 // ============================================================
@@ -34,14 +40,27 @@ export default function AdminApp() {
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [tab, setTab] = useState<Tab>('orders');
+  const [tab, setTabState] = useState<Tab>(readTabFromHash);
   const [toast, setToast] = useState('');
+
+  const setTab = (next: Tab) => {
+    setTabState(next);
+    if (typeof window !== 'undefined' && window.location.hash.replace('#', '') !== next) {
+      window.history.replaceState(null, '', `#${next}`);
+    }
+  };
 
   useEffect(() => {
     fetch('/api/admin/bouquets')
       .then((r) => { if (r.ok) { setAuthed(true); } throw new Error(); })
       .catch(() => {})
       .finally(() => setChecking(false));
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => setTabState(readTabFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
