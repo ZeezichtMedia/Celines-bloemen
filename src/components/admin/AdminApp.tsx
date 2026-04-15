@@ -305,11 +305,23 @@ function ProductEditForm({ product, onSave, saving, isNew }: { product: Product;
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-    if (res.ok) { const { url } = await res.json(); set('image', url); }
-    setUploading(false);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: `Upload mislukt (${res.status})` }));
+        alert(`Foto uploaden mislukt: ${error ?? res.statusText}`);
+        return;
+      }
+      const { url } = await res.json();
+      set('image', url);
+    } catch (err) {
+      alert(`Foto uploaden mislukt: ${err instanceof Error ? err.message : 'onbekende fout'}`);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
   const updatePrice = (val: string) => {
@@ -700,11 +712,23 @@ function EditForm({ bouquet, onSave, saving, isNew }: { bouquet: Bouquet; onSave
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-    if (res.ok) { const { url } = await res.json(); set('image', url); }
-    setUploading(false);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: `Upload mislukt (${res.status})` }));
+        alert(`Foto uploaden mislukt: ${error ?? res.statusText}`);
+        return;
+      }
+      const { url } = await res.json();
+      set('image', url);
+    } catch (err) {
+      alert(`Foto uploaden mislukt: ${err instanceof Error ? err.message : 'onbekende fout'}`);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
