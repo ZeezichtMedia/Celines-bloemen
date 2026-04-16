@@ -106,9 +106,13 @@ function CartSidebar({ cart, setCart, total, onClose }: {
             const key = `${item.productId}-${item.size || ''}`;
             return (
               <div key={key} className="flex gap-4 items-center py-2">
-                <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover flex-shrink-0" />
+                <a href={item.size ? '/bestellen' : '/webshop'} onClick={onClose} className="flex-shrink-0">
+                  <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover hover:opacity-80 transition-opacity" />
+                </a>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-sans text-sm font-medium text-[#2B0000] truncate">{item.name}</h3>
+                  <a href={item.size ? '/bestellen' : '/webshop'} onClick={onClose} className="block">
+                    <h3 className="font-sans text-sm font-medium text-[#2B0000] truncate hover:text-[#a06d69] transition-colors">{item.name}</h3>
+                  </a>
                   {item.size && <p className="text-[#2B0000]/40 text-xs font-sans capitalize">{item.size}</p>}
                   <div className="flex items-center gap-3 mt-1.5">
                     <div className="flex items-center border border-[#E3D4C6] rounded-lg overflow-hidden">
