@@ -27,10 +27,10 @@ export function loadCart(): Cart {
   }
 }
 
-export function saveCart(cart: Cart): void {
+export function saveCart(cart: Cart, silent = false): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-  window.dispatchEvent(new CustomEvent('cart-updated', { detail: cart }));
+  if (!silent) window.dispatchEvent(new CustomEvent('cart-updated', { detail: cart }));
 }
 
 export function addToCart(item: Omit<CartItem, 'quantity'>, quantity = 1): Cart {
@@ -48,17 +48,17 @@ export function addToCart(item: Omit<CartItem, 'quantity'>, quantity = 1): Cart 
   return cart;
 }
 
-export function removeFromCart(productId: string, size?: string): Cart {
+export function removeFromCart(productId: string, size?: string, silent = false): Cart {
   const cart = loadCart();
   const key = `${productId}-${size || ''}`;
   cart.items = cart.items.filter(
     (i) => `${i.productId}-${i.size || ''}` !== key
   );
-  saveCart(cart);
+  saveCart(cart, silent);
   return cart;
 }
 
-export function updateQuantity(productId: string, size: string | undefined, quantity: number): Cart {
+export function updateQuantity(productId: string, size: string | undefined, quantity: number, silent = false): Cart {
   const cart = loadCart();
   const key = `${productId}-${size || ''}`;
   const item = cart.items.find(
@@ -66,11 +66,11 @@ export function updateQuantity(productId: string, size: string | undefined, quan
   );
   if (item) {
     if (quantity <= 0) {
-      return removeFromCart(productId, size);
+      return removeFromCart(productId, size, silent);
     }
     item.quantity = quantity;
   }
-  saveCart(cart);
+  saveCart(cart, silent);
   return cart;
 }
 

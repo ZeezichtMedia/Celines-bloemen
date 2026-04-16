@@ -243,28 +243,35 @@ export default function CheckoutForm() {
             <h3 className="font-serif text-xl text-[#2B0000]">Overzicht</h3>
 
             <div className="space-y-3">
-              {cart.items.map((item) => (
-                <div key={`${item.productId}-${item.size}`} className="flex items-center gap-3">
-                  {item.image && (
-                    <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-[#E3D4C6]" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-sans text-sm text-[#2B0000] truncate">{item.name}{item.size ? ` (${item.size})` : ''}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity - 1))}
-                        className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">&minus;</button>
-                      <span className="font-sans text-xs text-[#2B0000] w-4 text-center">{item.quantity}</span>
-                      <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity + 1))}
-                        className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">+</button>
-                      <button type="button" onClick={() => setCart(removeFromCart(item.productId, item.size))}
-                        className="ml-1 text-[#2B0000]/25 hover:text-red-500 transition-colors" title="Verwijderen">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                      </button>
+              {cart.items.map((item) => {
+                const link = item.size ? '/bestellen' : '/webshop';
+                return (
+                  <div key={`${item.productId}-${item.size}`} className="flex items-center gap-3">
+                    {item.image && (
+                      <a href={link} className="flex-shrink-0">
+                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-[#E3D4C6] hover:opacity-80 transition-opacity" />
+                      </a>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <a href={link} className="block">
+                        <p className="font-sans text-sm text-[#2B0000] truncate hover:text-[#a06d69] transition-colors">{item.name}{item.size ? ` (${item.size})` : ''}</p>
+                      </a>
+                      <div className="flex items-center gap-2 mt-1">
+                        <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity - 1, true))}
+                          className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">&minus;</button>
+                        <span className="font-sans text-xs text-[#2B0000] w-4 text-center">{item.quantity}</span>
+                        <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity + 1, true))}
+                          className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">+</button>
+                        <button type="button" onClick={() => setCart(removeFromCart(item.productId, item.size, true))}
+                          className="ml-1 text-[#2B0000]/25 hover:text-red-500 transition-colors" title="Verwijderen">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                      </div>
                     </div>
+                    <span className="font-sans text-sm font-medium text-[#2B0000] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
                   </div>
-                  <span className="font-sans text-sm font-medium text-[#2B0000] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t border-[#E3D4C6] pt-4 space-y-2">
