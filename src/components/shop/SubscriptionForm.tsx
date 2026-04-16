@@ -109,7 +109,7 @@ export default function SubscriptionForm() {
               <h3 className="font-sans text-[11px] tracking-widest uppercase text-[#2B0000]/40 font-semibold">Bezorgadres</h3>
               <Input label="Straat + huisnummer" value={address} onChange={setAddress} required placeholder="Langstraat 81" />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 EG" />
+                <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 ED" />
                 <Input label="Plaats" value={city} onChange={setCity} required placeholder="Arnemuiden" />
               </div>
             </div>

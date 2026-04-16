@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import { loadCart, cartTotal, formatEuro, clearCart, type CartItem } from '../../lib/cart';
 
+type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number };
+
 export default function CheckoutForm() {
   const [cart, setCart] = useState<{ items: CartItem[] }>({ items: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Delivery
-  const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'local' | 'shipping'>('pickup');
+  const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'local'>('pickup');
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [region, setRegion] = useState('3.00');
+  const [region, setRegion] = useState('');
+  const [zones, setZones] = useState<DeliveryZone[]>([]);
+
+  // Payment
+  const [paymentChoice, setPaymentChoice] = useState<'online' | 'in_store'>('online');
 
   // Customer
   const [name, setName] = useState('');
@@ -24,10 +30,22 @@ export default function CheckoutForm() {
 
   useEffect(() => {
     setCart(loadCart());
+    fetch('/api/delivery-zones')
+      .then((r) => r.json())
+      .then((data: DeliveryZone[]) => {
+        setZones(data);
+        if (data.length > 0) setRegion(data[0].cost);
+      })
+      .catch(() => {});
   }, []);
 
+  // Reset payment choice when switching to delivery
+  useEffect(() => {
+    if (deliveryMethod === 'local') setPaymentChoice('online');
+  }, [deliveryMethod]);
+
   const subtotal = cartTotal(cart);
-  const deliveryCost = deliveryMethod === 'local' ? parseFloat(region) : deliveryMethod === 'shipping' ? 6.95 : 0;
+  const deliveryCost = deliveryMethod === 'local' ? parseFloat(region || '0') : 0;
   const total = subtotal + deliveryCost;
 
   // Min delivery date = tomorrow
@@ -62,6 +80,7 @@ export default function CheckoutForm() {
             region: deliveryMethod === 'local' ? region : null,
             cost: formatEuro(deliveryCost),
           },
+          paymentMethod: deliveryMethod === 'pickup' ? paymentChoice : 'online',
           subtotal: formatEuro(subtotal),
           total: formatEuro(total),
         }),
@@ -74,9 +93,15 @@ export default function CheckoutForm() {
         return;
       }
 
-      // Redirect to Mollie payment
       clearCart();
-      window.location.href = data.paymentUrl;
+
+      if (data.paymentUrl) {
+        // Online payment → redirect to Mollie
+        window.location.href = data.paymentUrl;
+      } else {
+        // In-store payment → redirect to confirmation
+        window.location.href = `/bestelling/bevestiging?order=${data.orderNumber}&method=store`;
+      }
     } catch {
       setError('Kan geen verbinding maken. Probeer het opnieuw.');
     } finally {
@@ -98,6 +123,7 @@ export default function CheckoutForm() {
 
   const needsAddress = deliveryMethod !== 'pickup';
   const needsDate = deliveryMethod === 'local';
+  const isInStore = paymentChoice === 'in_store' && deliveryMethod === 'pickup';
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
@@ -119,11 +145,10 @@ export default function CheckoutForm() {
           {/* Delivery method */}
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Bezorging</h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {[
                 { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden' },
                 { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren' },
-                { val: 'shipping' as const, label: 'Verzenden', sub: '€ 6,95' },
               ].map((opt) => (
                 <button
                   key={opt.val}
@@ -150,9 +175,11 @@ export default function CheckoutForm() {
                     onChange={(e) => setRegion(e.target.value)}
                     className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg font-sans text-sm text-[#2B0000] focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 appearance-none"
                   >
-                    <option value="3.00">Arnemuiden (+ € 3,00)</option>
-                    <option value="5.00">Middelburg (+ € 5,00)</option>
-                    <option value="8.00">Walcheren / Z-Beveland (+ € 8,00)</option>
+                    {zones.map((z) => (
+                      <option key={z.id} value={z.cost}>
+                        {z.name} (+ € {Number(z.cost).toFixed(2).replace('.', ',')})
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <Input label="Bezorgdatum" value={deliveryDate} onChange={setDeliveryDate} type="date" required min={minDate} />
@@ -163,12 +190,39 @@ export default function CheckoutForm() {
               <div className="space-y-3 pt-3 border-t border-[#E3D4C6]">
                 <Input label="Straat + huisnummer" value={address} onChange={setAddress} required placeholder="Langstraat 81" />
                 <div className="grid grid-cols-2 gap-3">
-                  <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 EG" />
+                  <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 ED" />
                   <Input label="Plaats" value={city} onChange={setCity} required placeholder="Arnemuiden" />
                 </div>
               </div>
             )}
           </div>
+
+          {/* Payment choice for pickup */}
+          {deliveryMethod === 'pickup' && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Betaalwijze</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { val: 'online' as const, label: 'Online betalen', sub: 'iDEAL / Bancontact' },
+                  { val: 'in_store' as const, label: 'Betalen in winkel', sub: 'Bij ophalen' },
+                ].map((opt) => (
+                  <button
+                    key={opt.val}
+                    type="button"
+                    onClick={() => setPaymentChoice(opt.val)}
+                    className={`rounded-xl py-3 px-2 text-center border transition-all cursor-pointer ${
+                      paymentChoice === opt.val
+                        ? 'bg-[#2B0000] text-white border-[#2B0000]'
+                        : 'bg-white border-[#E3D4C6] text-[#2B0000] hover:border-[#a06d69]'
+                    }`}
+                  >
+                    <span className="block font-sans text-sm font-medium">{opt.label}</span>
+                    <span className={`block font-sans text-[10px] mt-0.5 ${paymentChoice === opt.val ? 'text-white/60' : 'text-[#2B0000]/40'}`}>{opt.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Note */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
@@ -193,7 +247,7 @@ export default function CheckoutForm() {
                 <div key={`${item.productId}-${item.size}`} className="flex justify-between items-start gap-3">
                   <div className="min-w-0">
                     <p className="font-sans text-sm text-[#2B0000] truncate">{item.name}{item.size ? ` (${item.size})` : ''}</p>
-                    <p className="font-sans text-xs text-[#2B0000]/40">× {item.quantity}</p>
+                    <p className="font-sans text-xs text-[#2B0000]/40">&times; {item.quantity}</p>
                   </div>
                   <span className="font-sans text-sm font-medium text-[#2B0000] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
                 </div>
@@ -224,11 +278,11 @@ export default function CheckoutForm() {
               disabled={loading}
               className="w-full py-4 bg-[#a06d69] text-white font-sans text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50"
             >
-              {loading ? 'Even geduld...' : 'Betalen met iDEAL'}
+              {loading ? 'Even geduld...' : isInStore ? 'Bestelling plaatsen' : 'Betalen met iDEAL'}
             </button>
 
             <p className="text-center text-[10px] text-[#2B0000]/30 font-sans">
-              Je wordt doorgestuurd naar Mollie voor veilige betaling
+              {isInStore ? 'Je betaalt bij het ophalen in de winkel' : 'Je wordt doorgestuurd naar Mollie voor veilige betaling'}
             </p>
           </div>
         </div>

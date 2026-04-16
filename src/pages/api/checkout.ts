@@ -28,9 +28,10 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const { customer, items, delivery, subtotal, total } = data;
+    const { customer, items, delivery, paymentMethod, subtotal, total } = data;
     const orderNumber = generateOrderNumber();
     const totalAmount = priceToAmount(total);
+    const isInStore = paymentMethod === 'in_store' && delivery.method === 'pickup';
 
     // Validate delivery date is in the future if provided
     if (delivery.date) {
@@ -47,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const [order] = await db.insert(schema.orders).values({
       orderNumber,
-      status: 'pending',
+      status: isInStore ? 'pending_pickup' : 'pending',
       customerName: customer.name,
       customerEmail: customer.email,
       customerPhone: customer.phone || null,
@@ -58,12 +59,23 @@ export const POST: APIRoute = async ({ request }) => {
       deliveryPostalCode: delivery.postalCode || null,
       deliveryRegion: delivery.region || null,
       deliveryCost: priceToAmount(delivery.cost || '€ 0,00'),
+      paymentMethod: isInStore ? 'in_store' : null,
       items: JSON.stringify(items),
       subtotal: priceToAmount(subtotal),
       total: totalAmount,
       customerNote: customer.note || null,
     }).returning();
 
+    // In-store payment: no Mollie redirect, order is placed directly
+    if (isInStore) {
+      return new Response(JSON.stringify({
+        orderNumber,
+      }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Online payment via Mollie
     const payment = await createPayment({
       orderId: order.id,
       orderNumber,

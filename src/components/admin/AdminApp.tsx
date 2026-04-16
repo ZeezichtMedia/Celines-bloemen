@@ -21,10 +21,11 @@ const Icon = {
   x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
   upload: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
   shop: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
+  settings: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
 };
 
-type Tab = 'bouquets' | 'products' | 'orders' | 'subscriptions';
-const TABS: Tab[] = ['bouquets', 'products', 'orders', 'subscriptions'];
+type Tab = 'bouquets' | 'products' | 'orders' | 'subscriptions' | 'settings';
+const TABS: Tab[] = ['bouquets', 'products', 'orders', 'subscriptions', 'settings'];
 const readTabFromHash = (): Tab => {
   if (typeof window === 'undefined') return 'orders';
   const h = window.location.hash.replace('#', '') as Tab;
@@ -102,6 +103,7 @@ export default function AdminApp() {
     { id: 'bouquets', label: 'Boeketten', icon: Icon.flower },
     { id: 'products', label: 'Webshop', icon: Icon.shop },
     { id: 'subscriptions', label: 'Abonnementen', icon: Icon.repeat },
+    { id: 'settings', label: 'Instellingen', icon: Icon.settings },
   ];
 
   return (
@@ -143,6 +145,7 @@ export default function AdminApp() {
         {tab === 'products' && <ProductsTab showToast={showToast} />}
         {tab === 'orders' && <OrdersTab showToast={showToast} />}
         {tab === 'subscriptions' && <SubscriptionsTab showToast={showToast} />}
+        {tab === 'settings' && <SettingsTab showToast={showToast} />}
       </div>
 
       {toast && <Toast message={toast} />}
@@ -821,6 +824,113 @@ function Field({ label, value, onChange, placeholder, required, type = 'text', p
 
 function IconBtn({ onClick, title, className, children }: { onClick: () => void; title: string; className: string; children: React.ReactNode }) {
   return <button onClick={onClick} title={title} className={`p-2 rounded-lg hover:bg-[#F2E5D9] transition-colors ${className}`}>{children}</button>;
+}
+
+// ============================================================
+// Settings Tab — Delivery Zones
+// ============================================================
+type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
+
+function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
+  const [zones, setZones] = useState<DeliveryZone[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/admin/delivery-zones')
+      .then((r) => r.json())
+      .then((data) => setZones(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const updateZone = (index: number, key: keyof DeliveryZone, value: any) => {
+    setZones((prev) => prev.map((z, i) => i === index ? { ...z, [key]: value } : z));
+  };
+
+  const addZone = () => {
+    setZones((prev) => [...prev, { name: '', cost: '0.00', sortOrder: prev.length }]);
+  };
+
+  const removeZone = (index: number) => {
+    setZones((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const saveZones = async () => {
+    setSaving(true);
+    const res = await fetch('/api/admin/delivery-zones', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(zones.map((z, i) => ({ ...z, sortOrder: i }))),
+    });
+    if (res.ok) showToast('Bezorgtarieven opgeslagen');
+    setSaving(false);
+  };
+
+  if (loading) return <Spinner />;
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 style={SERIF} className="text-2xl text-[#2B0000]">Instellingen</h2>
+          <p className="text-[#2B0000]/40 text-sm mt-1">Beheer bezorgtarieven en regio's</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 style={SERIF} className="text-xl text-[#2B0000]">Bezorgtarieven</h3>
+          <button onClick={addZone} className="flex items-center gap-2 px-4 py-2 bg-[#a06d69] text-white text-xs tracking-wider uppercase rounded-lg hover:bg-[#885c59] transition-colors">
+            {Icon.plus} Regio toevoegen
+          </button>
+        </div>
+
+        {zones.length === 0 ? (
+          <p className="text-[#2B0000]/40 text-sm py-4">Geen bezorgregio's ingesteld. Voeg er een toe.</p>
+        ) : (
+          <div className="space-y-3">
+            {zones.map((zone, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 bg-[#F2E5D9]/30 rounded-xl">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    value={zone.name}
+                    onChange={(e) => updateZone(i, 'name', e.target.value)}
+                    placeholder="Regio naam (bijv. Middelburg)"
+                    className="w-full px-4 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20"
+                  />
+                </div>
+                <div className="w-32">
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2B0000]/40 text-sm">€</span>
+                    <input
+                      type="number"
+                      step="0.50"
+                      min="0"
+                      value={zone.cost}
+                      onChange={(e) => updateZone(i, 'cost', e.target.value)}
+                      className="w-full pl-8 pr-3 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20"
+                    />
+                  </div>
+                </div>
+                <button onClick={() => removeZone(i)} title="Verwijderen" className="p-2 rounded-lg hover:bg-red-50 text-[#2B0000]/30 hover:text-red-500 transition-colors">
+                  {Icon.trash}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="pt-2">
+          <button onClick={saveZones} disabled={saving}
+            className="px-6 py-3 bg-[#a06d69] text-white text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50">
+            {saving ? 'Opslaan...' : 'Tarieven opslaan'}
+          </button>
+        </div>
+      </div>
+    </>
+  );
 }
 
 function EmptyState({ icon, text }: { icon: JSX.Element; text: string }) {

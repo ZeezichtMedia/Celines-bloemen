@@ -29,6 +29,7 @@ export const checkoutSchema = z.object({
   customer: customerSchema,
   items: z.array(cartItemSchema).min(1, 'Winkelwagen is leeg'),
   delivery: deliverySchema,
+  paymentMethod: z.enum(['online', 'in_store']).optional().default('online'),
   subtotal: z.string().max(20),
   total: z.string().max(20),
 });

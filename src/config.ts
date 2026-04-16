@@ -10,7 +10,7 @@ export const siteConfig = {
   tiktok: "https://www.tiktok.com/@celinesbloemen",
   address: {
     street: "Langstraat 81",
-    postalCode: "4341 EG",
+    postalCode: "4341 ED",
     city: "Arnemuiden",
     province: "Zeeland",
     country: "Nederland",

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 
 const orderNumber = Astro.url.searchParams.get('order') || '';
+const isStorePayment = Astro.url.searchParams.get('method') === 'store';
 ---
 
 <Layout title="Bedankt! - Celine's bloemen" description="Je bestelling is ontvangen.">
@@ -17,7 +18,9 @@ const orderNumber = Astro.url.searchParams.get('order') || '';
         </p>
       )}
       <p class="font-sans text-base text-forest/60 font-light max-w-lg mx-auto leading-relaxed">
-        Je ontvangt een bevestiging per e-mail. Ik ga direct aan de slag met je bestelling!
+        {isStorePayment
+          ? 'Je bestelling is geplaatst. Je kunt afrekenen wanneer je het ophaalt in de winkel.'
+          : 'Je ontvangt een bevestiging per e-mail. Ik ga direct aan de slag met je bestelling!'}
       </p>
       <div class="pt-4">
         <a href="/" class="inline-block px-8 py-3 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase rounded-sm hover:bg-sage-600 transition-colors">
