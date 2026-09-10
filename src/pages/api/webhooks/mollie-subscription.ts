@@ -48,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
           customerId,
           amount: Number(sub.pricePerDelivery).toFixed(2),
           interval: frequencyToInterval(sub.frequency),
-          description: `Bloemenabonnement ${sub.planSize} — Celine's Bloemen`,
+          description: `Bloemenabonnement ${sub.planSize} | Celine's Bloemen`,
           subscriptionId: sub.id,
         });
 
@@ -77,6 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
           planSize: sub.planSize,
           frequency: sub.frequency,
           price: `€ ${Number(sub.pricePerDelivery).toFixed(2).replace('.', ',')}`,
+          vaseIncluded: sub.vaseIncluded,
         });
       } catch (emailErr) {
         console.error('Subscription email failed:', emailErr);

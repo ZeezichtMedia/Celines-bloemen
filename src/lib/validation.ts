@@ -37,9 +37,10 @@ export const checkoutSchema = z.object({
 export const subscriptionPlanSchema = z.object({
   type: z.enum(['fresh', 'artificial']),
   size: z.string().min(1).max(50),
-  frequency: z.enum(['weekly', 'biweekly', 'monthly', 'quarterly', 'biannual', 'yearly']),
+  frequency: z.enum(['weekly', 'biweekly', 'triweekly', 'monthly', 'quarterly', 'biannual', 'yearly']),
   price: z.string().max(20),
   colorPreference: z.string().max(500).optional().nullable(),
+  vaseIncluded: z.boolean().optional().default(false),
 });
 
 export const subscribeSchema = z.object({
@@ -59,6 +60,7 @@ export const loginSchema = z.object({
 export function validateOrError<T>(schema: z.ZodSchema<T>, data: unknown): { data: T; error: null } | { data: null; error: string } {
   const result = schema.safeParse(data);
   if (result.success) return { data: result.data, error: null };
-  const firstError = result.error.errors[0];
+  const issues = (result.error as any).issues ?? (result.error as any).errors ?? [];
+  const firstError = issues[0];
   return { data: null, error: firstError?.message || 'Ongeldige invoer' };
 }

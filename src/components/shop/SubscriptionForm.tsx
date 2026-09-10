@@ -22,6 +22,7 @@ export default function SubscriptionForm() {
   const [postalCode, setPostalCode] = useState('');
   const [colorPref, setColorPref] = useState('');
   const [note, setNote] = useState('');
+  const [vase, setVase] = useState(false);
 
   if (typeof window !== 'undefined') {
     (window as any).__openSubscription = (p: Plan) => {
@@ -48,6 +49,7 @@ export default function SubscriptionForm() {
             frequency: plan.frequency,
             price: plan.price,
             colorPreference: colorPref,
+            vaseIncluded: vase,
           },
           delivery: { address, city, postalCode },
         }),
@@ -70,7 +72,7 @@ export default function SubscriptionForm() {
   if (!plan) return null;
 
   const freqLabels: Record<string, string> = {
-    weekly: 'Wekelijks', biweekly: 'Tweewekelijks', monthly: 'Maandelijks',
+    weekly: 'Wekelijks', biweekly: 'Per 2 weken', triweekly: 'Per 3 weken', monthly: 'Per maand',
     quarterly: 'Per kwartaal', biannual: 'Per halfjaar', yearly: 'Per jaar',
   };
 
@@ -92,8 +94,8 @@ export default function SubscriptionForm() {
 
           <div className="mx-5 mt-4 p-4 bg-[#F2E5D9] rounded-xl flex items-center justify-between">
             <div>
-              <span className="font-sans text-sm text-[#2B0000]">{plan.type === 'fresh' ? 'Verse bloemen' : 'Kunstbloemen'} — {plan.size}</span>
-              <span className="block font-sans text-xs text-[#2B0000]/50 mt-0.5">{freqLabels[plan.frequency]}</span>
+              <span className="font-sans text-sm text-[#2B0000]">{plan.type === 'fresh' ? 'Verse bloemen' : 'Kunstbloemen'}, {plan.size}</span>
+              <span className="block font-sans text-xs text-[#2B0000]/50 mt-0.5">{freqLabels[plan.frequency] || plan.frequency}{vase ? ' · in vaas' : ''}</span>
             </div>
             <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2B0000]">{plan.price}</span>
           </div>
@@ -115,6 +117,18 @@ export default function SubscriptionForm() {
             </div>
 
             <div className="pt-3 border-t border-[#E3D4C6] space-y-3">
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#E3D4C6] hover:border-[#a06d69] cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  checked={vase}
+                  onChange={(e) => setVase(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer"
+                />
+                <span className="font-sans text-sm text-[#2B0000] leading-snug">
+                  Lever het boeket in een vaas
+                  <span className="block text-xs text-[#2B0000]/50 mt-0.5">Bij de volgende levering ruil ik de vaas weer om.</span>
+                </span>
+              </label>
               <Input label="Kleurvoorkeur (optioneel)" value={colorPref} onChange={setColorPref} placeholder="Bijv. warme tinten, pastel, geen voorkeur..." />
               <div>
                 <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5 font-sans">Opmerking (optioneel)</label>

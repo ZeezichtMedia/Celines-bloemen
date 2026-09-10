@@ -122,6 +122,7 @@ export function frequencyToInterval(frequency: string): string {
   const map: Record<string, string> = {
     weekly: '1 weeks',
     biweekly: '2 weeks',
+    triweekly: '3 weeks',
     monthly: '1 months',
     quarterly: '3 months',
     biannual: '6 months',

@@ -10,7 +10,7 @@ const currentYear = new Date().getFullYear();
     <div>
       <a href="/" class="inline-block mb-6 w-36 md:w-48 group">
         <img 
-          src="/images/logo/logo-transparent.png" 
+          src="/images/logo/celinesbloemenlogo.webp" 
           alt="Celine's Bloemen Logo" 
           class="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
         />
@@ -69,8 +69,120 @@ const currentYear = new Date().getFullYear();
 
   </div>
   
-  <div class="max-w-7xl mx-auto px-6 mt-12 md:mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-sand-600/60 font-light text-center md:text-left">
+  <div class="max-w-7xl mx-auto px-6 mt-12 md:mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-sand-600/60 font-light text-center md:text-left">
     <p>&copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.</p>
-    <p>Ontworpen en gebouwd met ♥ door <a href="https://agensea.nl" target="_blank" rel="noopener noreferrer" class="hover:text-sage-400 transition-colors duration-300">Agensea</a></p>
+
+    <!-- Agensea credit — premium signature -->
+    <a
+      href="https://agensea.nl"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Website ontworpen en gebouwd door Agensea"
+      class="agensea-credit group inline-flex items-center gap-3"
+    >
+      <span class="credit-label">Crafted by</span>
+      <img
+        src="/brand/agensea-logo.svg"
+        alt="Agensea"
+        width="140"
+        height="37"
+        class="credit-logo"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="credit-arrow" aria-hidden="true">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M17 7H8M17 7V16"/>
+        </svg>
+      </span>
+    </a>
   </div>
 </footer>
+
+<style>
+  /* ── Agensea premium credit ───────────────────────────────────
+     Echte brand-logo in witte uitvoering. Rust: subtiel,
+     70% opacity, discreet. Hover: logo wordt 100% wit én krijgt
+     een zachte indigo glow (signature accent-kleur) eromheen.
+     Label fade't in, arrow schuift uit — alles in sync. */
+  .agensea-credit {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .agensea-credit:focus-visible {
+    outline: 2px solid #2D3FE0;
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+
+  .credit-label {
+    font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .credit-logo {
+    height: 24px;
+    width: auto;
+    /* Echte logo wit maken + subtiele default state */
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition:
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: left center;
+    will-change: filter, transform;
+  }
+
+  .credit-arrow {
+    display: inline-flex;
+    align-items: center;
+    color: #2D3FE0;
+    opacity: 0;
+    transform: translate(-6px, 2px);
+    transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Hover state — alles in sync op 500ms, één easing */
+  .agensea-credit:hover .credit-label {
+    opacity: 0.9;
+  }
+
+  .agensea-credit:hover .credit-logo {
+    opacity: 1;
+    /* Wit blijft wit, plus signature-indigo glow eromheen.
+       Drie gestapelde drop-shadows = zachte aura die zichtbaar is
+       tegen donkere achtergronden zoals bg-forest. */
+    filter:
+      brightness(0)
+      invert(1)
+      drop-shadow(0 0 2px rgba(67, 83, 255, 0.9))
+      drop-shadow(0 0 10px rgba(67, 83, 255, 0.75))
+      drop-shadow(0 0 24px rgba(67, 83, 255, 0.55));
+    transform: scale(1.04);
+  }
+
+  .agensea-credit:hover .credit-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .credit-label,
+    .credit-logo,
+    .credit-arrow {
+      transition: opacity 200ms ease;
+    }
+    .agensea-credit:hover .credit-logo {
+      transform: none;
+    }
+  }
+</style>

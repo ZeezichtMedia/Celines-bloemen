@@ -38,7 +38,7 @@ export async function sendOrderConfirmation({
     .join('');
 
   const deliveryInfo = deliveryMethod === 'pickup'
-    ? 'Ophalen in de winkel — Langstraat 81, Arnemuiden'
+    ? 'Ophalen in de winkel, Langstraat 81 Arnemuiden'
     : deliveryMethod === 'local'
       ? `Lokale bezorging${deliveryDate ? ` op ${deliveryDate}` : ''}`
       : 'Verzending via PostNL';
@@ -82,6 +82,7 @@ export async function sendSubscriptionConfirmation({
   planSize,
   frequency,
   price,
+  vaseIncluded = false,
 }: {
   to: string;
   customerName: string;
@@ -89,13 +90,15 @@ export async function sendSubscriptionConfirmation({
   planSize: string;
   frequency: string;
   price: string;
+  vaseIncluded?: boolean;
 }) {
   const transporter = getTransporter();
 
   const freqLabel: Record<string, string> = {
     weekly: 'Wekelijks',
-    biweekly: 'Tweewekelijks',
-    monthly: 'Maandelijks',
+    biweekly: 'Per 2 weken',
+    triweekly: 'Per 3 weken',
+    monthly: 'Per maand',
     quarterly: 'Per kwartaal',
     biannual: 'Per halfjaar',
     yearly: 'Per jaar',
@@ -117,6 +120,7 @@ export async function sendSubscriptionConfirmation({
             <tr><td style="padding:6px 0;color:#2B0000aa">Type</td><td style="text-align:right">${planType === 'fresh' ? 'Verse bloemen' : 'Kunstbloemen'}</td></tr>
             <tr><td style="padding:6px 0;color:#2B0000aa">Maat</td><td style="text-align:right">${planSize}</td></tr>
             <tr><td style="padding:6px 0;color:#2B0000aa">Frequentie</td><td style="text-align:right">${freqLabel[frequency] || frequency}</td></tr>
+            <tr><td style="padding:6px 0;color:#2B0000aa">Vaas</td><td style="text-align:right">${vaseIncluded ? 'In vaas geleverd (wordt geruild)' : 'Zonder vaas'}</td></tr>
             <tr><td style="padding:10px 0 0;font-weight:600;border-top:1px solid #E3D4C6">Per levering</td><td style="padding:10px 0 0;text-align:right;font-weight:600;font-size:18px;border-top:1px solid #E3D4C6">${price}</td></tr>
           </table>
         </div>

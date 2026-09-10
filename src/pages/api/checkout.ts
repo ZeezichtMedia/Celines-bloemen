@@ -80,7 +80,7 @@ export const POST: APIRoute = async ({ request }) => {
       orderId: order.id,
       orderNumber,
       amount: totalAmount,
-      description: `Bestelling ${orderNumber} — Celine's Bloemen`,
+      description: `Bestelling ${orderNumber} | Celine's Bloemen`,
     });
 
     await db.update(schema.orders)

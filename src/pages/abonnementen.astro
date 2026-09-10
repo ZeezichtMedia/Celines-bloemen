@@ -11,9 +11,9 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-16">
       <div class="lg:w-1/2 space-y-6 md:space-y-8 text-center lg:text-left">
         <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Nooit meer een lege vaas</span>
-        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-forest leading-[1.1] md:leading-[0.9]">Seizoensgeluk op Herhaling</h1>
+        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-forest leading-[1.1] md:leading-[0.9]">Abonnement met seizoensbloemen</h1>
         <p class="font-sans text-lg md:text-xl text-forest/70 font-light max-w-xl lg:mx-0 mx-auto stagger-reveal">
-          Haal de verstilling van het atelier in huis. Met een bloemenabonnement geniet je op jouw tempo van de allermooiste seizoensbloemen, zonder dat je erover na hoeft te denken.
+          Krijg elke twee weken, elke drie weken of maandelijks jouw boeket in huis. Met een bloemenabonnement geniet je altijd van de mooiste seizoensbloemen, zonder dat je er achteraan hoeft te gaan.
         </p>
       </div>
       <div class="lg:w-1/2 relative">
@@ -35,8 +35,8 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 text-center">
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">1</div>
-          <h3 class="font-serif text-2xl text-forest">Kies je Plan</h3>
-          <p class="font-sans font-light text-forest/70">Vers of kunstbloemen, in het formaat dat bij jouw ruimte past.</p>
+          <h3 class="font-serif text-2xl text-forest">Kies je boeket</h3>
+          <p class="font-sans font-light text-forest/70">Small, medium of large, en hoe vaak je het thuis wilt hebben.</p>
         </div>
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">2</div>
@@ -45,7 +45,7 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
         </div>
         <div class="space-y-4 stagger-reveal">
           <div class="w-16 h-16 bg-sand-500 rounded-full flex items-center justify-center mx-auto text-forest font-serif text-2xl font-bold">3</div>
-          <h3 class="font-serif text-2xl text-forest">Geniet van Versheid</h3>
+          <h3 class="font-serif text-2xl text-forest">Geniet van het boeket</h3>
           <p class="font-sans font-light text-forest/70">Ik bezorg de bloemen met zorg aan de deur. Pauzeren of stoppen kan altijd.</p>
         </div>
       </div>
@@ -55,53 +55,68 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
   <!-- Verse Bloemen Pricing Cards -->
   <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6 overflow-hidden">
     <div class="max-w-4xl mx-auto text-center mb-12 space-y-4 stagger-reveal">
-      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Vers van het atelier</span>
-      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Verse Bloemen Abonnement</h2>
-      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-xl mx-auto">Dagverse seizoensbloemen, wekelijks of maandelijks bezorgd op Walcheren.</p>
+      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Vers uit de winkel</span>
+      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Kies je boeket</h2>
+      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-xl mx-auto">Dagverse seizoensbloemen, bezorgd in Arnemuiden, Middelburg, Vlissingen en omgeving.</p>
+    </div>
+
+    <!-- Hoe vaak -->
+    <div class="max-w-3xl mx-auto mb-12 md:mb-16 text-center stagger-reveal">
+      <h3 class="font-sans text-xs uppercase tracking-[0.25em] text-forest/40 font-bold mb-5">Hoe vaak wil je bloemen?</h3>
+      <div class="inline-flex flex-col sm:flex-row gap-2 p-2 bg-white rounded-2xl sm:rounded-full shadow-sm border border-sand-600/30" role="radiogroup" aria-label="Kies hoe vaak je een boeket wilt ontvangen">
+        <button type="button" class="freq-btn px-7 py-3.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 bg-forest text-white" data-frequency="biweekly" aria-pressed="true">Per 2 weken</button>
+        <button type="button" class="freq-btn px-7 py-3.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 text-forest/60 hover:text-forest" data-frequency="triweekly" aria-pressed="false">Per 3 weken</button>
+        <button type="button" class="freq-btn px-7 py-3.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 text-forest/60 hover:text-forest" data-frequency="monthly" aria-pressed="false">Per maand</button>
+      </div>
     </div>
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
 
-      <!-- Small -->
       <div class="p-10 bg-white border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
         <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Small</h3>
-        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een bescheiden, verfijnd boeketje. Ideaal voor op het keukeneiland of als subtiel accent in huis.</p>
-        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 17,50 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
-        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Dagverse selectie</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Verrassend kleurenpalet</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
+        <p class="font-light text-forest/70 mb-8 min-h-[84px]">Een leuk boeketje voor op tafel met de bloemen van het seizoen. Het boeket kan in een vaas worden geleverd, en de keer erna ruilen we de vaas weer om.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 17,95 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Seizoensbloemen</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Keuze van de bloemist</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Small" data-frequency="weekly" data-price="€ 17,50" data-label="Small Verse Bloemen">Kies dit plan</button>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Small" data-frequency="biweekly" data-price="€ 17,95" data-label="Small seizoensboeket">Kies dit boeket</button>
       </div>
 
-      <!-- Medium -->
       <div class="p-10 border-2 border-sage-500 rounded-3xl flex flex-col shadow-2xl transform lg:-translate-y-8 bg-white stagger-reveal relative group">
         <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-sage-500 text-white text-xs font-bold tracking-widest uppercase px-6 py-2 rounded-full">Favoriet</div>
         <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Medium</h3>
-        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een rijk boeket met karaktervolle seizoensbloemen. De perfecte blikvanger voor op de eettafel.</p>
-        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 27,50 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
-        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Luxe seizoensstelen</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Exclusieve combinaties</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
+        <p class="font-light text-forest/70 mb-8 min-h-[84px]">Een mooi, groot boeket als blikvanger in huis. Het boeket kan in een vaas worden geleverd, en de keer erna ruilen we de vaas weer om.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 23,95 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Seizoensbloemen</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Keuze van de bloemist</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button type="button" class="sub-btn mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Medium" data-frequency="biweekly" data-price="€ 27,50" data-label="Medium Verse Bloemen">Deel in het plezier</button>
+        <button type="button" class="sub-btn mt-12 w-full py-6 bg-sage-500 text-white text-xs tracking-widest uppercase hover:bg-forest transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Medium" data-frequency="biweekly" data-price="€ 23,95" data-label="Medium seizoensboeket">Kies dit boeket</button>
       </div>
 
-      <!-- Large -->
       <div class="p-10 bg-white border border-sand-600/30 rounded-3xl flex flex-col stagger-reveal shadow-sm hover:shadow-xl transition-all duration-500 group">
         <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">Large</h3>
-        <p class="font-light text-forest/70 mb-8 min-h-[60px]">Een extravagant pronkstuk vol diepgang en textuur. Voor wie echt wil uitpakken in het interieur.</p>
-        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 39,50 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
-        <ul class="space-y-4 font-light text-forest/80 mb-auto italic">
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Maximaal volume & luxe</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Robuuste eye-catchers</li>
-          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
+        <p class="font-light text-forest/70 mb-8 min-h-[84px]">Een prachtig groot boeket met seizoensbloemen. Het boeket kan in een vaas worden geleverd, en de keer erna ruilen we de vaas weer om.</p>
+        <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">€ 32,95 <span class="text-sm font-sans text-forest/50">/ keer</span></div>
+        <ul class="space-y-4 font-light text-forest/80 mb-auto">
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Dagverse bloemen</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Keuze van de bloemist</li>
+          <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg> Inclusief lokale bezorging</li>
         </ul>
-        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Large" data-frequency="monthly" data-price="€ 39,50" data-label="Large Verse Bloemen">Kies dit plan</button>
+        <button type="button" class="sub-btn mt-12 w-full py-5 bg-forest text-white text-xs tracking-widest uppercase hover:bg-terra-600 transition-all duration-300 rounded-full font-bold shadow-lg" data-type="fresh" data-size="Large" data-frequency="biweekly" data-price="€ 32,95" data-label="Large seizoensboeket">Kies dit boeket</button>
       </div>
 
+    </div>
+
+    <!-- Vaas -->
+    <div class="max-w-3xl mx-auto mt-12 md:mt-16 bg-white rounded-3xl p-8 md:p-10 shadow-sm text-center stagger-reveal">
+      <h3 class="font-serif text-2xl md:text-3xl text-forest mb-3">Liever mét vaas?</h3>
+      <p class="font-sans font-light text-forest/70 leading-relaxed max-w-xl mx-auto">
+        Vink bij het bestellen aan dat je het boeket in een vaas wilt ontvangen. Bij de volgende levering ruilen we de vaas gewoon weer om, zodat je nooit zonder zit.
+      </p>
     </div>
   </section>
 
@@ -170,7 +185,7 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
         <span class="text-xs md:text-sm font-sans font-bold uppercase tracking-widest text-sand-500">Voor bedrijven</span>
         <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl italic leading-tight">Zakelijk Bloemwerk</h2>
         <p class="font-sans font-light text-white/80 text-lg leading-relaxed">
-          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ik bied flexibele zakelijke abonnementen aan met zowel verse als kunstbloemen. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie — ik denk graag mee over een floral concept dat bij jouw merk past.
+          Wil je jouw kantoor, winkel of horecagelegenheid voorzien van een frisse, natuurlijke uitstraling? Ik bied flexibele zakelijke abonnementen aan met zowel verse als kunstbloemen. Van een eyecatcher op de balie tot sfeervolle tafeldecoratie: ik denk graag mee over een concept dat bij jouw bedrijf past.
         </p>
         <div class="flex flex-wrap gap-4">
           <span class="inline-block px-4 py-2 bg-white/10 rounded-full text-xs uppercase tracking-widest font-bold text-sand-500">Verse bloemen</span>
@@ -197,6 +212,25 @@ import SubscriptionForm from '../components/shop/SubscriptionForm';
       const prev = (marker as any).__subCleanup;
       if (prev) prev();
       (marker as any).__subCleanup = () => controller.abort();
+
+      // Frequentiekeuze (alleen voor verse bloemen)
+      const freqBtns = document.querySelectorAll('.freq-btn');
+      freqBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const freq = (btn as HTMLElement).dataset.frequency!;
+          freqBtns.forEach(b => {
+            const active = (b as HTMLElement).dataset.frequency === freq;
+            b.classList.toggle('bg-forest', active);
+            b.classList.toggle('text-white', active);
+            b.classList.toggle('text-forest/60', !active);
+            b.classList.toggle('hover:text-forest', !active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+          document.querySelectorAll('.sub-btn[data-type="fresh"]').forEach(b => {
+            (b as HTMLElement).dataset.frequency = freq;
+          });
+        }, { signal });
+      });
 
       document.querySelectorAll('.sub-btn').forEach(btn => {
         btn.addEventListener('click', () => {

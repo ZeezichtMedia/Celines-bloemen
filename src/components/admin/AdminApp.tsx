@@ -81,7 +81,7 @@ export default function AdminApp() {
       <div className="min-h-screen bg-[#F2E5D9] flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <img src="/images/logo/logo-transparent.png" alt="Logo" className="w-24 mx-auto mb-4" />
+            <img src="/images/logo/celinesbloemenlogo.webp" alt="Logo" className="w-24 mx-auto mb-4" />
             <h1 style={SERIF} className="text-3xl text-[#2B0000]">Beheer</h1>
             <p className="text-[#2B0000]/50 text-sm mt-1">Log in om je winkel te beheren</p>
           </div>
@@ -111,7 +111,7 @@ export default function AdminApp() {
       <header className="bg-white/90 backdrop-blur-md border-b border-[#E3D4C6] sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3 group" title="Terug naar website">
-            <img src="/images/logo/logo-transparent.png" alt="Logo" className="w-10 h-auto group-hover:scale-105 transition-transform" />
+            <img src="/images/logo/celinesbloemenlogo.webp" alt="Logo" className="w-10 h-auto group-hover:scale-105 transition-transform" />
             <span style={SERIF} className="text-xl text-[#2B0000] hidden sm:inline group-hover:text-[#a06d69] transition-colors">Beheer</span>
           </a>
           <div className="flex items-center gap-1 bg-[#F2E5D9]/60 rounded-xl p-1">
@@ -630,7 +630,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
     showToast('Abonnement verwijderd');
   };
 
-  const freqLabels: Record<string, string> = { weekly: 'Wekelijks', biweekly: '2-wekelijks', monthly: 'Maandelijks', quarterly: 'Per kwartaal', biannual: 'Per halfjaar', yearly: 'Per jaar' };
+  const freqLabels: Record<string, string> = { weekly: 'Wekelijks', biweekly: 'Per 2 weken', triweekly: 'Per 3 weken', monthly: 'Per maand', quarterly: 'Per kwartaal', biannual: 'Per halfjaar', yearly: 'Per jaar' };
   const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
     active:    { label: 'Actief',        color: 'bg-green-50 text-green-700',  dot: 'bg-green-400' },
     paused:    { label: 'Gepauzeerd',    color: 'bg-amber-50 text-amber-700',  dot: 'bg-amber-400' },
@@ -675,6 +675,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
                   <span>{s.planSize}</span>
                   <span className="text-[#2B0000]/20">|</span>
                   <span>{freqLabels[s.frequency] || s.frequency}</span>
+                  {s.vaseIncluded && <><span className="text-[#2B0000]/20">|</span><span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F2E5D9] rounded">In vaas</span></>}
                   {s.nextDeliveryDate && <><span className="text-[#2B0000]/20">|</span><span>Volgende: {s.nextDeliveryDate}</span></>}
                 </div>
                 {s.status !== 'cancelled' && (

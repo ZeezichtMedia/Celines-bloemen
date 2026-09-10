@@ -94,8 +94,9 @@ export const subscriptions = pgTable('subscriptions', {
   // Plan
   planType: varchar('plan_type', { length: 30 }).notNull(), // 'fresh', 'artificial'
   planSize: varchar('plan_size', { length: 20 }).notNull(), // 'small', 'medium', 'large'
-  frequency: varchar('frequency', { length: 20 }).notNull(), // 'weekly', 'biweekly', 'monthly', 'quarterly', 'biannual', 'yearly'
+  frequency: varchar('frequency', { length: 20 }).notNull(), // 'weekly', 'biweekly', 'triweekly', 'monthly', 'quarterly', 'biannual', 'yearly'
   pricePerDelivery: decimal('price_per_delivery', { precision: 10, scale: 2 }).notNull(),
+  vaseIncluded: boolean('vase_included').notNull().default(false), // boeket in leenvaas, wordt volgende levering geruild
 
   // Mollie
   mollieCustomerId: varchar('mollie_customer_id', { length: 100 }),

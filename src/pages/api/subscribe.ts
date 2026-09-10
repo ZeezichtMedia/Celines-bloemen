@@ -34,6 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
       frequency: plan.frequency,
       pricePerDelivery: priceToAmount(plan.price),
       colorPreference: plan.colorPreference || null,
+      vaseIncluded: plan.vaseIncluded ?? false,
       customerNote: customer.note || null,
     }).returning();
 
@@ -41,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
       customerName: customer.name,
       customerEmail: customer.email,
       amount: priceToAmount(plan.price),
-      description: `Eerste levering bloemenabonnement — Celine's Bloemen`,
+      description: `Eerste levering bloemenabonnement | Celine's Bloemen`,
       subscriptionMeta: {
         subscriptionId: String(sub.id),
       },
