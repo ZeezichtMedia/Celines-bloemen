@@ -62,6 +62,7 @@ export const loginSchema = z.object({
 });
 
 export const settingsSchema = z.object({
+  shipping_enabled: z.enum(['true', 'false']).optional(),
   shipping_cost: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Ongeldig bedrag').optional(),
   free_shipping_from: z.string().regex(/^(\d+(\.\d{1,2})?)?$/, 'Ongeldig bedrag').optional(),
   notify_email: z.string().email('Ongeldig e-mailadres').or(z.literal('')).optional(),

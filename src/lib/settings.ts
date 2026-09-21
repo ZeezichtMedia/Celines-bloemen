@@ -2,12 +2,14 @@ import { db, schema } from './db';
 import { eq } from 'drizzle-orm';
 
 export interface Settings {
+  shipping_enabled: string;    // "true" | "false" — pakketverzending aanbieden (Celine wil dit nu niet)
   shipping_cost: string;       // "6.95" — pakketverzending heel Nederland
   free_shipping_from: string;  // "75.00" — gratis verzending vanaf dit subtotaal ("" = nooit gratis)
   notify_email: string;        // waar nieuwe bestellingen/abonnementen heen gemaild worden
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  shipping_enabled: 'false',
   shipping_cost: '6.95',
   free_shipping_from: '75.00',
   notify_email: '',
@@ -40,5 +42,5 @@ export function resolveNotifyEmail(settings: Settings): string | null {
 export function publicShippingInfo(settings: Settings) {
   const cost = parseFloat(settings.shipping_cost) || 0;
   const freeFrom = settings.free_shipping_from ? parseFloat(settings.free_shipping_from) : null;
-  return { cost, freeFrom: freeFrom && freeFrom > 0 ? freeFrom : null };
+  return { enabled: settings.shipping_enabled === 'true', cost, freeFrom: freeFrom && freeFrom > 0 ? freeFrom : null };
 }

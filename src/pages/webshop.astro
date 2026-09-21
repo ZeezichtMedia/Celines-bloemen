@@ -9,6 +9,10 @@ import { formatEuro } from '../lib/plans';
 
 const [allProducts, settings] = await Promise.all([getVisibleProducts(), getSettings()]);
 const shipping = publicShippingInfo(settings);
+const intro = shipping.enabled
+  ? 'Laat de mooiste vazen, potten en bloemen thuisbezorgen, waar in Nederland je ook woont.'
+  : 'De mooiste vazen, potten en bloemen uit de winkel. Bestel online en haal op in Arnemuiden, of laat het bezorgen in de regio.';
+const eyebrow = shipping.enabled ? 'Landelijk Bezorgd' : 'Ophalen of lokaal bezorgd';
 
 const products = allProducts.map((p) => ({
   id: p.id,
@@ -29,7 +33,7 @@ const categories = [
 ];
 ---
 
-<Layout title="Webshop - Celine's bloemen" description="Laat de mooiste vazen, potten en bloemen thuisbezorgen, waar in Nederland je ook woont.">
+<Layout title="Webshop - Celine's bloemen" description={intro}>
 
   <!-- Hero Section -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
@@ -40,14 +44,16 @@ const categories = [
 
     <div class="relative z-10 max-w-5xl mx-auto text-center space-y-6 md:space-y-8 mt-10">
       <div class="inline-block px-4 py-1.5 bg-white/50 backdrop-blur-md rounded-full border border-forest/10 mt-4 stagger-reveal">
-        <span class="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-terra-600">Landelijk Bezorgd</span>
+        <span class="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-terra-600">{eyebrow}</span>
       </div>
       <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-forest drop-shadow-sm stagger-reveal leading-[1.1] md:leading-[0.9]">Celine's Favorieten</h1>
       <p class="font-sans text-lg md:text-xl text-forest/70 font-light max-w-2xl mx-auto stagger-reveal leading-relaxed">
-        Laat de mooiste vazen, potten en bloemen thuisbezorgen, waar in Nederland je ook woont.
+        {intro}
       </p>
       <p class="font-sans text-xs md:text-sm text-forest/50 stagger-reveal">
-        Verzendkosten {formatEuro(shipping.cost)}{shipping.freeFrom != null ? `, gratis vanaf ${formatEuro(shipping.freeFrom)}` : ''}. Alle prijzen inclusief btw. Ophalen in de winkel kan ook.
+        {shipping.enabled
+          ? `Verzendkosten ${formatEuro(shipping.cost)}${shipping.freeFrom != null ? `, gratis vanaf ${formatEuro(shipping.freeFrom)}` : ''}. Ophalen in de winkel kan ook.`
+          : 'Ophalen in de winkel is gratis, lokaal bezorgen vanaf € 3,00.'} Alle prijzen inclusief btw.
       </p>
     </div>
 
@@ -148,8 +154,10 @@ const categories = [
         </div>
         <div class="space-y-3">
           <div class="w-10 h-10 bg-sand-500 rounded-full flex items-center justify-center text-forest font-serif font-bold">3</div>
-          <h3 class="font-serif text-xl text-forest">Bezorgd aan je deur</h3>
-          <p class="font-sans text-sm text-forest/70 font-light">Je bestelling wordt zorgvuldig ingepakt en binnen 2 tot 4 werkdagen verzonden. Of je haalt hem op in de winkel in Arnemuiden.</p>
+          <h3 class="font-serif text-xl text-forest">{shipping.enabled ? 'Bezorgd aan je deur' : 'Ophalen of bezorgen'}</h3>
+          <p class="font-sans text-sm text-forest/70 font-light">{shipping.enabled
+            ? 'Je bestelling wordt zorgvuldig ingepakt en binnen 2 tot 4 werkdagen verzonden. Of je haalt hem op in de winkel in Arnemuiden.'
+            : 'Je haalt je bestelling op in de winkel in Arnemuiden, of ik bezorg hem bij je thuis in de regio, samen met een boeket als je wilt.'}</p>
         </div>
       </div>
     </div>

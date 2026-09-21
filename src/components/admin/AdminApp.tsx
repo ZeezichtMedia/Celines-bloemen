@@ -844,11 +844,11 @@ function IconBtn({ onClick, title, className, children }: { onClick: () => void;
 // Settings Tab — Delivery Zones
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
-type ShopSettings = { shipping_cost: string; free_shipping_from: string; notify_email: string; effectiveNotifyEmail?: string | null };
+type ShopSettings = { shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; effectiveNotifyEmail?: string | null };
 
 function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
   const [zones, setZones] = useState<DeliveryZone[]>([]);
-  const [settings, setSettings] = useState<ShopSettings>({ shipping_cost: '6.95', free_shipping_from: '75.00', notify_email: '' });
+  const [settings, setSettings] = useState<ShopSettings>({ shipping_enabled: 'false', shipping_cost: '6.95', free_shipping_from: '75.00', notify_email: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
@@ -868,6 +868,7 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        shipping_enabled: settings.shipping_enabled === 'true' ? 'true' : 'false',
         shipping_cost: settings.shipping_cost,
         free_shipping_from: settings.free_shipping_from,
         notify_email: settings.notify_email,
@@ -917,7 +918,17 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
 
       <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6 mb-6">
         <h3 style={SERIF} className="text-xl text-[#2B0000]">Verzending & meldingen</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <div className={`w-11 h-6 rounded-full relative transition-colors ${settings.shipping_enabled === 'true' ? 'bg-[#a06d69]' : 'bg-[#E3D4C6]'}`}
+            onClick={() => setSettings({ ...settings, shipping_enabled: settings.shipping_enabled === 'true' ? 'false' : 'true' })}>
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${settings.shipping_enabled === 'true' ? 'translate-x-[22px]' : 'translate-x-0.5'}`} />
+          </div>
+          <span className="text-sm text-[#2B0000]">
+            {settings.shipping_enabled === 'true' ? 'Verzenden per post staat aan' : 'Verzenden per post staat uit'}
+            <span className="block text-[11px] text-[#2B0000]/40">Uit = klanten kunnen alleen ophalen of lokaal laten bezorgen. De webshop past zijn teksten hierop aan.</span>
+          </span>
+        </label>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${settings.shipping_enabled === 'true' ? '' : 'opacity-40 pointer-events-none'}`}>
           <div>
             <Label>Verzendkosten pakket (heel Nederland)</Label>
             <div className="relative">

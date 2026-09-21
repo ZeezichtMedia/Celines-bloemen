@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { loadCart, cartTotal, formatEuro, clearCart, updateQuantity, removeFromCart, type CartItem } from '../../lib/cart';
 
 type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number };
-type ShippingInfo = { cost: number; freeFrom: number | null };
+type ShippingInfo = { enabled: boolean; cost: number; freeFrom: number | null };
 type DeliveryMethod = 'pickup' | 'local' | 'shipping';
 
 export default function CheckoutForm() {
@@ -15,7 +15,7 @@ export default function CheckoutForm() {
   const [deliveryDate, setDeliveryDate] = useState('');
   const [zoneId, setZoneId] = useState<number | null>(null);
   const [zones, setZones] = useState<DeliveryZone[]>([]);
-  const [shipping, setShipping] = useState<ShippingInfo>({ cost: 0, freeFrom: null });
+  const [shipping, setShipping] = useState<ShippingInfo>({ enabled: false, cost: 0, freeFrom: null });
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Payment
@@ -50,8 +50,8 @@ export default function CheckoutForm() {
   // Verse boeketten (alles met een maat) gaan niet per post
   const hasBouquet = cart.items.some((i) => !!i.size);
   useEffect(() => {
-    if (hasBouquet && deliveryMethod === 'shipping') setDeliveryMethod('pickup');
-  }, [hasBouquet, deliveryMethod]);
+    if ((hasBouquet || !shipping.enabled) && deliveryMethod === 'shipping') setDeliveryMethod('pickup');
+  }, [hasBouquet, shipping.enabled, deliveryMethod]);
 
   // Reset payment choice when switching to delivery
   useEffect(() => {
@@ -161,11 +161,11 @@ export default function CheckoutForm() {
           {/* Delivery method */}
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Bezorging</h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className={`grid gap-2 ${shipping.enabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
               {[
                 { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden', disabled: false },
                 { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren e.o.', disabled: false },
-                { val: 'shipping' as const, label: 'Verzenden', sub: hasBouquet ? 'Niet voor boeketten' : 'Heel Nederland', disabled: hasBouquet },
+                ...(shipping.enabled ? [{ val: 'shipping' as const, label: 'Verzenden', sub: hasBouquet ? 'Niet voor boeketten' : 'Heel Nederland', disabled: hasBouquet }] : []),
               ].map((opt) => (
                 <button
                   key={opt.val}
@@ -185,7 +185,7 @@ export default function CheckoutForm() {
                 </button>
               ))}
             </div>
-            {hasBouquet && (
+            {hasBouquet && shipping.enabled && (
               <p className="text-[11px] text-[#2B0000]/40 font-sans">Verse boeketten worden niet per post verzonden. Ophalen of lokaal bezorgen kan wel.</p>
             )}
 

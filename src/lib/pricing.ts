@@ -107,8 +107,9 @@ export async function priceOrder(input: {
     deliveryCost = cents(Number(zone.cost));
     deliveryRegion = zone.name;
   } else if (input.delivery.method === 'shipping') {
-    if (hasBouquet) throw new PricingError('Verse boeketten kunnen niet per post verzonden worden. Kies ophalen of lokaal bezorgen.');
     const shipping = publicShippingInfo(settings);
+    if (!shipping.enabled) throw new PricingError('Verzenden per post is op dit moment niet mogelijk. Kies ophalen of lokaal bezorgen.');
+    if (hasBouquet) throw new PricingError('Verse boeketten kunnen niet per post verzonden worden. Kies ophalen of lokaal bezorgen.');
     deliveryCost = shipping.freeFrom != null && subtotal >= shipping.freeFrom ? 0 : cents(shipping.cost);
     deliveryRegion = 'Verzending (heel Nederland)';
   }
