@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /afrekenen
+Disallow: /bestelling/
+Disallow: /abonnementen/bevestiging
+
+Sitemap: https://celinesbloemen.nl/sitemap-index.xml

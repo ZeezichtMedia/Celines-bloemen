@@ -1,0 +1,41 @@
+---
+import LegalLayout from '../components/legal/LegalLayout.astro';
+import { siteConfig } from '../config';
+---
+
+<LegalLayout title="Privacyverklaring" eyebrow="Zorgvuldig met je gegevens" description="Welke gegevens Celine's Bloemen verwerkt bij een bestelling of abonnement, waarom, hoe lang, en wat je rechten zijn." updated="september 2026">
+
+  <h2>Wie is verantwoordelijk</h2>
+  <p>{siteConfig.legalName}, {siteConfig.address.street}, {siteConfig.address.postalCode} {siteConfig.address.city}, is verantwoordelijk voor de verwerking van je persoonsgegevens op deze website. Vragen? Mail naar {siteConfig.email}.</p>
+
+  <h2>Welke gegevens ik verwerk en waarom</h2>
+  <p><strong>Bij een bestelling of abonnement:</strong> je naam, e-mailadres, telefoonnummer (optioneel), bezorgadres, wat je hebt besteld, eventuele opmerkingen en kleurvoorkeur, en de status van je betaling. Die heb ik nodig om je bestelling te maken, te bezorgen of te verzenden, je een bevestiging te sturen en om contact op te nemen als er iets is. De grondslag is de uitvoering van de overeenkomst.</p>
+  <p><strong>Bij het contactformulier of WhatsApp:</strong> je naam, e-mailadres of telefoonnummer en je bericht, om je vraag te beantwoorden. Grondslag: mijn gerechtvaardigd belang om op je bericht te reageren.</p>
+  <p><strong>Betaalgegevens</strong> (bankrekening, kaartgegevens) zie ik niet. Die verwerkt Mollie. Ik ontvang alleen of de betaling is gelukt en, bij een abonnement, een machtigingskenmerk voor de doorlopende incasso.</p>
+
+  <h2>Cookies en meten</h2>
+  <p>Deze website plaatst geen tracking- of advertentiecookies. Je winkelwagen wordt alleen in je eigen browser bewaard (lokale opslag) en verlaat je apparaat niet. Voor bezoekersstatistieken gebruik ik Vercel Web Analytics, dat geen cookies plaatst en geen individuele bezoekers volgt. Daarom is er geen cookiebanner.</p>
+
+  <h2>Met wie ik gegevens deel</h2>
+  <p>Alleen met partijen die nodig zijn om je bestelling af te handelen, en alleen wat zij daarvoor nodig hebben:</p>
+  <ul>
+    <li><strong>Mollie</strong> (betalingen en incasso's), Nederland.</li>
+    <li><strong>Vercel</strong> (hosting van de website) en <strong>Neon</strong> (database, servers in de EU) voor het opslaan van bestellingen en abonnementen.</li>
+    <li>Mijn <strong>e-mailprovider</strong> voor het versturen van bevestigingen.</li>
+    <li><strong>PostNL</strong> of een andere pakketdienst, alleen je naam en adres, als je een pakket laat verzenden.</li>
+  </ul>
+  <p>Ik verkoop nooit gegevens en deel ze niet voor marketing van anderen.</p>
+
+  <h2>Hoe lang ik gegevens bewaar</h2>
+  <p>Bestelgegevens bewaar ik 7 jaar, omdat de Belastingdienst dat van mij vraagt voor de administratie. Contactberichten bewaar ik maximaal 1 jaar. Abonnementsgegevens bewaar ik zolang het abonnement loopt en daarna 7 jaar voor de administratie.</p>
+
+  <h2>Je rechten</h2>
+  <p>Je mag altijd vragen welke gegevens ik van je heb, ze laten corrigeren of verwijderen (voor zover ik ze niet wettelijk moet bewaren), de verwerking laten beperken, of je gegevens laten overdragen. Mail daarvoor naar {siteConfig.email}; ik reageer binnen een maand. Ben je niet tevreden over hoe ik met je gegevens omga, dan kun je een klacht indienen bij de Autoriteit Persoonsgegevens.</p>
+
+  <h2>Beveiliging</h2>
+  <p>De website loopt volledig over een beveiligde verbinding (https). Het beheer is afgeschermd met een wachtwoord en alleen ik heb toegang. Betalingen lopen via de beveiligde omgeving van Mollie.</p>
+
+  <h2>Wijzigingen</h2>
+  <p>Als ik deze verklaring aanpas, komt de nieuwe versie op deze pagina te staan met een nieuwe datum.</p>
+
+</LegalLayout>

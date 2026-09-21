@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import type { Bouquet, Product } from '../../lib/types';
 
 // ============================================================
@@ -98,7 +98,7 @@ export default function AdminApp() {
     );
   }
 
-  const tabs: { id: Tab; label: string; icon: JSX.Element }[] = [
+  const tabs: { id: Tab; label: string; icon: ReactNode }[] = [
     { id: 'orders', label: 'Bestellingen', icon: Icon.orders },
     { id: 'bouquets', label: 'Boeketten', icon: Icon.flower },
     { id: 'products', label: 'Webshop', icon: Icon.shop },
@@ -282,7 +282,12 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
               <img src={p.image} alt={p.name} className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <h3 style={SERIF} className="text-lg text-[#2B0000] truncate">{p.name}</h3>
-                <p className="text-[#2B0000]/40 text-xs mt-0.5">{p.category} · {p.priceLabel}</p>
+                <p className="text-[#2B0000]/40 text-xs mt-0.5">
+                  {p.category} · {p.priceLabel}
+                  {p.stock != null && (
+                    <span className={p.stock <= 0 ? 'text-red-500 font-medium' : ''}> · {p.stock <= 0 ? 'uitverkocht' : `voorraad ${p.stock}`}</span>
+                  )}
+                </p>
               </div>
               <button onClick={() => saveProduct({ ...p, available: !p.available })}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex-shrink-0 ${p.available ? 'bg-green-50 text-green-700 hover:bg-green-100' : 'bg-[#F2E5D9] text-[#2B0000]/40 hover:bg-[#E3D4C6]'}`}>
@@ -377,11 +382,18 @@ function ProductEditForm({ product, onSave, saving, isNew }: { product: Product;
           className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 resize-none" />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div>
           <Label>Prijs (in euro)</Label>
           <input type="number" step="0.01" min="0" value={form.price} onChange={(e) => updatePrice(e.target.value)}
             className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" required />
+        </div>
+        <div>
+          <Label>Voorraad</Label>
+          <input type="number" min="0" step="1" value={form.stock ?? ''} placeholder="Onbeperkt"
+            onChange={(e) => set('stock', e.target.value === '' ? null : Math.max(0, parseInt(e.target.value) || 0))}
+            className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" />
+          <p className="text-[10px] text-[#2B0000]/30 mt-1">Leeg = onbeperkt. Bij 0 staat het op uitverkocht. Loopt automatisch terug na een betaalde bestelling.</p>
         </div>
         <Field label="Volgorde" value={String(form.sortOrder)} onChange={(v) => set('sortOrder', parseInt(v) || 0)} type="number" />
       </div>
@@ -459,8 +471,9 @@ function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
   };
 
   const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
-    pending:    { label: 'Wacht op betaling', color: 'bg-amber-50 text-amber-700', dot: 'bg-amber-400' },
-    paid:       { label: 'Betaald',           color: 'bg-blue-50 text-blue-700',   dot: 'bg-blue-400' },
+    pending:        { label: 'Wacht op betaling',  color: 'bg-amber-50 text-amber-700', dot: 'bg-amber-400' },
+    pending_pickup: { label: 'Betaalt in winkel',  color: 'bg-sky-50 text-sky-700',     dot: 'bg-sky-400' },
+    paid:           { label: 'Betaald',            color: 'bg-blue-50 text-blue-700',   dot: 'bg-blue-400' },
     preparing:  { label: 'In voorbereiding',  color: 'bg-violet-50 text-violet-700', dot: 'bg-violet-400' },
     shipped:    { label: 'Verzonden',         color: 'bg-sky-50 text-sky-700',     dot: 'bg-sky-400' },
     delivered:  { label: 'Bezorgd',           color: 'bg-green-50 text-green-700', dot: 'bg-green-400' },
@@ -831,19 +844,42 @@ function IconBtn({ onClick, title, className, children }: { onClick: () => void;
 // Settings Tab — Delivery Zones
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
+type ShopSettings = { shipping_cost: string; free_shipping_from: string; notify_email: string; effectiveNotifyEmail?: string | null };
 
 function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
   const [zones, setZones] = useState<DeliveryZone[]>([]);
+  const [settings, setSettings] = useState<ShopSettings>({ shipping_cost: '6.95', free_shipping_from: '75.00', notify_email: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   useEffect(() => {
-    fetch('/api/admin/delivery-zones')
-      .then((r) => r.json())
-      .then((data) => setZones(data))
+    Promise.all([
+      fetch('/api/admin/delivery-zones').then((r) => r.json()).then((data) => setZones(data)),
+      fetch('/api/admin/settings').then((r) => r.json()).then((data) => setSettings(data)),
+    ])
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const saveShopSettings = async () => {
+    setSavingSettings(true);
+    const res = await fetch('/api/admin/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        shipping_cost: settings.shipping_cost,
+        free_shipping_from: settings.free_shipping_from,
+        notify_email: settings.notify_email,
+      }),
+    });
+    if (res.ok) showToast('Instellingen opgeslagen');
+    else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
+    setSavingSettings(false);
+  };
 
   const updateZone = (index: number, key: keyof DeliveryZone, value: any) => {
     setZones((prev) => prev.map((z, i) => i === index ? { ...z, [key]: value } : z));
@@ -875,7 +911,44 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 style={SERIF} className="text-2xl text-[#2B0000]">Instellingen</h2>
-          <p className="text-[#2B0000]/40 text-sm mt-1">Beheer bezorgtarieven en regio's</p>
+          <p className="text-[#2B0000]/40 text-sm mt-1">Bezorgregio's, verzending en meldingen</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6 mb-6">
+        <h3 style={SERIF} className="text-xl text-[#2B0000]">Verzending & meldingen</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <Label>Verzendkosten pakket (heel Nederland)</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2B0000]/40 text-sm">€</span>
+              <input type="number" step="0.05" min="0" value={settings.shipping_cost}
+                onChange={(e) => setSettings({ ...settings, shipping_cost: e.target.value })}
+                className="w-full pl-8 pr-3 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" />
+            </div>
+          </div>
+          <div>
+            <Label>Gratis verzending vanaf</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2B0000]/40 text-sm">€</span>
+              <input type="number" step="1" min="0" value={settings.free_shipping_from} placeholder="Leeg = nooit gratis"
+                onChange={(e) => setSettings({ ...settings, free_shipping_from: e.target.value })}
+                className="w-full pl-8 pr-3 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <Label>E-mailadres voor nieuwe bestellingen en abonnementen</Label>
+          <input type="email" value={settings.notify_email} placeholder={settings.effectiveNotifyEmail || 'info@celinesbloemen.nl'}
+            onChange={(e) => setSettings({ ...settings, notify_email: e.target.value })}
+            className="w-full px-4 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" />
+          <p className="text-[10px] text-[#2B0000]/30 mt-1">Hier komt een seintje binnen bij elke betaalde bestelling, elk nieuw abonnement en elke incasso. Leeg = het standaardadres{settings.effectiveNotifyEmail ? ` (${settings.effectiveNotifyEmail})` : ''}.</p>
+        </div>
+        <div className="pt-2">
+          <button onClick={saveShopSettings} disabled={savingSettings}
+            className="px-6 py-3 bg-[#a06d69] text-white text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50">
+            {savingSettings ? 'Opslaan...' : 'Instellingen opslaan'}
+          </button>
         </div>
       </div>
 
@@ -934,7 +1007,7 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
   );
 }
 
-function EmptyState({ icon, text }: { icon: JSX.Element; text: string }) {
+function EmptyState({ icon, text }: { icon: ReactNode; text: string }) {
   return (
     <div className="bg-white rounded-2xl p-16 text-center border border-[#E3D4C6]/50">
       <div className="w-14 h-14 mx-auto bg-[#F2E5D9] rounded-full flex items-center justify-center text-[#a06d69] mb-4">{icon}</div>

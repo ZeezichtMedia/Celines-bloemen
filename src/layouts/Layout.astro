@@ -11,9 +11,10 @@ interface Props {
 	title: string;
 	description?: string;
 	ogImage?: string;
+	noindex?: boolean;
 }
 
-const { title, description = "Celine's Bloemen - Bloemen maken jouw bruiloft, huis en evenement compleet.", ogImage = "/images/logo/celinesbloemenlogo.webp" } = Astro.props;
+const { title, description = "Celine's Bloemen - Bloemen maken jouw bruiloft, huis en evenement compleet.", ogImage = "/images/logo/celinesbloemenlogo.webp", noindex = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
 ---
 
@@ -27,6 +28,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
 		<link rel="canonical" href={canonicalURL.href} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<title>{title}</title>
 
 		<!-- Open Graph -->

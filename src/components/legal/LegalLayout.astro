@@ -1,0 +1,40 @@
+---
+// Gedeelde opmaak voor voorwaarden en privacyverklaring
+import Layout from '../../layouts/Layout.astro';
+import { siteConfig } from '../../config';
+
+interface Props { title: string; eyebrow: string; description: string; updated: string }
+const { title, eyebrow, description, updated } = Astro.props;
+---
+
+<Layout title={`${title} - Celine's bloemen`} description={description}>
+  <section class="pt-32 pb-12 md:pt-40 md:pb-16 bg-sand-600 px-4 md:px-6">
+    <div class="max-w-3xl mx-auto text-center space-y-4">
+      <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">{eyebrow}</span>
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl text-forest leading-tight">{title}</h1>
+      <p class="font-sans text-sm text-forest/50">Laatst bijgewerkt: {updated}</p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20 bg-white px-4 md:px-6">
+    <article class="legal max-w-3xl mx-auto font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg">
+      <slot />
+      <div class="mt-12 pt-8 border-t border-sand-600/30 text-sm text-forest/60 not-prose">
+        <p class="font-medium text-forest">{siteConfig.legalName}</p>
+        <p>{siteConfig.address.street}, {siteConfig.address.postalCode} {siteConfig.address.city}</p>
+        <p>{siteConfig.email} · {siteConfig.phoneDisplay}</p>
+        <p>KvK: {siteConfig.kvk || '[KvK-nummer invullen]'} · Btw-id: {siteConfig.btw || '[btw-nummer invullen]'}</p>
+      </div>
+    </article>
+  </section>
+</Layout>
+
+<style>
+  .legal :global(h2) { font-family: var(--font-serif, 'Cormorant Garamond', serif); font-size: 1.75rem; line-height: 1.2; color: var(--color-forest, #2B0000); margin: 2.5rem 0 1rem; }
+  .legal :global(h2:first-child) { margin-top: 0; }
+  .legal :global(p) { margin: 0 0 1rem; }
+  .legal :global(ul) { margin: 0 0 1rem 1.25rem; list-style: disc; }
+  .legal :global(li) { margin-bottom: 0.4rem; }
+  .legal :global(a) { text-decoration: underline; }
+  .legal :global(strong) { font-weight: 500; color: var(--color-forest, #2B0000); }
+</style>

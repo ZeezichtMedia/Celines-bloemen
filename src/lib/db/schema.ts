@@ -107,11 +107,25 @@ export const subscriptions = pgTable('subscriptions', {
   nextDeliveryDate: varchar('next_delivery_date', { length: 20 }),
   lastDeliveryDate: varchar('last_delivery_date', { length: 20 }),
 
+  // Laatste terugkerende incasso (voor de melding aan Celine, en idempotentie van de webhook)
+  lastPaymentId: varchar('last_payment_id', { length: 100 }),
+  lastPaymentStatus: varchar('last_payment_status', { length: 30 }),
+  lastPaymentAt: timestamp('last_payment_at'),
+
   // Notes
   colorPreference: text('color_preference'),
   customerNote: text('customer_note'),
 
   createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+// ============================================================
+// Settings — losse instellingen (verzendkosten, notificatiemail)
+// ============================================================
+export const settings = pgTable('settings', {
+  key: varchar('key', { length: 100 }).primaryKey(),
+  value: text('value').notNull(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 

@@ -33,7 +33,7 @@ export const PATCH: APIRoute = async ({ request }) => {
       const mollieStatus = payment.status;
       let newStatus = order.status;
       if (mollieStatus === 'paid' && order.status === 'pending') newStatus = 'paid';
-      else if (mollieStatus === 'failed' || mollieStatus === 'cancelled' || mollieStatus === 'expired') newStatus = 'cancelled';
+      else if (mollieStatus === 'failed' || mollieStatus === 'canceled' || mollieStatus === 'expired') newStatus = 'cancelled';
 
       await db.update(schema.orders)
         .set({ status: newStatus, paidAt: mollieStatus === 'paid' ? new Date() : order.paidAt, updatedAt: new Date() })
@@ -56,7 +56,7 @@ export const PATCH: APIRoute = async ({ request }) => {
         if (payment.status === 'paid') {
           await db.update(schema.orders).set({ status: 'paid', paidAt: new Date(), updatedAt: new Date() }).where(eq(schema.orders.id, order.id));
           synced++;
-        } else if (payment.status === 'failed' || payment.status === 'cancelled' || payment.status === 'expired') {
+        } else if (payment.status === 'failed' || payment.status === 'canceled' || payment.status === 'expired') {
           await db.update(schema.orders).set({ status: 'cancelled', updatedAt: new Date() }).where(eq(schema.orders.id, order.id));
           synced++;
         }

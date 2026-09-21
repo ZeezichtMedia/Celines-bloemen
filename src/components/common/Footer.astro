@@ -46,6 +46,10 @@ const currentYear = new Date().getFullYear();
         <li><a href="/bruiloften-verhuur" class="hover:text-sage-400 transition-colors duration-300">Bruiloften & Verhuur</a></li>
         <li><a href="/contact" class="hover:text-sage-400 transition-colors duration-300">Contact</a></li>
       </ul>
+      <ul class="flex flex-col gap-2 font-light text-sm mt-6 pt-6 border-t border-sand-600/20 text-sand-600/70">
+        <li><a href="/algemene-voorwaarden" class="hover:text-sage-400 transition-colors duration-300">Algemene voorwaarden</a></li>
+        <li><a href="/privacy" class="hover:text-sage-400 transition-colors duration-300">Privacyverklaring</a></li>
+      </ul>
     </div>
 
     <!-- Contact Info -->
@@ -70,7 +74,11 @@ const currentYear = new Date().getFullYear();
   </div>
   
   <div class="max-w-7xl mx-auto px-6 mt-12 md:mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-sand-600/60 font-light text-center md:text-left">
-    <p>&copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.</p>
+    <p>
+      &copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.
+      {siteConfig.kvk && <span class="block md:inline md:ml-3">KvK {siteConfig.kvk}</span>}
+      {siteConfig.btw && <span class="block md:inline md:ml-3">Btw {siteConfig.btw}</span>}
+    </p>
 
     <!-- Agensea credit — premium signature -->
     <a

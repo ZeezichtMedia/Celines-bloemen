@@ -23,6 +23,7 @@ export default function SubscriptionForm() {
   const [colorPref, setColorPref] = useState('');
   const [note, setNote] = useState('');
   const [vase, setVase] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   if (typeof window !== 'undefined') {
     (window as any).__openSubscription = (p: Plan) => {
@@ -47,11 +48,11 @@ export default function SubscriptionForm() {
             type: plan.type,
             size: plan.size,
             frequency: plan.frequency,
-            price: plan.price,
             colorPreference: colorPref,
             vaseIncluded: vase,
           },
           delivery: { address, city, postalCode },
+          acceptTerms,
         }),
       });
 
@@ -138,6 +139,14 @@ export default function SubscriptionForm() {
               </div>
             </div>
 
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" required checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer flex-shrink-0" />
+              <span className="font-sans text-xs text-[#2B0000]/70 leading-snug">
+                Ik ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#a06d69]">algemene voorwaarden</a> en de automatische incasso per levering. Opzeggen kan altijd.
+              </span>
+            </label>
+
             {error && <p className="text-red-500 text-sm font-sans">{error}</p>}
 
             <div className="pt-4 border-t border-[#E3D4C6] flex items-center gap-4">
@@ -152,7 +161,7 @@ export default function SubscriptionForm() {
             </div>
 
             <p className="text-center text-[10px] text-[#2B0000]/30 font-sans leading-relaxed">
-              Na de eerste betaling wordt automatisch een incassomandaat aangemaakt. Je kunt op elk moment pauzeren of stoppen.
+              Prijs inclusief btw. Na de eerste betaling wordt automatisch een incassomandaat aangemaakt. Je kunt op elk moment pauzeren of stoppen.
             </p>
           </form>
         </div>

@@ -8,6 +8,7 @@ import { getVisibleBouquets } from '../lib/data';
 const allBouquets = await getVisibleBouquets();
 
 const bouquets = allBouquets.map((b) => ({
+  id: b.id,
   name: b.name,
   color: b.color,
   description: b.description,
@@ -32,7 +33,7 @@ const bouquets = allBouquets.map((b) => ({
         Boeket <span class="italic text-terra-600">Bestellen</span>
       </h1>
       <p class="font-sans text-base md:text-lg text-forest/70 font-light max-w-xl mx-auto stagger-reveal leading-relaxed">
-        Dagvers, handgebonden en bezorgd op Walcheren. Kies je favoriete boeket, selecteer een maat en reken veilig af met iDEAL.
+        Dagvers, handgebonden en bezorgd op Walcheren. Kies je favoriete boeket, selecteer een maat en reken veilig af met iDEAL. Alle prijzen zijn inclusief btw.
       </p>
     </div>
   </section>
@@ -47,6 +48,7 @@ const bouquets = allBouquets.map((b) => ({
             class="bouquet-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col sm:flex-row h-full border border-sand-600/20"
             data-name={bouquet.name}
             data-image={bouquet.image}
+            data-id={bouquet.id}
             data-price-klein={bouquet.prices.klein}
             data-price-middel={bouquet.prices.middel}
             data-price-groot={bouquet.prices.groot}
@@ -244,7 +246,7 @@ const bouquets = allBouquets.map((b) => ({
           const price = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
 
           addToCart({
-            productId: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            productId: cardEl.dataset.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
             name,
             size,
             price,

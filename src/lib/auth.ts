@@ -2,6 +2,8 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const COOKIE_NAME = 'admin_session';
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours
+// Op Vercel altijd https, lokaal (astro dev) niet: zonder deze check werkt inloggen lokaal niet
+const SECURE_FLAG = process.env.VERCEL || process.env.NODE_ENV === 'production' ? '; Secure' : '';
 
 function getEnv(key: string): string | undefined {
   return process.env[key] ?? (import.meta.env as Record<string, string | undefined>)[key];
@@ -39,11 +41,11 @@ export function createSessionCookie(): string {
   const payload = `authenticated:${Date.now()}`;
   const signature = sign(payload);
   const token = Buffer.from(`${payload}.${signature}`).toString('base64');
-  return `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MAX_AGE}`;
+  return `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MAX_AGE}${SECURE_FLAG}`;
 }
 
 export function clearSessionCookie(): string {
-  return `${COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0`;
+  return `${COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0${SECURE_FLAG}`;
 }
 
 export function isAuthenticated(cookieHeader: string | null): boolean {

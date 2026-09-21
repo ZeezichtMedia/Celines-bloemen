@@ -21,4 +21,5 @@ export interface Product {
   category: string;
   available: boolean;
   sortOrder: number;
+  stock?: number | null; // null/undefined = onbeperkt, 0 = uitverkocht
 }

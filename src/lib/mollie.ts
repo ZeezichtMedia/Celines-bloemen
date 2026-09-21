@@ -1,4 +1,4 @@
-import { createMollieClient } from '@mollie/api-client';
+import { createMollieClient, SequenceType } from '@mollie/api-client';
 
 function getMollieClient() {
   const apiKey = process.env.MOLLIE_API_KEY;
@@ -70,7 +70,7 @@ export async function createFirstPayment({
   const payment = await mollie.payments.create({
     amount: { currency: 'EUR', value: amount },
     description,
-    sequenceType: 'first',
+    sequenceType: SequenceType.first,
     customerId: customer.id,
     redirectUrl: `${SITE_URL}/abonnementen/bevestiging`,
     webhookUrl: `${SITE_URL}/api/webhooks/mollie-subscription`,

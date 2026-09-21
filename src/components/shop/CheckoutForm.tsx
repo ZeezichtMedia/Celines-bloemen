@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { loadCart, cartTotal, formatEuro, clearCart, updateQuantity, removeFromCart, type CartItem } from '../../lib/cart';
 
 type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number };
+type ShippingInfo = { cost: number; freeFrom: number | null };
+type DeliveryMethod = 'pickup' | 'local' | 'shipping';
 
 export default function CheckoutForm() {
   const [cart, setCart] = useState<{ items: CartItem[] }>({ items: [] });
@@ -9,10 +11,12 @@ export default function CheckoutForm() {
   const [error, setError] = useState('');
 
   // Delivery
-  const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'local'>('pickup');
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('pickup');
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [region, setRegion] = useState('');
+  const [zoneId, setZoneId] = useState<number | null>(null);
   const [zones, setZones] = useState<DeliveryZone[]>([]);
+  const [shipping, setShipping] = useState<ShippingInfo>({ cost: 0, freeFrom: null });
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Payment
   const [paymentChoice, setPaymentChoice] = useState<'online' | 'in_store'>('online');
@@ -34,18 +38,34 @@ export default function CheckoutForm() {
       .then((r) => r.json())
       .then((data: DeliveryZone[]) => {
         setZones(data);
-        if (data.length > 0) setRegion(data[0].cost);
+        if (data.length > 0) setZoneId(data[0].id);
       })
       .catch(() => {});
+    fetch('/api/shipping')
+      .then((r) => r.json())
+      .then((data: ShippingInfo) => setShipping(data))
+      .catch(() => {});
   }, []);
+
+  // Verse boeketten (alles met een maat) gaan niet per post
+  const hasBouquet = cart.items.some((i) => !!i.size);
+  useEffect(() => {
+    if (hasBouquet && deliveryMethod === 'shipping') setDeliveryMethod('pickup');
+  }, [hasBouquet, deliveryMethod]);
 
   // Reset payment choice when switching to delivery
   useEffect(() => {
     if (deliveryMethod === 'local') setPaymentChoice('online');
   }, [deliveryMethod]);
 
+  // Alleen ter indicatie: de server rekent het definitieve bedrag zelf uit
   const subtotal = cartTotal(cart);
-  const deliveryCost = deliveryMethod === 'local' ? parseFloat(region || '0') : 0;
+  const selectedZone = zones.find((z) => z.id === zoneId);
+  const shippingCost = shipping.freeFrom != null && subtotal >= shipping.freeFrom ? 0 : shipping.cost;
+  const deliveryCost =
+    deliveryMethod === 'local' ? parseFloat(selectedZone?.cost || '0')
+    : deliveryMethod === 'shipping' ? shippingCost
+    : 0;
   const total = subtotal + deliveryCost;
 
   // Min delivery date = tomorrow
@@ -66,23 +86,19 @@ export default function CheckoutForm() {
           customer: { name, email, phone, note },
           items: cart.items.map((i) => ({
             productId: i.productId,
-            name: i.name,
             size: i.size,
             quantity: i.quantity,
-            price: formatEuro(i.price),
           })),
           delivery: {
             method: deliveryMethod,
             date: deliveryMethod === 'local' ? deliveryDate : null,
+            zoneId: deliveryMethod === 'local' ? zoneId : null,
             address: deliveryMethod !== 'pickup' ? address : null,
             city: deliveryMethod !== 'pickup' ? city : null,
             postalCode: deliveryMethod !== 'pickup' ? postalCode : null,
-            region: deliveryMethod === 'local' ? region : null,
-            cost: formatEuro(deliveryCost),
           },
           paymentMethod: deliveryMethod === 'pickup' ? paymentChoice : 'online',
-          subtotal: formatEuro(subtotal),
-          total: formatEuro(total),
+          acceptTerms,
         }),
       });
 
@@ -145,38 +161,52 @@ export default function CheckoutForm() {
           {/* Delivery method */}
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Bezorging</h3>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {[
-                { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden' },
-                { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren' },
+                { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden', disabled: false },
+                { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren e.o.', disabled: false },
+                { val: 'shipping' as const, label: 'Verzenden', sub: hasBouquet ? 'Niet voor boeketten' : 'Heel Nederland', disabled: hasBouquet },
               ].map((opt) => (
                 <button
                   key={opt.val}
                   type="button"
+                  disabled={opt.disabled}
                   onClick={() => setDeliveryMethod(opt.val)}
-                  className={`rounded-xl py-3 px-2 text-center border transition-all cursor-pointer ${
-                    deliveryMethod === opt.val
-                      ? 'bg-[#2B0000] text-white border-[#2B0000]'
-                      : 'bg-white border-[#E3D4C6] text-[#2B0000] hover:border-[#a06d69]'
+                  className={`rounded-xl py-3 px-2 text-center border transition-all ${
+                    opt.disabled
+                      ? 'bg-[#F2E5D9]/40 border-[#E3D4C6] text-[#2B0000]/30 cursor-not-allowed'
+                      : deliveryMethod === opt.val
+                        ? 'bg-[#2B0000] text-white border-[#2B0000] cursor-pointer'
+                        : 'bg-white border-[#E3D4C6] text-[#2B0000] hover:border-[#a06d69] cursor-pointer'
                   }`}
                 >
                   <span className="block font-sans text-sm font-medium">{opt.label}</span>
-                  <span className={`block font-sans text-[10px] mt-0.5 ${deliveryMethod === opt.val ? 'text-white/60' : 'text-[#2B0000]/40'}`}>{opt.sub}</span>
+                  <span className={`block font-sans text-[10px] mt-0.5 ${!opt.disabled && deliveryMethod === opt.val ? 'text-white/60' : 'text-[#2B0000]/40'}`}>{opt.sub}</span>
                 </button>
               ))}
             </div>
+            {hasBouquet && (
+              <p className="text-[11px] text-[#2B0000]/40 font-sans">Verse boeketten worden niet per post verzonden. Ophalen of lokaal bezorgen kan wel.</p>
+            )}
+
+            {deliveryMethod === 'shipping' && (
+              <p className="text-xs text-[#2B0000]/60 font-sans bg-[#F2E5D9]/50 rounded-lg px-4 py-3">
+                Verzending per post kost {formatEuro(shipping.cost)}
+                {shipping.freeFrom != null ? ` en is gratis vanaf ${formatEuro(shipping.freeFrom)}` : ''}. Je bestelling wordt zorgvuldig ingepakt en binnen 2 tot 4 werkdagen verzonden.
+              </p>
+            )}
 
             {deliveryMethod === 'local' && (
               <div className="space-y-3 pt-3 border-t border-[#E3D4C6]">
                 <div>
                   <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5">Regio</label>
                   <select
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
+                    value={zoneId ?? ''}
+                    onChange={(e) => setZoneId(Number(e.target.value))}
                     className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg font-sans text-sm text-[#2B0000] focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 appearance-none"
                   >
                     {zones.map((z) => (
-                      <option key={z.id} value={z.cost}>
+                      <option key={z.id} value={z.id}>
                         {z.name} (+ € {Number(z.cost).toFixed(2).replace('.', ',')})
                       </option>
                     ))}
@@ -289,7 +319,25 @@ export default function CheckoutForm() {
                 <span className="font-sans text-sm font-semibold text-[#2B0000]">Totaal</span>
                 <span className="font-serif text-2xl text-[#2B0000]">{formatEuro(total)}</span>
               </div>
+              <p className="text-right text-[10px] text-[#2B0000]/35 font-sans">Inclusief btw</p>
             </div>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer flex-shrink-0"
+              />
+              <span className="font-sans text-xs text-[#2B0000]/70 leading-snug">
+                Ik ga akkoord met de{' '}
+                <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#a06d69]">algemene voorwaarden</a>
+                {' '}en heb de{' '}
+                <a href="/privacy" target="_blank" className="underline hover:text-[#a06d69]">privacyverklaring</a>
+                {' '}gelezen.
+              </span>
+            </label>
 
             {error && <p className="text-red-500 text-sm font-sans">{error}</p>}
 

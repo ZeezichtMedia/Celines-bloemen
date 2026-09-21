@@ -4,8 +4,11 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleProducts } from '../lib/data';
+import { getSettings, publicShippingInfo } from '../lib/settings';
+import { formatEuro } from '../lib/plans';
 
-const allProducts = await getVisibleProducts();
+const [allProducts, settings] = await Promise.all([getVisibleProducts(), getSettings()]);
+const shipping = publicShippingInfo(settings);
 
 const products = allProducts.map((p) => ({
   id: p.id,
@@ -15,6 +18,7 @@ const products = allProducts.map((p) => ({
   priceLabel: p.priceLabel,
   image: p.image,
   category: p.category,
+  soldOut: p.stock != null && p.stock <= 0,
 }));
 
 // Derive categories from actual products
@@ -41,6 +45,9 @@ const categories = [
       <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-forest drop-shadow-sm stagger-reveal leading-[1.1] md:leading-[0.9]">Celine's Favorieten</h1>
       <p class="font-sans text-lg md:text-xl text-forest/70 font-light max-w-2xl mx-auto stagger-reveal leading-relaxed">
         Laat de mooiste vazen, potten en bloemen thuisbezorgen, waar in Nederland je ook woont.
+      </p>
+      <p class="font-sans text-xs md:text-sm text-forest/50 stagger-reveal">
+        Verzendkosten {formatEuro(shipping.cost)}{shipping.freeFrom != null ? `, gratis vanaf ${formatEuro(shipping.freeFrom)}` : ''}. Alle prijzen inclusief btw. Ophalen in de winkel kan ook.
       </p>
     </div>
 
@@ -80,6 +87,11 @@ const categories = [
           >
             <div class="relative overflow-hidden aspect-square">
                <div class="absolute inset-0 bg-forest/5 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+               {product.soldOut && (
+                 <div class="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full shadow">
+                   <span class="font-sans text-[10px] uppercase tracking-widest font-bold text-terra-600">Uitverkocht</span>
+                 </div>
+               )}
                <img
                  src={product.image}
                  alt={product.name}
@@ -95,14 +107,18 @@ const categories = [
 
               <div class="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-sand-600/30">
                  <span class="font-serif text-lg md:text-xl text-sage-600 whitespace-nowrap">{product.priceLabel}</span>
-                 <button
-                   type="button"
-                   class="shop-add-btn flex items-center gap-1.5 px-3 py-2 bg-forest text-white text-[10px] uppercase tracking-widest font-bold rounded-full hover:bg-terra-600 transition-colors duration-300 shadow-sm"
-                   aria-label={`Voeg ${product.name} toe aan winkelwagen`}
-                 >
-                   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                   <span class="hidden sm:inline">Toevoegen</span>
-                 </button>
+                 {product.soldOut ? (
+                   <span class="font-sans text-[10px] uppercase tracking-widest font-bold text-forest/40">Uitverkocht</span>
+                 ) : (
+                   <button
+                     type="button"
+                     class="shop-add-btn flex items-center gap-1.5 px-3 py-2 bg-forest text-white text-[10px] uppercase tracking-widest font-bold rounded-full hover:bg-terra-600 transition-colors duration-300 shadow-sm"
+                     aria-label={`Voeg ${product.name} toe aan winkelwagen`}
+                   >
+                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                     <span class="hidden sm:inline">Toevoegen</span>
+                   </button>
+                 )}
               </div>
             </div>
           </div>
@@ -133,7 +149,7 @@ const categories = [
         <div class="space-y-3">
           <div class="w-10 h-10 bg-sand-500 rounded-full flex items-center justify-center text-forest font-serif font-bold">3</div>
           <h3 class="font-serif text-xl text-forest">Bezorgd aan je deur</h3>
-          <p class="font-sans text-sm text-forest/70 font-light">Je bestelling wordt zorgvuldig ingepakt en door heel Nederland bezorgd.</p>
+          <p class="font-sans text-sm text-forest/70 font-light">Je bestelling wordt zorgvuldig ingepakt en binnen 2 tot 4 werkdagen verzonden. Of je haalt hem op in de winkel in Arnemuiden.</p>
         </div>
       </div>
     </div>
@@ -151,7 +167,7 @@ const categories = [
         <div class="bg-white p-8 rounded-2xl shadow-sm">
           <h3 class="font-serif text-2xl text-forest mb-4">Retourneren</h3>
           <p class="font-sans font-light text-forest/80 leading-relaxed">
-            Niet helemaal tevreden? Neem binnen 10 dagen contact met mij op via WhatsApp of e-mail, dan regelen we de retour samen. Het product moet ongebruikt en in originele staat retour worden gestuurd. Zodra het binnen is en in goede staat, ontvang je het aankoopbedrag terug.
+            Niet helemaal tevreden? Je hebt 14 dagen bedenktijd na ontvangst. Neem contact met mij op via WhatsApp of e-mail, dan regelen we de retour samen. Het product moet ongebruikt en in originele staat retour worden gestuurd; de retourkosten zijn voor jou. Zodra het binnen is, ontvang je het aankoopbedrag binnen 14 dagen terug. Verse boeketten en bloemwerk op maat zijn uitgesloten van retour, omdat die snel bederven. Zie de <a href="/algemene-voorwaarden" class="underline hover:text-sage-600">algemene voorwaarden</a>.
           </p>
         </div>
         <div class="bg-white p-8 rounded-2xl shadow-sm">
