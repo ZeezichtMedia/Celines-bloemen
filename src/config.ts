@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "Celine's Bloemen",
-  tagline: "Puur Natuur Bloemwerk",
+  tagline: "Bloemen voor de mooiste momenten",
   url: "https://celinesbloemen.nl",
   phone: "+31612345678",
   phoneDisplay: "+31 6 12 34 56 78",

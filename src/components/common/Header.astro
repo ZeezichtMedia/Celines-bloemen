@@ -16,14 +16,16 @@ const currentPath = Astro.url.pathname;
   <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
 
     <!-- Logo -->
-    <a href="/" class="flex items-center group" aria-label="Celine's Bloemen">
-      <div class="w-16 sm:w-20 lg:w-28 h-auto flex-shrink-0">
-        <img
-          src="/images/logo/celinesbloemenlogo.webp"
-          alt="Celine's Bloemen Logo"
-          class="w-full h-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
-        />
-      </div>
+    <a href="/" class="flex items-center group flex-shrink-0" aria-label="Celine's Bloemen">
+      <img
+        src="/images/logo/celinesbloemenlogo-400.webp"
+        alt="Celine's Bloemen"
+        width="64"
+        height="64"
+        fetchpriority="high"
+        decoding="async"
+        class="h-12 sm:h-14 lg:h-16 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
+      />
     </a>
 
     <!-- Desktop Navigation -->
@@ -90,7 +92,7 @@ const currentPath = Astro.url.pathname;
 
   <!-- Decorative Bottom Quote -->
   <div class="absolute bottom-12 left-0 w-full text-center px-6" aria-hidden="true">
-      <p class="font-serif italic text-forest/30 text-lg">Puur natuur bloemwerk</p>
+      <p class="font-serif italic text-forest/30 text-lg">Bloemen voor de mooiste momenten</p>
   </div>
 </div>
 
