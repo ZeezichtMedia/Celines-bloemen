@@ -7,7 +7,7 @@ export type Frequency = 'weekly' | 'biweekly' | 'triweekly' | 'monthly' | 'quart
 export interface Plan {
   type: PlanType;
   size: string;
-  price: number;          // per levering, incl. btw
+  price: number | null;   // per levering, incl. btw. null = prijs nog niet bepaald, alleen op aanvraag
   description: string;
   bullets: string[];
   featured?: boolean;
@@ -33,7 +33,7 @@ export const PLANS: Plan[] = [
     frequencies: freshFreqs, defaultFrequency: 'biweekly',
   },
   {
-    type: 'fresh', size: 'Medium', price: 23.95, featured: true,
+    type: 'fresh', size: 'Medium', price: 24.95, featured: true,
     description: `Een mooi, groot boeket als blikvanger in huis. ${VAAS}`,
     bullets: ['Seizoensbloemen', 'Keuze van de bloemist', 'Inclusief lokale bezorging'],
     frequencies: freshFreqs, defaultFrequency: 'biweekly',
@@ -45,21 +45,21 @@ export const PLANS: Plan[] = [
     frequencies: freshFreqs, defaultFrequency: 'biweekly',
   },
   {
-    type: 'artificial', size: 'Kwartaal', price: 49.95,
-    description: 'Elk kwartaal een nieuw kunstbloemen arrangement dat past bij het seizoen en jouw interieur.',
-    bullets: ['4x per jaar vernieuwd', 'Seizoensgebonden styling', 'Onderhoudsvrij'],
-    frequencies: ['quarterly'], defaultFrequency: 'quarterly',
+    type: 'artificial', size: 'Maandelijks', price: null,
+    description: 'Elke maand een nieuw kunstbloemenboeket in huis of op kantoor. Het boeket wordt in een vaas geleverd, dus je hebt er geen omkijken naar.',
+    bullets: ['Elke maand een nieuw boeket', 'Inclusief vaas', 'Geen onderhoud nodig'],
+    frequencies: ['monthly'], defaultFrequency: 'monthly',
   },
   {
-    type: 'artificial', size: 'Halfjaar', price: 89.95, featured: true,
-    description: 'Twee keer per jaar een groter, luxer arrangement. De perfecte balans tussen afwisseling en gemak.',
-    bullets: ['2x per jaar vernieuwd', 'Luxe arrangement', 'Persoonlijke kleurkeuze'],
+    type: 'artificial', size: 'Per halfjaar', price: null, featured: true,
+    description: 'Twee keer per jaar een nieuw kunstbloemenboeket dat past bij het seizoen. Het boeket wordt in een vaas geleverd, dus je hebt er geen omkijken naar.',
+    bullets: ['2x per jaar een nieuw boeket', 'Inclusief vaas', 'Geen onderhoud nodig'],
     frequencies: ['biannual'], defaultFrequency: 'biannual',
   },
   {
-    type: 'artificial', size: 'Jaar', price: 159.95,
-    description: 'Een jaarabonnement met maximaal gemak. Eenmalig kiezen, het hele jaar genieten van wisselende kunstbloemen.',
-    bullets: ['4 wisselingen per jaar', 'Voordeligste prijs per wisseling', 'Maximaal ontzorgd'],
+    type: 'artificial', size: 'Per jaar', price: null,
+    description: 'Eén keer per jaar een nieuw kunstbloemenboeket. Maximaal gemak, het hele jaar door bloemen in huis of op kantoor.',
+    bullets: ['1x per jaar een nieuw boeket', 'Inclusief vaas', 'Geen onderhoud nodig'],
     frequencies: ['yearly'], defaultFrequency: 'yearly',
   },
 ];
@@ -78,14 +78,20 @@ export function formatEuro(n: number): string {
   return `€ ${n.toFixed(2).replace('.', ',')}`;
 }
 
-export function planLabel(plan: Plan): string {
-  return plan.type === 'fresh' ? `${plan.size} seizoensboeket` : `Kunstbloemen per ${plan.size.toLowerCase()}`;
+/** Prijslabel voor een plan. Plannen zonder prijs gaan via contact. */
+export function planPriceLabel(plan: Plan): string {
+  return plan.price == null ? 'Op aanvraag' : formatEuro(plan.price);
 }
 
-/** Zoekt een plan op en controleert of de frequentie erbij mag. Null = ongeldig. */
-export function resolvePlan(type: string, size: string, frequency: string): Plan | null {
+export function planLabel(plan: Plan): string {
+  return plan.type === 'fresh' ? `${plan.size} seizoensboeket` : `Kunstbloemen ${plan.size.toLowerCase()}`;
+}
+
+/** Zoekt een plan op en controleert of de frequentie erbij mag. Null = ongeldig of (nog) niet online te bestellen. */
+export function resolvePlan(type: string, size: string, frequency: string): (Plan & { price: number }) | null {
   const plan = PLANS.find((p) => p.type === type && p.size.toLowerCase() === size.toLowerCase());
   if (!plan) return null;
+  if (plan.price == null) return null; // prijs nog niet bepaald: loopt via contact
   if (!plan.frequencies.includes(frequency as Frequency)) return null;
-  return plan;
+  return plan as Plan & { price: number };
 }

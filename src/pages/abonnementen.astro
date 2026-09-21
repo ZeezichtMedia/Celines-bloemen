@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import SubscriptionForm from '../components/shop/SubscriptionForm';
-import { PLANS, FRESH_FREQUENCIES, formatEuro, planLabel } from '../lib/plans';
+import { PLANS, FRESH_FREQUENCIES, formatEuro, planPriceLabel, planLabel } from '../lib/plans';
 
 const freshPlans = PLANS.filter((p) => p.type === 'fresh');
 const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
@@ -88,21 +88,28 @@ const CHECK = 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.41
           {plan.featured && <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-sage-500 text-white text-xs font-bold tracking-widest uppercase px-6 py-2 rounded-full">Favoriet</div>}
           <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">{plan.size}</h3>
           <p class="font-light text-forest/70 mb-8 min-h-[84px]">{plan.description}</p>
-          <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">{formatEuro(plan.price)} <span class="text-sm font-sans text-forest/50">/ keer</span></div>
+          <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">{planPriceLabel(plan)} {plan.price != null && <span class="text-sm font-sans text-forest/50">/ keer</span>}</div>
           <ul class="space-y-4 font-light text-forest/80 mb-auto">
             {plan.bullets.map((b) => (
               <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d={CHECK}></path></svg> {b}</li>
             ))}
           </ul>
+          {plan.price == null ? (
+            <a
+              href="/contact"
+              class={`mt-12 w-full ${plan.featured ? 'py-6 bg-sage-500 hover:bg-forest' : 'py-5 bg-forest hover:bg-terra-600'} text-white text-xs tracking-widest uppercase transition-all duration-300 rounded-full font-bold shadow-lg text-center block`}
+            >Vraag de prijs op</a>
+          ) : (
           <button
             type="button"
             class={`sub-btn mt-12 w-full ${plan.featured ? 'py-6 bg-sage-500 hover:bg-forest' : 'py-5 bg-forest hover:bg-terra-600'} text-white text-xs tracking-widest uppercase transition-all duration-300 rounded-full font-bold shadow-lg`}
             data-type={plan.type}
             data-size={plan.size}
             data-frequency={plan.defaultFrequency}
-            data-price={formatEuro(plan.price)}
+            data-price={planPriceLabel(plan)}
             data-label={planLabel(plan)}
           >Kies dit boeket</button>
+          )}
         </div>
       ))}
     </div>
@@ -119,9 +126,11 @@ const CHECK = 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.41
   <!-- Kunstbloemen Abonnement -->
   <section class="py-16 md:py-24 bg-white px-4 md:px-6">
     <div class="max-w-4xl mx-auto text-center mb-12 space-y-4 stagger-reveal">
-      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Duurzaam & onderhoudsvrij</span>
-      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Kunstbloemen Abonnement</h2>
-      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-xl mx-auto">Elke periode een nieuw, zorgvuldig samengesteld kunstbloemen arrangement. Altijd fris, zonder onderhoud.</p>
+      <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">De trend van nu</span>
+      <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Kunstbloemen abonnement</h2>
+      <p class="font-sans text-forest/70 font-light text-base md:text-lg max-w-2xl mx-auto">
+        Kunstbloemen zijn de trend van nu. Wil je toch de afwisseling houden van verschillende boeketten in huis of op kantoor? Kies dan voor een kunstbloemen abonnement. Maandelijks, per half jaar of per jaar kun je kiezen voor een boeket. Het boeket wordt in een vaas geleverd, dus je hebt er geen omkijken naar.
+      </p>
     </div>
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
@@ -132,23 +141,42 @@ const CHECK = 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.41
           {plan.featured && <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-sage-500 text-white text-xs font-bold tracking-widest uppercase px-6 py-2 rounded-full">Favoriet</div>}
           <h3 class="font-serif text-3xl text-forest mb-2 group-hover:text-terra-600 transition-colors">{plan.size}</h3>
           <p class="font-light text-forest/70 mb-8 min-h-[84px]">{plan.description}</p>
-          <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">{formatEuro(plan.price)} <span class="text-sm font-sans text-forest/50">/ keer</span></div>
+          <div class="text-4xl font-serif text-sage-600 mb-8 border-b border-sand-500 pb-8">{planPriceLabel(plan)} {plan.price != null && <span class="text-sm font-sans text-forest/50">/ keer</span>}</div>
           <ul class="space-y-4 font-light text-forest/80 mb-auto">
             {plan.bullets.map((b) => (
               <li class="flex items-center gap-3"><svg class="w-4 h-4 text-terra-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d={CHECK}></path></svg> {b}</li>
             ))}
           </ul>
+          {plan.price == null ? (
+            <a
+              href="/contact"
+              class={`mt-12 w-full ${plan.featured ? 'py-6 bg-sage-500 hover:bg-forest' : 'py-5 bg-forest hover:bg-terra-600'} text-white text-xs tracking-widest uppercase transition-all duration-300 rounded-full font-bold shadow-lg text-center block`}
+            >Vraag de prijs op</a>
+          ) : (
           <button
             type="button"
             class={`sub-btn mt-12 w-full ${plan.featured ? 'py-6 bg-sage-500 hover:bg-forest' : 'py-5 bg-forest hover:bg-terra-600'} text-white text-xs tracking-widest uppercase transition-all duration-300 rounded-full font-bold shadow-lg`}
             data-type={plan.type}
             data-size={plan.size}
             data-frequency={plan.defaultFrequency}
-            data-price={formatEuro(plan.price)}
+            data-price={planPriceLabel(plan)}
             data-label={planLabel(plan)}
           >Kies dit plan</button>
+          )}
         </div>
       ))}
+    </div>
+  </section>
+
+  <!-- Voorwaarden kunstbloemen -->
+  <section class="pb-16 md:pb-24 bg-white px-4 md:px-6">
+    <div class="max-w-3xl mx-auto bg-sand-500/30 rounded-3xl p-8 md:p-10 stagger-reveal">
+      <h3 class="font-serif text-2xl text-forest mb-5">Goed om te weten</h3>
+      <ul class="space-y-3 font-sans font-light text-forest/75">
+        <li class="flex items-start gap-3"><span class="text-terra-400 mt-1">&bull;</span> Het boeket komt in een rookvrij huis te staan.</li>
+        <li class="flex items-start gap-3"><span class="text-terra-400 mt-1">&bull;</span> Het boeket blijft intact, zodat ik het de volgende keer weer kan omruilen.</li>
+        <li class="flex items-start gap-3"><span class="text-terra-400 mt-1">&bull;</span> Is de vaas beschadigd? Dan moet ik daar helaas een bedrag voor rekenen.</li>
+      </ul>
     </div>
   </section>
 
