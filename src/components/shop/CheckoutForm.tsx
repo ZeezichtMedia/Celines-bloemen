@@ -164,7 +164,7 @@ export default function CheckoutForm() {
             <div className={`grid gap-2 ${shipping.enabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
               {[
                 { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden', disabled: false },
-                { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren e.o.', disabled: false },
+                { val: 'local' as const, label: 'Bezorgen', sub: 'Walcheren en omgeving', disabled: false },
                 ...(shipping.enabled ? [{ val: 'shipping' as const, label: 'Verzenden', sub: hasBouquet ? 'Niet voor boeketten' : 'Heel Nederland', disabled: hasBouquet }] : []),
               ].map((opt) => (
                 <button
