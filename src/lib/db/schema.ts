@@ -11,24 +11,34 @@ import {
 } from 'drizzle-orm/pg-core';
 
 // ============================================================
-// Products — alle producten (boeketten, vazen, decoratie)
+// Boeketten (bestelpagina) en webshopproducten — bewerkbaar in het beheer
+// Prijzen van boeketten staan als tekst ("€ 17,95"), zo toont en mailt de site ze.
 // ============================================================
-export const products = pgTable('products', {
-  id: serial('id').primaryKey(),
-  slug: varchar('slug', { length: 255 }).notNull().unique(),
+export const bouquets = pgTable('bouquets', {
+  id: varchar('id', { length: 120 }).primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
-  category: varchar('category', { length: 50 }).notNull(), // 'bouquet', 'vase', 'decoration'
-  color: varchar('color', { length: 255 }),
-  description: text('description'),
-  image: text('image'),
-  priceSmall: decimal('price_small', { precision: 10, scale: 2 }),
-  priceMid: decimal('price_mid', { precision: 10, scale: 2 }),
-  priceLarge: decimal('price_large', { precision: 10, scale: 2 }),
-  price: decimal('price', { precision: 10, scale: 2 }), // for non-bouquet products (single price)
+  color: varchar('color', { length: 255 }).notNull().default(''),
+  description: text('description').notNull().default(''),
+  image: text('image').notNull().default(''),
+  priceSmall: varchar('price_small', { length: 40 }).notNull(),
+  priceMid: varchar('price_mid', { length: 40 }).notNull(),
+  priceLarge: varchar('price_large', { length: 40 }).notNull(),
   available: boolean('available').notNull().default(true),
   sortOrder: integer('sort_order').notNull().default(0),
-  shippable: boolean('shippable').notNull().default(false), // can be shipped nationwide
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const shopProducts = pgTable('shop_products', {
+  id: varchar('id', { length: 120 }).primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description').notNull().default(''),
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  priceLabel: varchar('price_label', { length: 40 }).notNull(),
+  image: text('image').notNull().default(''),
+  category: varchar('category', { length: 50 }).notNull().default(''),
+  available: boolean('available').notNull().default(true),
+  sortOrder: integer('sort_order').notNull().default(0),
+  stock: integer('stock'), // null = onbeperkt, 0 = uitverkocht
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 

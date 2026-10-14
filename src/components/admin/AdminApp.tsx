@@ -165,9 +165,16 @@ function BouquetsTab({ showToast }: { showToast: (m: string) => void }) {
 
   const saveBouquet = async (bouquet: Bouquet) => {
     setSaving(true);
-    const updated = bouquets.some((b) => b.id === bouquet.id) ? bouquets.map((b) => (b.id === bouquet.id ? bouquet : b)) : [...bouquets, bouquet];
-    const res = await fetch('/api/admin/bouquets', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
-    if (res.ok) { setBouquets(updated); setEditing(null); showToast('Opgeslagen'); }
+    // Alleen dit boeket opslaan; de server geeft het terug (met id als het nieuw is)
+    const res = await fetch('/api/admin/bouquets', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bouquet) });
+    if (res.ok) {
+      const saved: Bouquet = await res.json();
+      setBouquets((prev) => (prev.some((b) => b.id === saved.id) ? prev.map((b) => (b.id === saved.id ? saved : b)) : [...prev, saved]).sort((a, b) => a.sortOrder - b.sortOrder));
+      setEditing(null); showToast('Opgeslagen');
+    } else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
     setSaving(false);
   };
 
@@ -237,9 +244,16 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
 
   const saveProduct = async (product: Product) => {
     setSaving(true);
-    const updated = products.some((p) => p.id === product.id) ? products.map((p) => (p.id === product.id ? product : p)) : [...products, product];
-    const res = await fetch('/api/admin/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
-    if (res.ok) { setProducts(updated); setEditing(null); showToast('Opgeslagen'); }
+    // Alleen dit product opslaan, zodat de voorraad van andere producten niet met oude waarden wordt overschreven
+    const res = await fetch('/api/admin/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(product) });
+    if (res.ok) {
+      const saved: Product = await res.json();
+      setProducts((prev) => (prev.some((p) => p.id === saved.id) ? prev.map((p) => (p.id === saved.id ? saved : p)) : [...prev, saved]).sort((a, b) => a.sortOrder - b.sortOrder));
+      setEditing(null); showToast('Opgeslagen');
+    } else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
     setSaving(false);
   };
 

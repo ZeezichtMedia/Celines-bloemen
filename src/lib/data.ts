@@ -1,55 +1,25 @@
 import type { Bouquet, Product } from './types';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { asc, eq, and, isNotNull, sql } from 'drizzle-orm';
+import { db, schema } from './db';
 import { purgeSiteCache } from './cache';
 
-function isVercel(): boolean {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+// Boeketten en webshopproducten staan in Postgres (tot okt 2026 als JSON in Vercel Blob).
+// Elke wijziging leegt de CDN-kopie van de publieke pagina's, zie cache.ts.
+
+function slugify(name: string): string {
+  return name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'item';
 }
 
-// ============================================================
-// Generic JSON read/write (local + Vercel Blob)
-// ============================================================
-
-function readLocalFile<T>(filename: string): T[] {
-  const path = join(process.cwd(), 'data', filename);
-  if (!existsSync(path)) return [];
-  return JSON.parse(readFileSync(path, 'utf-8'));
-}
-
-function writeLocalFile<T>(filename: string, data: T[]): void {
-  const path = join(process.cwd(), 'data', filename);
-  writeFileSync(path, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-async function readBlobFile<T>(key: string): Promise<T[]> {
-  const { list } = await import('@vercel/blob');
-  const { blobs } = await list({ prefix: key });
-  if (blobs.length === 0) return [];
-  // Een overschreven blob kan tot 60 s oud uit de Blob-CDN komen. De uploadtijd in de URL
-  // dwingt de nieuwste versie af, anders zou een geleegde pagina direct weer oud gevuld worden.
-  const res = await fetch(`${blobs[0].url}?v=${new Date(blobs[0].uploadedAt).getTime()}`);
-  return res.json();
-}
-
-async function writeBlobFile<T>(key: string, data: T[]): Promise<void> {
-  const { put } = await import('@vercel/blob');
-  await put(key, JSON.stringify(data, null, 2), {
-    access: 'public',
-    contentType: 'application/json',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-  });
-}
-
-async function readData<T>(filename: string): Promise<T[]> {
-  return isVercel() ? readBlobFile<T>(filename) : readLocalFile<T>(filename);
-}
-
-async function writeData<T>(filename: string, data: T[]): Promise<void> {
-  if (isVercel()) await writeBlobFile(filename, data);
-  else writeLocalFile(filename, data);
-  await purgeSiteCache();
+/** Nieuw item zonder id: id uit de naam, met -2, -3 ... als die al bestaat. */
+async function uniqueId(name: string, table: typeof schema.bouquets | typeof schema.shopProducts): Promise<string> {
+  const base = slugify(name);
+  const taken = new Set((await db.select({ id: table.id }).from(table)).map((r) => r.id));
+  let id = base;
+  for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
+  return id;
 }
 
 // ============================================================
@@ -57,16 +27,30 @@ async function writeData<T>(filename: string, data: T[]): Promise<void> {
 // ============================================================
 
 export async function getBouquets(): Promise<Bouquet[]> {
-  const data = await readData<Bouquet>('bouquets.json');
-  return data.sort((a, b) => a.sortOrder - b.sortOrder);
+  const rows = await db.select().from(schema.bouquets).orderBy(asc(schema.bouquets.sortOrder), asc(schema.bouquets.name));
+  return rows.map(({ updatedAt, ...b }) => b);
 }
 
 export async function getVisibleBouquets(): Promise<Bouquet[]> {
   return (await getBouquets()).filter((b) => b.available);
 }
 
-export async function saveBouquets(bouquets: Bouquet[]): Promise<void> {
-  await writeData('bouquets.json', bouquets);
+export async function upsertBouquet(input: Bouquet): Promise<Bouquet> {
+  const b: Bouquet = { ...input, id: input.id || (await uniqueId(input.name, schema.bouquets)) };
+  const values = {
+    id: b.id, name: b.name, color: b.color ?? '', description: b.description ?? '', image: b.image ?? '',
+    priceSmall: b.priceSmall, priceMid: b.priceMid, priceLarge: b.priceLarge,
+    available: !!b.available, sortOrder: Number(b.sortOrder) || 0, updatedAt: new Date(),
+  };
+  await db.insert(schema.bouquets).values(values)
+    .onConflictDoUpdate({ target: schema.bouquets.id, set: values });
+  await purgeSiteCache();
+  return b;
+}
+
+export async function deleteBouquet(id: string): Promise<void> {
+  await db.delete(schema.bouquets).where(eq(schema.bouquets.id, id));
+  await purgeSiteCache();
 }
 
 // ============================================================
@@ -74,16 +58,49 @@ export async function saveBouquets(bouquets: Bouquet[]): Promise<void> {
 // ============================================================
 
 export async function getProducts(): Promise<Product[]> {
-  const data = await readData<Product>('products.json');
-  return data.sort((a, b) => a.sortOrder - b.sortOrder);
+  const rows = await db.select().from(schema.shopProducts).orderBy(asc(schema.shopProducts.sortOrder), asc(schema.shopProducts.name));
+  return rows.map(({ updatedAt, price, ...p }) => ({ ...p, price: Number(price) }));
 }
 
 export async function getVisibleProducts(): Promise<Product[]> {
   return (await getProducts()).filter((p) => p.available);
 }
 
-export async function saveProducts(products: Product[]): Promise<void> {
-  await writeData('products.json', products);
+export async function upsertProduct(input: Product): Promise<Product> {
+  const p: Product = { ...input, id: input.id || (await uniqueId(input.name, schema.shopProducts)) };
+  const stock = p.stock == null || (p.stock as unknown) === '' ? null : Math.max(0, Math.floor(Number(p.stock)));
+  const values = {
+    id: p.id, name: p.name, description: p.description ?? '', price: (Number(p.price) || 0).toFixed(2),
+    priceLabel: p.priceLabel, image: p.image ?? '', category: p.category ?? '',
+    available: !!p.available, sortOrder: Number(p.sortOrder) || 0, stock: Number.isNaN(stock) ? null : stock,
+    updatedAt: new Date(),
+  };
+  await db.insert(schema.shopProducts).values(values)
+    .onConflictDoUpdate({ target: schema.shopProducts.id, set: values });
+  await purgeSiteCache();
+  return { ...p, stock: values.stock };
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  await db.delete(schema.shopProducts).where(eq(schema.shopProducts.id, id));
+  await purgeSiteCache();
+}
+
+/**
+ * Voorraad verlagen na een betaalde bestelling. Eén UPDATE per product in de database,
+ * zodat twee gelijktijdige bestellingen elkaars verlaging niet kunnen overschrijven.
+ * Producten zonder voorraadbeheer (stock = null) en boeketten blijven ongemoeid.
+ */
+export async function decrementStock(items: { productId: string; quantity: number }[]): Promise<void> {
+  const sold = new Map<string, number>();
+  for (const i of items) sold.set(i.productId, (sold.get(i.productId) ?? 0) + i.quantity);
+  if (sold.size === 0) return;
+  for (const [id, n] of sold) {
+    await db.update(schema.shopProducts)
+      .set({ stock: sql`GREATEST(${schema.shopProducts.stock} - ${n}, 0)`, updatedAt: new Date() })
+      .where(and(eq(schema.shopProducts.id, id), isNotNull(schema.shopProducts.stock)));
+  }
+  await purgeSiteCache();
 }
 
 // ============================================================
@@ -91,7 +108,7 @@ export async function saveProducts(products: Product[]): Promise<void> {
 // ============================================================
 
 export async function uploadImage(file: File): Promise<string> {
-  if (isVercel()) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import('@vercel/blob');
     const blob = await put(`images/${file.name}`, file, {
       access: 'public',

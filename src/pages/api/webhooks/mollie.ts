@@ -2,27 +2,12 @@ import type { APIRoute } from 'astro';
 import { db, schema } from '../../../lib/db';
 import { getPayment } from '../../../lib/mollie';
 import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData } from '../../../lib/email';
-import { getProducts, saveProducts } from '../../../lib/data';
+import { decrementStock } from '../../../lib/data';
 import { getSettings, resolveNotifyEmail } from '../../../lib/settings';
 import { euro } from '../../../lib/pricing';
 import { eq } from 'drizzle-orm';
 
 export const prerender = false;
-
-/** Voorraad van webshopproducten verlagen na een betaalde bestelling (boeketten hebben geen voorraad). */
-async function decrementStock(items: { productId: string; quantity: number }[]) {
-  const products = await getProducts();
-  let changed = false;
-  for (const p of products) {
-    if (p.stock == null) continue;
-    const sold = items.filter((i) => i.productId === p.id).reduce((n, i) => n + i.quantity, 0);
-    if (sold > 0) {
-      p.stock = Math.max(0, p.stock - sold);
-      changed = true;
-    }
-  }
-  if (changed) await saveProducts(products);
-}
 
 export const POST: APIRoute = async ({ request }) => {
   try {
