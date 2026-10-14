@@ -1,6 +1,7 @@
 import type { Bouquet, Product } from './types';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { purgeSiteCache } from './cache';
 
 function isVercel(): boolean {
   return !!process.env.BLOB_READ_WRITE_TOKEN;
@@ -25,7 +26,9 @@ async function readBlobFile<T>(key: string): Promise<T[]> {
   const { list } = await import('@vercel/blob');
   const { blobs } = await list({ prefix: key });
   if (blobs.length === 0) return [];
-  const res = await fetch(blobs[0].downloadUrl);
+  // Een overschreven blob kan tot 60 s oud uit de Blob-CDN komen. De uploadtijd in de URL
+  // dwingt de nieuwste versie af, anders zou een geleegde pagina direct weer oud gevuld worden.
+  const res = await fetch(`${blobs[0].url}?v=${new Date(blobs[0].uploadedAt).getTime()}`);
   return res.json();
 }
 
@@ -46,6 +49,7 @@ async function readData<T>(filename: string): Promise<T[]> {
 async function writeData<T>(filename: string, data: T[]): Promise<void> {
   if (isVercel()) await writeBlobFile(filename, data);
   else writeLocalFile(filename, data);
+  await purgeSiteCache();
 }
 
 // ============================================================

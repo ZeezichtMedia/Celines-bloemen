@@ -6,6 +6,7 @@ import WhatsAppPopup from '../components/common/WhatsAppPopup.astro';
 import ScrollToTop from '../components/common/ScrollToTop.astro';
 import LenisSetup from '../components/common/LenisSetup.astro';
 import { siteConfig } from '../config';
+import { getPublicSettings, parseOpeningHours, openingHoursSchema } from '../lib/settings';
 
 interface Props {
 	title: string;
@@ -15,7 +16,12 @@ interface Props {
 }
 
 const { title, description = "Celine's Bloemen - Bloemen maken jouw bruiloft, huis en evenement compleet.", ogImage = "/images/logo/celinesbloemenlogo.webp", noindex = false } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
+// /winkel en /winkel/ geven allebei de pagina: canonical altijd met slash, zoals in de sitemap
+const canonicalURL = new URL(Astro.url.pathname.replace(/\/?$/, '/'), siteConfig.url);
+// Mededeling en openingstijden komen uit het beheer (pagina's worden niet vooraf gebouwd)
+const settings = await getPublicSettings();
+const announcement = settings.announcement.trim();
+const openingHours = openingHoursSchema(parseOpeningHours(settings));
 ---
 
 <!doctype html>
@@ -69,10 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
 				"addressRegion": siteConfig.address.province,
 				"addressCountry": "NL"
 			},
-			"openingHoursSpecification": [
-				{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:00" },
-				{ "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "12:30" }
-			],
+			"openingHoursSpecification": openingHours,
 			"sameAs": [siteConfig.instagram, siteConfig.tiktok]
 		})} />
 	  <!-- Vercel Web Analytics: bezoekers meten zonder cookies, alleen op productie -->
@@ -84,6 +87,11 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
 			Ga naar inhoud
 		</a>
     <LenisSetup />
+		{announcement && (
+			<div class="bg-forest text-sand-500 text-center text-sm px-6 py-2.5" role="status">
+				{announcement}
+			</div>
+		)}
 		<Header />
 		<main id="main-content" class="flex-grow">
 			<slot />

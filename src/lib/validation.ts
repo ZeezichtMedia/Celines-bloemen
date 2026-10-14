@@ -1,3 +1,4 @@
+import { isValidOpeningHours } from './settings';
 import { z } from 'zod';
 
 export const customerSchema = z.object({
@@ -66,6 +67,8 @@ export const settingsSchema = z.object({
   shipping_cost: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Ongeldig bedrag').optional(),
   free_shipping_from: z.string().regex(/^(\d+(\.\d{1,2})?)?$/, 'Ongeldig bedrag').optional(),
   notify_email: z.string().email('Ongeldig e-mailadres').or(z.literal('')).optional(),
+  announcement: z.string().trim().max(200, 'De mededeling mag maximaal 200 tekens zijn').optional(),
+  opening_hours: z.string().refine(isValidOpeningHours, 'Controleer de openingstijden: de sluittijd moet na de openingstijd liggen').optional(),
 });
 
 export function validateOrError<T>(schema: z.ZodSchema<T>, data: unknown): { data: T; error: null } | { data: null; error: string } {

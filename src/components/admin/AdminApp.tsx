@@ -844,7 +844,86 @@ function IconBtn({ onClick, title, className, children }: { onClick: () => void;
 // Settings Tab — Delivery Zones
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
-type ShopSettings = { shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; effectiveNotifyEmail?: string | null };
+type ShopSettings = { shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
+type DayHours = { open: string; close: string } | null;
+const DAGEN = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
+
+function parseHours(raw?: string): DayHours[] {
+  try {
+    const days = JSON.parse(raw || '');
+    if (Array.isArray(days) && days.length === 7) return days;
+  } catch {}
+  return [null, ...Array(4).fill({ open: '09:00', close: '17:00' }), { open: '09:00', close: '12:30' }, null];
+}
+
+function WebsiteSettings({ settings, showToast }: { settings: ShopSettings; showToast: (m: string) => void }) {
+  const [announcement, setAnnouncement] = useState(settings.announcement || '');
+  const [hours, setHours] = useState<DayHours[]>(() => parseHours(settings.opening_hours));
+  const [saving, setSaving] = useState(false);
+
+  const setDay = (i: number, value: DayHours) => setHours((prev) => prev.map((h, j) => (j === i ? value : h)));
+
+  const save = async () => {
+    setSaving(true);
+    const res = await fetch('/api/admin/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ announcement: announcement.trim(), opening_hours: JSON.stringify(hours) }),
+    });
+    if (res.ok) showToast('Opgeslagen, staat direct op de website');
+    else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
+    setSaving(false);
+  };
+
+  const inputCls = 'px-3 py-2 border border-[#E3D4C6] rounded-lg text-[#2B0000] text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20';
+
+  return (
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6 mb-6">
+      <h3 style={SERIF} className="text-xl text-[#2B0000]">Winkel & website</h3>
+      <div>
+        <Label>Mededeling bovenaan de website</Label>
+        <textarea value={announcement} maxLength={200} rows={2} placeholder="Bijv. Rond kerst zijn we gesloten van 25 t/m 27 december"
+          onChange={(e) => setAnnouncement(e.target.value)}
+          className={`w-full ${inputCls} resize-none`} />
+        <p className="text-[10px] text-[#2B0000]/30 mt-1">Verschijnt als balk boven het menu op elke pagina. Leeg laten = geen balk. {announcement.length}/200</p>
+      </div>
+      <div>
+        <Label>Openingstijden</Label>
+        <div className="space-y-2">
+          {hours.map((h, i) => (
+            <div key={i} className="flex flex-wrap items-center gap-3 p-3 bg-[#F2E5D9]/30 rounded-xl">
+              <span className="w-24 text-sm text-[#2B0000]">{DAGEN[i]}</span>
+              <label className="flex items-center gap-2 cursor-pointer select-none text-sm text-[#2B0000]/70">
+                <input type="checkbox" checked={!!h} className="accent-[#a06d69]"
+                  onChange={(e) => setDay(i, e.target.checked ? { open: '09:00', close: '17:00' } : null)} />
+                Open
+              </label>
+              {h ? (
+                <div className="flex items-center gap-2">
+                  <input type="time" value={h.open} onChange={(e) => setDay(i, { ...h, open: e.target.value })} className={inputCls} />
+                  <span className="text-[#2B0000]/40 text-sm">tot</span>
+                  <input type="time" value={h.close} onChange={(e) => setDay(i, { ...h, close: e.target.value })} className={inputCls} />
+                </div>
+              ) : (
+                <span className="text-sm text-[#2B0000]/40">Gesloten</span>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#2B0000]/30 mt-1">Staat op de winkelpagina en wordt ook aan Google doorgegeven.</p>
+      </div>
+      <div className="pt-2">
+        <button onClick={save} disabled={saving}
+          className="px-6 py-3 bg-[#a06d69] text-white text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50">
+          {saving ? 'Opslaan...' : 'Opslaan'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
   const [zones, setZones] = useState<DeliveryZone[]>([]);
@@ -912,9 +991,11 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 style={SERIF} className="text-2xl text-[#2B0000]">Instellingen</h2>
-          <p className="text-[#2B0000]/40 text-sm mt-1">Bezorgregio's, verzending en meldingen</p>
+          <p className="text-[#2B0000]/40 text-sm mt-1">Openingstijden, mededeling, bezorgregio's, verzending en meldingen</p>
         </div>
       </div>
+
+      <WebsiteSettings settings={settings} showToast={showToast} />
 
       <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#E3D4C6]/50 space-y-6 mb-6">
         <h3 style={SERIF} className="text-xl text-[#2B0000]">Verzending & meldingen</h3>

@@ -12,7 +12,8 @@ const NOINDEX = ['/admin', '/afrekenen', '/bestelling/bevestiging', '/abonnement
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
-  output: 'static',
+  // Server: elke pagina leest mededeling en openingstijden uit het beheer; de CDN bewaart ze (middleware.ts)
+  output: 'server',
   adapter: vercel({
     // Ruimte voor SMTP + Mollie in één request (default 10s is krap bij een koude start)
     maxDuration: 30,
