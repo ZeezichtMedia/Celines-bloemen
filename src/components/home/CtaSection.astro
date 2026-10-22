@@ -1,26 +1,41 @@
 ---
+import { Icon } from 'astro-icon/components';
+import { siteConfig } from '../../config';
+
+const rows = [
+  { title: 'Bekijk de winkel', sub: `${siteConfig.address.street}, ${siteConfig.address.city}`, url: '/winkel' },
+  { title: 'Stuur een berichtje', sub: 'Ik denk graag met je mee', url: '/contact' },
+  { title: 'App direct', sub: siteConfig.phoneDisplay, url: `https://wa.me/${siteConfig.whatsappNumber}`, external: true },
+];
 ---
 
-<section class="py-24 bg-sage-500 relative overflow-hidden">
-  <!-- Minimal decorative element -->
-  <div class="absolute top-0 right-0 w-64 h-64 bg-sage-400 rounded-full mix-blend-multiply opacity-50 blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-  <div class="absolute bottom-0 left-0 w-96 h-96 bg-terra-400 rounded-full mix-blend-multiply opacity-30 blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
-
-  <div class="max-w-4xl mx-auto px-6 text-center relative z-10 space-y-8 glass-card border-none bg-black/10 p-12 rounded-3xl">
-    <h2 class="font-serif text-4xl md:text-5xl text-white stagger-reveal">
-      Benieuwd geworden?
-    </h2>
-    <p class="font-sans text-xl text-sand-500/90 font-light leading-relaxed max-w-2xl mx-auto stagger-reveal">
-      Kom langs in de winkel in Arnemuiden voor een leuke inkijk. Of stuur even een berichtje, dan denk ik graag met je mee.
-    </p>
-    
-    <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 stagger-reveal">
-      <a href="/winkel" data-cursor="hover" class="inline-block w-full sm:w-auto px-10 py-5 bg-white text-forest font-sans text-sm tracking-widest uppercase hover:bg-sand-500 transition-colors duration-300 rounded-sm text-center">
-        Bekijk de winkel
-      </a>
-      <a href="/contact" data-cursor="hover" class="inline-block w-full sm:w-auto px-10 py-5 border-2 border-white text-white font-sans text-sm tracking-widest uppercase hover:bg-white hover:text-forest transition-colors duration-300 rounded-sm text-center">
-        Stuur een berichtje
-      </a>
+<section class="section-lg bg-base-2">
+  <div class="container-wide grid gap-12 lg:grid-cols-12 lg:items-end">
+    <div class="lg:col-span-5">
+      <p class="eyebrow reveal">Kom langs of stuur een bericht</p>
+      <h2 class="reveal mt-6 type-display-md text-ink">Benieuwd geworden?</h2>
+      <p class="reveal mt-6 type-lead max-w-md text-ink-muted">
+        Kom langs in de winkel in Arnemuiden voor een leuke inkijk. Of stuur even een berichtje, dan denk ik graag met je mee.
+      </p>
+    </div>
+    <div class="reveal-stagger lg:col-span-6 lg:col-start-7">
+      {rows.map((r, i) => (
+        <a
+          href={r.url}
+          target={r.external ? '_blank' : undefined}
+          rel={r.external ? 'noopener noreferrer' : undefined}
+          class="group flex items-center justify-between gap-4 border-t border-ink/12 py-6 last:border-b transition-colors hover:border-ink/40"
+        >
+          <span class="flex items-baseline gap-5">
+            <span class="w-6 text-xs tabular-nums text-accent-600">{String(i + 1).padStart(2, '0')}</span>
+            <span>
+              <span class="block font-display text-[1.7rem] leading-tight text-ink">{r.title}</span>
+              <span class="mt-1 block text-[0.92rem] text-ink-muted">{r.sub}</span>
+            </span>
+          </span>
+          <Icon name={r.external ? 'ph:arrow-up-right-light' : 'ph:arrow-right-light'} class="h-6 w-6 shrink-0 text-ink-faint transition group-hover:translate-x-1 group-hover:text-accent-600" />
+        </a>
+      ))}
     </div>
   </div>
 </section>

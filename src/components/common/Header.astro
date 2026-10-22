@@ -1,165 +1,136 @@
 ---
+import { Icon } from 'astro-icon/components';
 import CartWidget from '../shop/CartWidget';
+import { siteConfig } from '../../config';
+
+interface Props { announcement?: string }
+const { announcement = '' } = Astro.props;
 
 const links = [
   { name: 'Winkel', url: '/winkel' },
-  { name: 'Boeket Bestellen', url: '/bestellen' },
+  { name: 'Boeket bestellen', url: '/bestellen' },
   { name: 'Webshop', url: '/webshop' },
   { name: 'Abonnementen', url: '/abonnementen' },
-  { name: 'Bruiloften & Verhuur', url: '/bruiloften-verhuur' },
+  { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },
 ];
 
-const currentPath = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (url: string) => path === url;
 ---
 
-<header class="w-full bg-sand-500/90 backdrop-blur-md sticky top-0 z-50 border-b border-sand-600 transition-all duration-300">
-  <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+<header class="site-header" data-scrolled="false">
+  {announcement && (
+    <div class="announce bg-ink text-base" role="status">
+      <p class="container-wide py-2.5 text-center text-[0.84rem] leading-snug">{announcement}</p>
+    </div>
+  )}
 
-    <!-- Logo -->
-    <a href="/" class="flex items-center group flex-shrink-0" aria-label="Celine's Bloemen">
-      <img
-        src="/images/logo/celinesbloemenlogo-400.webp"
-        alt="Celine's Bloemen"
-        width="64"
-        height="64"
-        fetchpriority="high"
-        decoding="async"
-        class="h-12 sm:h-14 lg:h-16 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
-      />
-    </a>
-
-    <!-- Desktop Navigation -->
-    <nav class="hidden lg:flex items-center gap-4 xl:gap-6" aria-label="Hoofdnavigatie">
-      {links.map((link) => (
-        <a
-          href={link.url}
-          class={`text-xs xl:text-sm tracking-wider xl:tracking-widest uppercase transition-colors duration-300 font-medium whitespace-nowrap ${
-            currentPath === link.url
-              ? 'text-sage-600 border-b-2 border-sage-500 pb-1'
-              : 'text-forest/80 hover:text-sage-600'
-          }`}
-          aria-current={currentPath === link.url ? 'page' : undefined}
-        >
-          {link.name}
-        </a>
-      ))}
-      <a href="/contact" class="px-4 xl:px-6 py-2.5 bg-sage-500 text-white text-xs xl:text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm whitespace-nowrap">
-        Contact
+  <div class="nav-wrap px-3 sm:px-5">
+    <div class="nav-pill mx-auto flex items-center justify-between gap-3">
+      <a href="/" class="shrink-0" aria-label="Celine's Bloemen, naar de homepagina">
+        <img
+          src="/images/logo/celinesbloemenlogo-400.webp"
+          alt="Celine's Bloemen"
+          width="92"
+          height="92"
+          fetchpriority="high"
+          decoding="async"
+          class="nav-logo"
+        />
       </a>
-    </nav>
 
-    <!-- Cart + Mobile Menu (always visible) -->
-    <div class="flex items-center gap-2 lg:ml-4 xl:ml-6">
-      <CartWidget client:load />
-      <button id="mobile-menu-button" class="lg:hidden relative z-[60] flex flex-col justify-center items-center w-12 h-12 group bg-forest/5 rounded-full outline-none transform active:scale-95 transition-transform" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
-        <div class="w-6 h-px bg-forest mb-1.5 transition-all duration-300 origin-center menu-line-1"></div>
-        <div class="w-6 h-px bg-forest transition-all duration-300 origin-center menu-line-2"></div>
-      </button>
+      <nav class="hidden lg:flex items-center gap-7 xl:gap-9" aria-label="Hoofdnavigatie">
+        {links.map((l) => (
+          <a href={l.url} class="nav-link whitespace-nowrap" aria-current={isCurrent(l.url) ? 'page' : undefined}>{l.name}</a>
+        ))}
+      </nav>
+
+      <div class="flex items-center gap-1">
+        <a href="/contact" class="nav-cta hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-5 py-2.5 text-[0.9rem] font-medium text-base hover:bg-accent-500 hover:border-accent-500">
+          Contact
+        </a>
+        <div class="nav-icon text-ink">
+          <CartWidget client:load />
+        </div>
+        <button
+          id="menu-open"
+          type="button"
+          class="nav-icon lg:hidden flex h-11 w-11 items-center justify-center rounded-full text-ink"
+          aria-label="Menu openen"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <Icon name="ph:list-light" class="h-7 w-7" />
+        </button>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 bg-sand-500 z-[70] flex flex-col items-center justify-center translate-x-full transition-transform duration-500 ease-in-out lg:hidden" role="dialog" aria-modal="true" aria-label="Navigatiemenu">
-  <!-- Close Button -->
-  <button id="mobile-menu-close" class="absolute top-6 right-6 z-20 flex flex-col justify-center items-center w-12 h-12 bg-forest/5 rounded-full" aria-label="Menu sluiten">
-    <div class="w-6 h-px bg-forest rotate-45 translate-y-px transition-all duration-300"></div>
-    <div class="w-6 h-px bg-forest -rotate-45 -translate-y-px transition-all duration-300"></div>
-  </button>
-
-  <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden" aria-hidden="true">
-      <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <circle cx="10" cy="90" r="40" fill="var(--color-sage-500)" />
-      </svg>
+<!-- Menu op de telefoon -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[70] flex flex-col bg-base opacity-0 pointer-events-none transition-opacity duration-500 lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  data-lenis-prevent
+>
+  <div class="flex items-center justify-between px-5 py-4">
+    <img src="/images/logo/celinesbloemenlogo-400.webp" alt="" width="56" height="56" class="h-14 w-auto" />
+    <button id="menu-close" type="button" class="flex h-11 w-11 items-center justify-center rounded-full text-ink" aria-label="Menu sluiten">
+      <Icon name="ph:x-light" class="h-7 w-7" />
+    </button>
   </div>
 
-  <nav class="flex flex-col items-center gap-6 sm:gap-10 relative z-10 px-6 text-center" aria-label="Mobiele navigatie">
-    {links.map((link) => (
-      <a
-        href={link.url}
-        class={`font-serif text-3xl sm:text-4xl tracking-tight transition-all duration-500 ${
-          currentPath === link.url ? 'text-sage-600 italic translate-x-1 sm:translate-x-2' : 'text-forest hover:text-sage-600'
-        }`}
-        aria-current={currentPath === link.url ? 'page' : undefined}
-      >
-        {link.name}
-      </a>
-    ))}
-    <a href="/contact" class="mt-8 px-12 py-5 bg-sage-500 text-white text-sm tracking-widest uppercase rounded-full shadow-xl">
-      Contact
-    </a>
+  <nav class="flex flex-1 flex-col justify-center px-7" aria-label="Menu">
+    <ul class="space-y-1">
+      {[{ name: 'Home', url: '/' }, ...links, { name: 'Over mij', url: '/over-mij' }, { name: 'Contact', url: '/contact' }].map((l, i) => (
+        <li class="menu-item">
+          <a href={l.url} class="flex items-baseline gap-4 py-2" aria-current={isCurrent(l.url) ? 'page' : undefined}>
+            <span class="w-6 text-xs tabular-nums text-accent-600">{String(i + 1).padStart(2, '0')}</span>
+            <span class:list={['font-display text-[2.1rem] leading-tight', isCurrent(l.url) ? 'text-accent-600' : 'text-ink']}>{l.name}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   </nav>
 
-  <!-- Decorative Bottom Quote -->
-  <div class="absolute bottom-12 left-0 w-full text-center px-6" aria-hidden="true">
-      <p class="font-serif italic text-forest/30 text-lg">Bloemen voor de mooiste momenten</p>
+  <div class="border-t border-line px-7 py-6 text-sm text-ink-muted">
+    <p>{siteConfig.address.street}, {siteConfig.address.city}</p>
+    <a href={`tel:${siteConfig.phone}`} class="mt-1 inline-block text-ink">{siteConfig.phoneDisplay}</a>
   </div>
 </div>
 
+<style>
+  #mobile-menu .menu-item { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+  #mobile-menu.is-open { opacity: 1; pointer-events: auto; }
+  #mobile-menu.is-open .menu-item { opacity: 1; transform: none; }
+  #mobile-menu.is-open .menu-item:nth-child(2) { transition-delay: 40ms; }
+  #mobile-menu.is-open .menu-item:nth-child(3) { transition-delay: 80ms; }
+  #mobile-menu.is-open .menu-item:nth-child(4) { transition-delay: 120ms; }
+  #mobile-menu.is-open .menu-item:nth-child(5) { transition-delay: 160ms; }
+  #mobile-menu.is-open .menu-item:nth-child(6) { transition-delay: 200ms; }
+  #mobile-menu.is-open .menu-item:nth-child(7) { transition-delay: 240ms; }
+  #mobile-menu.is-open .menu-item:nth-child(8) { transition-delay: 280ms; }
+</style>
+
 <script>
-  const initHeader = () => {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const line1 = mobileMenuButton?.querySelector('.menu-line-1');
-    const line2 = mobileMenuButton?.querySelector('.menu-line-2');
+  const menu = document.getElementById('mobile-menu');
+  const openBtn = document.getElementById('menu-open');
+  const closeBtn = document.getElementById('menu-close');
 
-    if (!mobileMenuButton || !mobileMenu) return;
-
-    // Abort previous listeners if re-initialized (page transitions)
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    // Store cleanup reference on the element
-    const prev = (mobileMenuButton as any).__headerCleanup;
-    if (prev) prev();
-    (mobileMenuButton as any).__headerCleanup = () => controller.abort();
-
-    let isMenuOpen = false;
-
-    const openMenu = () => {
-      isMenuOpen = true;
-      mobileMenu.classList.remove('translate-x-full');
-      mobileMenu.classList.add('translate-x-0');
-      line1?.classList.add('rotate-45', 'translate-y-[4px]');
-      line2?.classList.add('-rotate-45', '-translate-y-[4px]');
-      mobileMenuButton.setAttribute('aria-expanded', 'true');
-      mobileMenuButton.setAttribute('aria-label', 'Menu sluiten');
-      document.body.style.overflow = 'hidden';
-    };
-
-    const closeMenu = () => {
-      isMenuOpen = false;
-      mobileMenu.classList.remove('translate-x-0');
-      mobileMenu.classList.add('translate-x-full');
-      line1?.classList.remove('rotate-45', 'translate-y-[4px]');
-      line2?.classList.remove('-rotate-45', '-translate-y-[4px]');
-      mobileMenuButton.setAttribute('aria-expanded', 'false');
-      mobileMenuButton.setAttribute('aria-label', 'Menu openen');
-      document.body.style.overflow = '';
-    };
-
-    const toggleMenu = () => {
-      if (isMenuOpen) closeMenu();
-      else openMenu();
-    };
-
-    mobileMenuButton.addEventListener('click', toggleMenu, { signal });
-    mobileMenuClose?.addEventListener('click', closeMenu, { signal });
-
-    // Close on link click
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (isMenuOpen) closeMenu();
-      }, { signal });
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isMenuOpen) closeMenu();
-    }, { signal });
+  const setOpen = (open: boolean) => {
+    if (!menu || !openBtn) return;
+    menu.classList.toggle('is-open', open);
+    openBtn.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) window.__siteLenis?.stop(); else window.__siteLenis?.start();
+    if (open) closeBtn?.focus();
   };
 
-  initHeader();
-  document.addEventListener('astro:page-load', initHeader);
+  openBtn?.addEventListener('click', () => setOpen(true));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
 </script>

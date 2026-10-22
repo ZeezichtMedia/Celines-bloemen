@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
+import icon from 'astro-icon';
 
 const SITE = 'https://celinesbloemen.nl';
 // Niet in de sitemap: beheer, afrekenen en bevestigingspagina's
@@ -20,6 +21,7 @@ export default defineConfig({
   }),
   integrations: [
     react(),
+    icon(),
     sitemap({
       filter: (page) => !NOINDEX.some((p) => page.startsWith(`${SITE}${p}`)),
     }),

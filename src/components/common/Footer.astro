@@ -1,113 +1,109 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { siteConfig } from '../../config';
+import { WEEKDAYS, type DayHours } from '../../lib/settings';
+
+interface Props { hours: DayHours[] }
+const { hours } = Astro.props;
 const currentYear = new Date().getFullYear();
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.address.street}, ${siteConfig.address.postalCode} ${siteConfig.address.city}`)}`;
+
+const nav = [
+  { name: 'Winkel Arnemuiden', url: '/winkel' },
+  { name: 'Boeket bestellen', url: '/bestellen' },
+  { name: 'Webshop', url: '/webshop' },
+  { name: 'Abonnementen', url: '/abonnementen' },
+  { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },
+  { name: 'Over mij', url: '/over-mij' },
+  { name: 'Contact', url: '/contact' },
+];
 ---
 
-<footer class="bg-forest text-sand-500 py-12 md:py-16 mt-auto">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-    
-    <!-- Brand Info -->
-    <div>
-      <a href="/" class="inline-block mb-6 w-36 md:w-48 group">
-        <img 
-          src="/images/logo/celinesbloemenlogo-400.webp" 
-          alt="Celine's Bloemen" 
-          width="192"
-          height="192"
-          loading="lazy"
-          decoding="async"
-          class="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-        />
-      </a>
-      <p class="text-sand-600 font-light leading-relaxed max-w-sm mb-6">
-        Bloemen maken jouw huis, bruiloft of evenement compleet. Verse bloemen, droogbloemen of kunstbloemen, voor alles kun je terecht bij Celine's Bloemen.
-      </p>
-      <div class="flex gap-4">
-        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="Volg ons op Instagram" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-        </a>
-        <a href={siteConfig.tiktok} target="_blank" rel="noopener noreferrer" aria-label="Volg ons op TikTok" class="w-10 h-10 rounded-full border border-sand-600 flex items-center justify-center hover:bg-sage-600 hover:border-sage-600 transition-colors duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.51a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.63a8.23 8.23 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.04z"/>
-          </svg>
+<footer class="grain relative mt-auto overflow-hidden bg-dark text-base/70">
+  <div class="container-wide relative z-10 pt-20 md:pt-28">
+    <div class="grid gap-10 border-b border-base/10 pb-16 md:pb-20 lg:grid-cols-12 lg:items-end">
+      <h2 class="type-display-lg text-base lg:col-span-8">Kom gezellig langs in de winkel in Arnemuiden.</h2>
+      <div class="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:justify-end">
+        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="btn-primary btn-light">
+          Route plannen <Icon name="ph:arrow-up-right-light" class="ico h-4 w-4" />
         </a>
       </div>
     </div>
 
-    <!-- Quick Links -->
-    <div class="md:pl-12">
-      <h4 class="font-sans text-xs md:text-sm tracking-widest uppercase text-sage-400 mb-4 md:mb-6 font-medium">Navigatie</h4>
-      <ul class="flex flex-col gap-3 font-light">
-        <li><a href="/" class="hover:text-sage-400 transition-colors duration-300">Home</a></li>
-        <li><a href="/winkel" class="hover:text-sage-400 transition-colors duration-300">Winkel Arnemuiden</a></li>
-        <li><a href="/bestellen" class="hover:text-sage-400 transition-colors duration-300">Boeket Bestellen</a></li>
-        <li><a href="/webshop" class="hover:text-sage-400 transition-colors duration-300">Webshop</a></li>
-        <li><a href="/abonnementen" class="hover:text-sage-400 transition-colors duration-300">Abonnementen</a></li>
-        <li><a href="/bruiloften-verhuur" class="hover:text-sage-400 transition-colors duration-300">Bruiloften & Verhuur</a></li>
-        <li><a href="/contact" class="hover:text-sage-400 transition-colors duration-300">Contact</a></li>
-      </ul>
-      <ul class="flex flex-col gap-2 font-light text-sm mt-6 pt-6 border-t border-sand-600/20 text-sand-600/70">
-        <li><a href="/algemene-voorwaarden" class="hover:text-sage-400 transition-colors duration-300">Algemene voorwaarden</a></li>
-        <li><a href="/privacy" class="hover:text-sage-400 transition-colors duration-300">Privacyverklaring</a></li>
-      </ul>
+    <div class="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <a href="/" class="inline-block" aria-label="Celine's Bloemen, naar de homepagina">
+          <img src="/images/logo/celinesbloemenlogo-400.webp" alt="Celine's Bloemen" width="128" height="128" loading="lazy" decoding="async" class="h-32 w-auto brightness-0 invert opacity-90" />
+        </a>
+        <p class="mt-6 max-w-xs text-[0.95rem] font-light leading-relaxed">
+          Bloemen maken jouw huis, bruiloft of evenement compleet. Verse bloemen, droogbloemen of kunstbloemen, voor alles kun je terecht bij Celine's Bloemen.
+        </p>
+        <div class="mt-7 flex gap-2">
+          <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="Celine's Bloemen op Instagram" class="flex h-11 w-11 items-center justify-center rounded-full border border-base/20 text-base transition hover:border-accent-300 hover:text-accent-300">
+            <Icon name="ph:instagram-logo-light" class="h-5 w-5" />
+          </a>
+          <a href={siteConfig.tiktok} target="_blank" rel="noopener noreferrer" aria-label="Celine's Bloemen op TikTok" class="flex h-11 w-11 items-center justify-center rounded-full border border-base/20 text-base transition hover:border-accent-300 hover:text-accent-300">
+            <Icon name="ph:tiktok-logo-light" class="h-5 w-5" />
+          </a>
+          <a href={`https://wa.me/${siteConfig.whatsappNumber}`} target="_blank" rel="noopener noreferrer" aria-label="Stuur Celine een WhatsApp-bericht" class="flex h-11 w-11 items-center justify-center rounded-full border border-base/20 text-base transition hover:border-accent-300 hover:text-accent-300">
+            <Icon name="ph:whatsapp-logo-light" class="h-5 w-5" />
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3">
+        <p class="eyebrow-bone">Openingstijden</p>
+        <ul class="mt-6 space-y-1.5 text-[0.95rem] font-light">
+          {hours.map((h, i) => (
+            <li class:list={['flex justify-between gap-6', !h && 'text-base/40']}>
+              <span>{WEEKDAYS[i].nl}</span>
+              <span class="tabular-nums">{h ? `${h.open} tot ${h.close}` : 'Gesloten'}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2 lg:col-start-9">
+        <p class="eyebrow-bone">Contact</p>
+        <ul class="mt-6 space-y-3 text-[0.95rem] font-light">
+          <li><a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="transition hover:text-base">{siteConfig.address.street}<br />{siteConfig.address.postalCode} {siteConfig.address.city}</a></li>
+          <li><a href={`tel:${siteConfig.phone}`} class="transition hover:text-base">{siteConfig.phoneDisplay}</a></li>
+          <li><a href={`mailto:${siteConfig.email}`} class="break-all transition hover:text-base">{siteConfig.email}</a></li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2">
+        <p class="eyebrow-bone">Ontdek</p>
+        <ul class="mt-6 space-y-2 text-[0.95rem] font-light">
+          {nav.map((l) => <li><a href={l.url} class="transition hover:text-base">{l.name}</a></li>)}
+        </ul>
+      </div>
     </div>
 
-    <!-- Contact Info -->
-    <div>
-      <h4 class="font-sans text-xs md:text-sm tracking-widest uppercase text-sage-400 mb-4 md:mb-6 font-medium">Contact</h4>
-      <ul class="flex flex-col gap-4 font-light text-sand-600">
-        <li class="flex items-start gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 text-sage-400 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-          <span>Winkel Arnemuiden:<br/>Langstraat 81, 4341 ED</span>
-        </li>
-        <li class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <a href={`mailto:${siteConfig.email}`} class="hover:text-white transition-colors duration-300">{siteConfig.email}</a>
-        </li>
-        <li class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage-400 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          <a href={`tel:${siteConfig.phone}`} class="hover:text-white transition-colors duration-300">{siteConfig.phoneDisplay}</a>
-        </li>
-      </ul>
+    <div class="flex flex-col gap-6 border-t border-base/10 py-8 text-[0.82rem] text-base/50 md:flex-row md:items-center md:justify-between">
+      <p class="flex flex-wrap gap-x-5 gap-y-1">
+        <span>&copy; {currentYear} Celine's Bloemen</span>
+        {siteConfig.kvk && <span>KvK {siteConfig.kvk}</span>}
+        {siteConfig.btw && <span>Btw {siteConfig.btw}</span>}
+        <a href="/algemene-voorwaarden" class="transition hover:text-base">Algemene voorwaarden</a>
+        <a href="/privacy" class="transition hover:text-base">Privacyverklaring</a>
+      </p>
+      <a
+        href="https://agensea.nl"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Website ontworpen en gebouwd door Agensea"
+        class="agensea-credit group inline-flex items-center gap-3"
+      >
+        <span class="credit-label">Crafted by</span>
+        <img src="/brand/agensea-logo.svg" alt="Agensea" width="140" height="37" class="credit-logo" loading="lazy" decoding="async" />
+        <span class="credit-arrow" aria-hidden="true">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M17 7H8M17 7V16"/>
+          </svg>
+        </span>
+      </a>
     </div>
-
-  </div>
-  
-  <div class="max-w-7xl mx-auto px-6 mt-12 md:mt-16 pt-8 border-t border-sand-600/30 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-sand-600/60 font-light text-center md:text-left">
-    <p>
-      &copy; {currentYear} Celine's Bloemen. Alle rechten voorbehouden.
-      {siteConfig.kvk && <span class="block md:inline md:ml-3">KvK {siteConfig.kvk}</span>}
-      {siteConfig.btw && <span class="block md:inline md:ml-3">Btw {siteConfig.btw}</span>}
-    </p>
-
-    <!-- Agensea credit — premium signature -->
-    <a
-      href="https://agensea.nl"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Website ontworpen en gebouwd door Agensea"
-      class="agensea-credit group inline-flex items-center gap-3"
-    >
-      <span class="credit-label">Crafted by</span>
-      <img
-        src="/brand/agensea-logo.svg"
-        alt="Agensea"
-        width="140"
-        height="37"
-        class="credit-logo"
-        loading="lazy"
-        decoding="async"
-      />
-      <span class="credit-arrow" aria-hidden="true">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 17L17 7M17 7H8M17 7V16"/>
-        </svg>
-      </span>
-    </a>
   </div>
 </footer>
 
@@ -171,7 +167,7 @@ const currentYear = new Date().getFullYear();
     opacity: 1;
     /* Wit blijft wit, plus signature-indigo glow eromheen.
        Drie gestapelde drop-shadows = zachte aura die zichtbaar is
-       tegen donkere achtergronden zoals bg-forest. */
+       tegen donkere achtergronden zoals bg-dark. */
     filter:
       brightness(0)
       invert(1)

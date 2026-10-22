@@ -128,9 +128,9 @@ export default function CheckoutForm() {
   if (cart.items.length === 0) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <h2 className="font-serif text-3xl text-[#2B0000] mb-4">Je winkelwagen is leeg</h2>
-        <p className="text-[#2B0000]/50 font-sans mb-8">Voeg eerst producten toe voordat je afrekent.</p>
-        <a href="/bestellen" className="inline-block px-8 py-3 bg-[#a06d69] text-white font-sans text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors">
+        <h2 className="font-serif text-3xl text-[#2b1712] mb-4">Je winkelwagen is leeg</h2>
+        <p className="text-[#2b1712]/50 font-sans mb-8">Voeg eerst producten toe voordat je afrekent.</p>
+        <a href="/bestellen" className="inline-block px-8 py-3 bg-[#b2765b] text-white font-sans text-sm tracking-widest uppercase rounded-xl hover:bg-[#8f5a42] transition-colors">
           Bekijk boeketten
         </a>
       </div>
@@ -150,7 +150,7 @@ export default function CheckoutForm() {
 
           {/* Contact */}
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Jouw gegevens</h3>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Jouw gegevens</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input label="Naam" value={name} onChange={setName} required placeholder="Sophie Jansen" />
               <Input label="E-mail" value={email} onChange={setEmail} required type="email" placeholder="sophie@email.nl" />
@@ -160,7 +160,7 @@ export default function CheckoutForm() {
 
           {/* Delivery method */}
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Bezorging</h3>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Bezorging</h3>
             <div className={`grid gap-2 ${shipping.enabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
               {[
                 { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden', disabled: false },
@@ -174,36 +174,36 @@ export default function CheckoutForm() {
                   onClick={() => setDeliveryMethod(opt.val)}
                   className={`rounded-xl py-3 px-2 text-center border transition-all ${
                     opt.disabled
-                      ? 'bg-[#F2E5D9]/40 border-[#E3D4C6] text-[#2B0000]/30 cursor-not-allowed'
+                      ? 'bg-[#f0e5da]/40 border-[#e4d6c8] text-[#2b1712]/30 cursor-not-allowed'
                       : deliveryMethod === opt.val
-                        ? 'bg-[#2B0000] text-white border-[#2B0000] cursor-pointer'
-                        : 'bg-white border-[#E3D4C6] text-[#2B0000] hover:border-[#a06d69] cursor-pointer'
+                        ? 'bg-[#2b1712] text-white border-[#2b1712] cursor-pointer'
+                        : 'bg-white border-[#e4d6c8] text-[#2b1712] hover:border-[#b2765b] cursor-pointer'
                   }`}
                 >
                   <span className="block font-sans text-sm font-medium">{opt.label}</span>
-                  <span className={`block font-sans text-[10px] mt-0.5 ${!opt.disabled && deliveryMethod === opt.val ? 'text-white/60' : 'text-[#2B0000]/40'}`}>{opt.sub}</span>
+                  <span className={`block font-sans text-[10px] mt-0.5 ${!opt.disabled && deliveryMethod === opt.val ? 'text-white/60' : 'text-[#2b1712]/40'}`}>{opt.sub}</span>
                 </button>
               ))}
             </div>
             {hasBouquet && shipping.enabled && (
-              <p className="text-[11px] text-[#2B0000]/40 font-sans">Verse boeketten worden niet per post verzonden. Ophalen of lokaal bezorgen kan wel.</p>
+              <p className="text-[11px] text-[#2b1712]/40 font-sans">Verse boeketten worden niet per post verzonden. Ophalen of lokaal bezorgen kan wel.</p>
             )}
 
             {deliveryMethod === 'shipping' && (
-              <p className="text-xs text-[#2B0000]/60 font-sans bg-[#F2E5D9]/50 rounded-lg px-4 py-3">
+              <p className="text-xs text-[#2b1712]/60 font-sans bg-[#f0e5da]/50 rounded-lg px-4 py-3">
                 Verzending per post kost {formatEuro(shipping.cost)}
                 {shipping.freeFrom != null ? ` en is gratis vanaf ${formatEuro(shipping.freeFrom)}` : ''}. Je bestelling wordt zorgvuldig ingepakt en binnen 2 tot 4 werkdagen verzonden.
               </p>
             )}
 
             {deliveryMethod === 'local' && (
-              <div className="space-y-3 pt-3 border-t border-[#E3D4C6]">
+              <div className="space-y-3 pt-3 border-t border-[#e4d6c8]">
                 <div>
-                  <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5">Regio</label>
+                  <label className="block text-[11px] uppercase tracking-widest text-[#2b1712]/40 font-semibold mb-1.5">Regio</label>
                   <select
                     value={zoneId ?? ''}
                     onChange={(e) => setZoneId(Number(e.target.value))}
-                    className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg font-sans text-sm text-[#2B0000] focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 appearance-none"
+                    className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg font-sans text-sm text-[#2b1712] focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 appearance-none"
                   >
                     {zones.map((z) => (
                       <option key={z.id} value={z.id}>
@@ -217,7 +217,7 @@ export default function CheckoutForm() {
             )}
 
             {needsAddress && (
-              <div className="space-y-3 pt-3 border-t border-[#E3D4C6]">
+              <div className="space-y-3 pt-3 border-t border-[#e4d6c8]">
                 <Input label="Straat + huisnummer" value={address} onChange={setAddress} required placeholder="Langstraat 81" />
                 <div className="grid grid-cols-2 gap-3">
                   <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 ED" />
@@ -230,7 +230,7 @@ export default function CheckoutForm() {
           {/* Payment choice for pickup */}
           {deliveryMethod === 'pickup' && (
             <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000]">Betaalwijze</h3>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Betaalwijze</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { val: 'online' as const, label: 'Online betalen', sub: 'iDEAL / Bancontact' },
@@ -242,12 +242,12 @@ export default function CheckoutForm() {
                     onClick={() => setPaymentChoice(opt.val)}
                     className={`rounded-xl py-3 px-2 text-center border transition-all cursor-pointer ${
                       paymentChoice === opt.val
-                        ? 'bg-[#2B0000] text-white border-[#2B0000]'
-                        : 'bg-white border-[#E3D4C6] text-[#2B0000] hover:border-[#a06d69]'
+                        ? 'bg-[#2b1712] text-white border-[#2b1712]'
+                        : 'bg-white border-[#e4d6c8] text-[#2b1712] hover:border-[#b2765b]'
                     }`}
                   >
                     <span className="block font-sans text-sm font-medium">{opt.label}</span>
-                    <span className={`block font-sans text-[10px] mt-0.5 ${paymentChoice === opt.val ? 'text-white/60' : 'text-[#2B0000]/40'}`}>{opt.sub}</span>
+                    <span className={`block font-sans text-[10px] mt-0.5 ${paymentChoice === opt.val ? 'text-white/60' : 'text-[#2b1712]/40'}`}>{opt.sub}</span>
                   </button>
                 ))}
               </div>
@@ -256,12 +256,12 @@ export default function CheckoutForm() {
 
           {/* Note */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2B0000] mb-3">Opmerking (optioneel)</h3>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712] mb-3">Opmerking (optioneel)</h3>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={2}
-              className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg font-sans text-sm text-[#2B0000] focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 resize-none"
+              className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg font-sans text-sm text-[#2b1712] focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 resize-none"
               placeholder="Bijv. kaartje toevoegen, specifieke levertijd..."
             />
           </div>
@@ -270,7 +270,7 @@ export default function CheckoutForm() {
         {/* Right: Summary */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-28 space-y-5">
-            <h3 className="font-serif text-xl text-[#2B0000]">Overzicht</h3>
+            <h3 className="font-serif text-xl text-[#2b1712]">Overzicht</h3>
 
             <div className="space-y-3">
               {cart.items.map((item) => {
@@ -279,47 +279,47 @@ export default function CheckoutForm() {
                   <div key={`${item.productId}-${item.size}`} className="flex items-center gap-3">
                     {item.image && (
                       <a href={link} className="flex-shrink-0">
-                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-[#E3D4C6] hover:opacity-80 transition-opacity" />
+                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-[#e4d6c8] hover:opacity-80 transition-opacity" />
                       </a>
                     )}
                     <div className="flex-1 min-w-0">
                       <a href={link} className="block">
-                        <p className="font-sans text-sm text-[#2B0000] truncate hover:text-[#a06d69] transition-colors">{item.name}{item.size ? ` (${item.size})` : ''}</p>
+                        <p className="font-sans text-sm text-[#2b1712] truncate hover:text-[#b2765b] transition-colors">{item.name}{item.size ? ` (${item.size})` : ''}</p>
                       </a>
                       <div className="flex items-center gap-2 mt-1">
                         <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity - 1, true))}
-                          className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">&minus;</button>
-                        <span className="font-sans text-xs text-[#2B0000] w-4 text-center">{item.quantity}</span>
+                          className="w-6 h-6 rounded-md border border-[#e4d6c8] text-[#2b1712]/50 hover:border-[#b2765b] hover:text-[#b2765b] transition-colors flex items-center justify-center text-xs font-bold">&minus;</button>
+                        <span className="font-sans text-xs text-[#2b1712] w-4 text-center">{item.quantity}</span>
                         <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity + 1, true))}
-                          className="w-6 h-6 rounded-md border border-[#E3D4C6] text-[#2B0000]/50 hover:border-[#a06d69] hover:text-[#a06d69] transition-colors flex items-center justify-center text-xs font-bold">+</button>
+                          className="w-6 h-6 rounded-md border border-[#e4d6c8] text-[#2b1712]/50 hover:border-[#b2765b] hover:text-[#b2765b] transition-colors flex items-center justify-center text-xs font-bold">+</button>
                         <button type="button" onClick={() => setCart(removeFromCart(item.productId, item.size, true))}
-                          className="ml-1 text-[#2B0000]/25 hover:text-red-500 transition-colors" title="Verwijderen">
+                          className="ml-1 text-[#2b1712]/25 hover:text-red-500 transition-colors" title="Verwijderen">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                       </div>
                     </div>
-                    <span className="font-sans text-sm font-medium text-[#2B0000] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
+                    <span className="font-sans text-sm font-medium text-[#2b1712] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
                   </div>
                 );
               })}
             </div>
 
-            <div className="border-t border-[#E3D4C6] pt-4 space-y-2">
-              <div className="flex justify-between font-sans text-sm text-[#2B0000]/60">
+            <div className="border-t border-[#e4d6c8] pt-4 space-y-2">
+              <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
                 <span>Subtotaal</span>
                 <span>{formatEuro(subtotal)}</span>
               </div>
               {deliveryCost > 0 && (
-                <div className="flex justify-between font-sans text-sm text-[#2B0000]/60">
+                <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
                   <span>Bezorgkosten</span>
                   <span>{formatEuro(deliveryCost)}</span>
                 </div>
               )}
-              <div className="flex justify-between pt-2 border-t border-[#E3D4C6]">
-                <span className="font-sans text-sm font-semibold text-[#2B0000]">Totaal</span>
-                <span className="font-serif text-2xl text-[#2B0000]">{formatEuro(total)}</span>
+              <div className="flex justify-between pt-2 border-t border-[#e4d6c8]">
+                <span className="font-sans text-sm font-semibold text-[#2b1712]">Totaal</span>
+                <span className="font-serif text-2xl text-[#2b1712]">{formatEuro(total)}</span>
               </div>
-              <p className="text-right text-[10px] text-[#2B0000]/35 font-sans">Inclusief btw</p>
+              <p className="text-right text-[10px] text-[#2b1712]/35 font-sans">Inclusief btw</p>
             </div>
 
             <label className="flex items-start gap-3 cursor-pointer">
@@ -328,13 +328,13 @@ export default function CheckoutForm() {
                 required
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer flex-shrink-0"
+                className="mt-0.5 w-4 h-4 accent-[#b2765b] cursor-pointer flex-shrink-0"
               />
-              <span className="font-sans text-xs text-[#2B0000]/70 leading-snug">
+              <span className="font-sans text-xs text-[#2b1712]/70 leading-snug">
                 Ik ga akkoord met de{' '}
-                <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#a06d69]">algemene voorwaarden</a>
+                <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#b2765b]">algemene voorwaarden</a>
                 {' '}en heb de{' '}
-                <a href="/privacy" target="_blank" className="underline hover:text-[#a06d69]">privacyverklaring</a>
+                <a href="/privacy" target="_blank" className="underline hover:text-[#b2765b]">privacyverklaring</a>
                 {' '}gelezen.
               </span>
             </label>
@@ -344,12 +344,12 @@ export default function CheckoutForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-[#a06d69] text-white font-sans text-sm tracking-widest uppercase rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50"
+              className="w-full py-4 bg-[#b2765b] text-white font-sans text-sm tracking-widest uppercase rounded-xl hover:bg-[#8f5a42] transition-colors disabled:opacity-50"
             >
               {loading ? 'Even geduld...' : isInStore ? 'Bestelling plaatsen' : 'Betalen met iDEAL'}
             </button>
 
-            <p className="text-center text-[10px] text-[#2B0000]/30 font-sans">
+            <p className="text-center text-[10px] text-[#2b1712]/30 font-sans">
               {isInStore ? 'Je betaalt bij het ophalen in de winkel' : 'Je wordt doorgestuurd naar Mollie voor veilige betaling'}
             </p>
           </div>
@@ -422,7 +422,7 @@ function DatePicker({ label, value, onChange, minDate, required }: {
 
   return (
     <div className="relative">
-      <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5 font-sans">{label}</label>
+      <label className="block text-[11px] uppercase tracking-widest text-[#2b1712]/40 font-semibold mb-1.5 font-sans">{label}</label>
       {/* Hidden native input for form validation */}
       <input type="date" value={value} required={required} min={minDate} tabIndex={-1}
         className="absolute opacity-0 w-0 h-0 pointer-events-none" onChange={() => {}} />
@@ -430,28 +430,28 @@ function DatePicker({ label, value, onChange, minDate, required }: {
         type="button"
         onClick={() => setOpen(!open)}
         className={`w-full px-4 py-3 border rounded-lg font-sans text-sm text-left transition-all flex items-center justify-between ${
-          open ? 'border-[#a06d69] ring-2 ring-[#a06d69]/20' : 'border-[#E3D4C6]'
-        } ${value ? 'text-[#2B0000]' : 'text-[#2B0000]/40'}`}
+          open ? 'border-[#b2765b] ring-2 ring-[#b2765b]/20' : 'border-[#e4d6c8]'
+        } ${value ? 'text-[#2b1712]' : 'text-[#2b1712]/40'}`}
       >
         <span>{value ? formatDisplay(value) : 'Kies een datum'}</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#2B0000]/30">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#2b1712]/30">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl border border-[#E3D4C6] p-4 space-y-3">
+        <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl border border-[#e4d6c8] p-4 space-y-3">
           {/* Month navigation */}
           <div className="flex items-center justify-between">
             <button type="button" onClick={prevMonth} disabled={!canGoPrev}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${canGoPrev ? 'hover:bg-[#F2E5D9] text-[#2B0000]/60' : 'text-[#2B0000]/10 cursor-not-allowed'}`}>
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${canGoPrev ? 'hover:bg-[#f0e5da] text-[#2b1712]/60' : 'text-[#2b1712]/10 cursor-not-allowed'}`}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-lg text-[#2B0000] font-medium">
+            <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-lg text-[#2b1712] font-medium">
               {MONTHS_NL[viewMonth]} {viewYear}
             </span>
             <button type="button" onClick={nextMonth}
-              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#F2E5D9] text-[#2B0000]/60 transition-colors">
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f0e5da] text-[#2b1712]/60 transition-colors">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
@@ -459,7 +459,7 @@ function DatePicker({ label, value, onChange, minDate, required }: {
           {/* Day headers */}
           <div className="grid grid-cols-7 gap-0.5">
             {DAYS_NL.map((d) => (
-              <div key={d} className="text-center text-[10px] uppercase tracking-wider text-[#2B0000]/30 font-semibold font-sans py-1">{d}</div>
+              <div key={d} className="text-center text-[10px] uppercase tracking-wider text-[#2b1712]/30 font-semibold font-sans py-1">{d}</div>
             ))}
 
             {/* Empty cells for offset */}
@@ -482,12 +482,12 @@ function DatePicker({ label, value, onChange, minDate, required }: {
                   onClick={() => selectDate(day)}
                   className={`w-full aspect-square rounded-lg font-sans text-sm flex items-center justify-center transition-all ${
                     selected
-                      ? 'bg-[#a06d69] text-white font-medium shadow-sm'
+                      ? 'bg-[#b2765b] text-white font-medium shadow-sm'
                       : disabled
-                        ? 'text-[#2B0000]/15 cursor-not-allowed'
+                        ? 'text-[#2b1712]/15 cursor-not-allowed'
                         : todayMark
-                          ? 'bg-[#F2E5D9] text-[#2B0000] font-medium hover:bg-[#a06d69]/20'
-                          : 'text-[#2B0000]/70 hover:bg-[#F2E5D9] hover:text-[#2B0000]'
+                          ? 'bg-[#f0e5da] text-[#2b1712] font-medium hover:bg-[#b2765b]/20'
+                          : 'text-[#2b1712]/70 hover:bg-[#f0e5da] hover:text-[#2b1712]'
                   }`}
                 >
                   {day}
@@ -512,7 +512,7 @@ function Input({
 }) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5 font-sans">{label}</label>
+      <label className="block text-[11px] uppercase tracking-widest text-[#2b1712]/40 font-semibold mb-1.5 font-sans">{label}</label>
       <input
         type={type}
         value={value}
@@ -520,7 +520,7 @@ function Input({
         required={required}
         placeholder={placeholder}
         min={min}
-        className="w-full px-4 py-3 border border-[#E3D4C6] rounded-lg text-[#2B0000] font-sans text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20"
+        className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg text-[#2b1712] font-sans text-sm focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20"
       />
     </div>
   );

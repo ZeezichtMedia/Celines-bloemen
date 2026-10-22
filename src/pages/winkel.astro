@@ -1,6 +1,8 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
+import { siteConfig } from '../config';
 import { getPublicSettings, parseOpeningHours, WEEKDAYS } from '../lib/settings';
 
 const hours = parseOpeningHours(await getPublicSettings());
@@ -9,91 +11,71 @@ const closedDays = hours.flatMap((h, i) => (h ? [] : [WEEKDAYS[i].nl]));
 // Bijv. "Maandag & zondag": alleen de eerste dag met een hoofdletter
 const closedJoined = [closedDays.slice(0, -1).join(', '), closedDays.at(-1)].filter(Boolean).join(' & ').toLowerCase();
 const closedLabel = closedJoined.charAt(0).toUpperCase() + closedJoined.slice(1);
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.address.street}, ${siteConfig.address.postalCode} ${siteConfig.address.city}`)}`;
 ---
 
 <Layout title="Winkel Arnemuiden - Celine's bloemen" description="Kom langs in de winkel van Celine's Bloemen aan de Langstraat 81 in Arnemuiden. Verse bloemen, droogbloemen, kunstbloemen en decoratie.">
-  
-  <!-- Page Header -->
-  <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
-    <div class="absolute inset-0 z-0 opacity-20">
-      <img src="/images/winkel/winkel-interieur.png" loading="lazy" class="w-full h-full object-cover blur-sm" alt="Achtergrond winkel" />
-    </div>
-    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 md:space-y-6">
-      <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Jouw lokale bloemist</span>
-      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl text-forest leading-tight">Winkel Arnemuiden</h1>
-      <p class="font-sans text-lg md:text-xl text-forest/70 font-light drop-shadow-sm max-w-xl mx-auto">
-        Langstraat 81, Arnemuiden
-      </p>
+
+  <section class="page-top pb-16 md:pb-24">
+    <div class="container-wide grid items-end gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-6">
+        <p class="eyebrow reveal">Jouw lokale bloemist</p>
+        <h1 class="reveal mt-6 type-display-xl text-ink">Winkel Arnemuiden</h1>
+        <p class="reveal mt-6 font-display text-[1.6rem] text-ink-muted">Langstraat 81, Arnemuiden</p>
+        <div class="reveal prose-celine mt-10 max-w-xl">
+          <p>Hoihoi, welkom bij Celine's Bloemen. De winkel die sinds 2024 in de winkelstraat in Arnemuiden zit. Een winkel vol leuke decoratie, verse bloemen, droogbloemen en kunstbloemen.</p>
+          <p>Ben je op zoek naar een prachtig vers boeket, een leuk cadeau voor in je huis of wil je even wat inspiratie opdoen? Dan kun je altijd even binnenkomen bij Langstraat 81 in Arnemuiden.</p>
+        </div>
+      </div>
+      <div class="lg:col-span-5 lg:col-start-8">
+        <figure class="reveal-image overflow-hidden rounded-[1.5rem] bg-base-2">
+          <img src="/images/opt/winkelpui-800.webp" alt="De winkelpui van Celine's Bloemen aan de Langstraat in Arnemuiden" width="558" height="444" fetchpriority="high" class="aspect-[5/4] h-full w-full object-cover" />
+        </figure>
+      </div>
     </div>
   </section>
 
-  <!-- Shop Content -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 md:gap-16 items-center">
-      
-      <!-- Text -->
-      <div class="w-full lg:w-1/2 space-y-6 md:space-y-8 font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg">
-        <h2 class="font-serif text-3xl sm:text-4xl text-forest stagger-reveal leading-tight">Kom langs in de winkel in Arnemuiden</h2>
-        <p class="stagger-reveal">
-          Hoihoi, welkom bij Celine's Bloemen. De winkel die sinds 2024 in de winkelstraat in Arnemuiden zit. Een winkel vol leuke decoratie, verse bloemen, droogbloemen en kunstbloemen.
-        </p>
-        <p class="stagger-reveal">
-          Ben je op zoek naar een prachtig vers boeket, een leuk cadeau voor in je huis of wil je even wat inspiratie opdoen? Dan kun je altijd even binnenkomen bij Langstraat 81 in Arnemuiden.
-        </p>
-
-        <div class="p-8 bg-sand-500 rounded-sm stagger-reveal mt-8 shadow-sm">
-          <h3 class="font-serif text-2xl text-forest mb-4">Neem je eigen vaas mee!</h3>
-          <p class="text-forest/80">
-            Heb je thuis een favoriete vaas staan die wel opgefleurd kan worden? Breng hem gerust mee naar de winkel. Zo maken we er een mooi vers boeket in, of een blijvend boeket met kunstbloemen. Precies zoals je wilt en passend bij jouw interieur.
-          </p>
-        </div>
-
-        <div class="p-8 bg-forest text-white rounded-sm stagger-reveal mt-4 shadow-sm">
-          <h3 class="font-serif text-2xl mb-4">Liever een boeket laten bezorgen?</h3>
-          <p class="text-white/80 mb-6">
-            Kun je niet langskomen? Geen probleem! Ik bezorg dagverse, handgebonden boeketten op Walcheren en in Lewedorp en Nieuwdorp. Kies je favoriete bos en laat hem bij je thuisbezorgen.
-          </p>
-          <a href="/bestellen" class="inline-block px-8 py-4 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-xs hover:bg-sand-500 transition-colors shadow-lg">
-            Bekijk de boeketten
-          </a>
-        </div>
+  <section class="section bg-base-2">
+    <div class="container-wide grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="eyebrow reveal">Openingstijden</p>
+        <h2 class="reveal mt-6 type-display-md text-ink">Kom gezellig binnen</h2>
+        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="reveal btn-link mt-8">Route plannen <Icon name="ph:arrow-up-right-light" class="h-4 w-4" /></a>
       </div>
+      <ul class="reveal lg:col-span-6 lg:col-start-7 border-t border-ink/12">
+        {openDays.map((d) => (
+          <li class="flex items-baseline justify-between border-b border-ink/12 py-4">
+            <span class="font-display text-[1.45rem] text-ink">{d.day}</span>
+            <span class="tabular-nums text-ink-soft">{d.open} tot {d.close}</span>
+          </li>
+        ))}
+        {closedLabel && (
+          <li class="flex items-baseline justify-between border-b border-ink/12 py-4 text-ink-faint">
+            <span class="font-display text-[1.45rem]">{closedLabel}</span>
+            <span>Gesloten</span>
+          </li>
+        )}
+      </ul>
+    </div>
+  </section>
 
-      <!-- Info & Image -->
-      <div class="w-full lg:w-1/2 space-y-12 stagger-reveal">
-        <div class="aspect-[4/3] rounded-xl overflow-hidden shadow-2xl relative">
-          <div class="absolute inset-0 bg-sage-500/10 mix-blend-multiply z-10 transition-opacity duration-500 hover:opacity-0"></div>
-          <img 
-            src="/images/winkel/winkel-interieur.png"
-            alt="Interieur van Celine's bloemenwinkel"
-            loading="lazy"
-            class="w-full h-full object-cover"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bento-card rounded-2xl bg-white border border-sand-600/50 p-8 shadow-sm">
-          <div>
-            <h4 class="font-sans text-sm tracking-widest uppercase text-sage-500 font-medium mb-4">Adres</h4>
-            <address class="not-italic text-forest">
-              Langstraat 81<br/>
-              4341 ED Arnemuiden<br/>
-              Zeeland
-            </address>
-          </div>
-          <div>
-            <h4 class="font-sans text-sm tracking-widest uppercase text-sage-500 font-medium mb-4">Openingstijden</h4>
-            <ul class="text-forest space-y-1">
-              {openDays.map((d) => (
-                <li class="flex justify-between"><span>{d.day}:</span> <span>{d.open} - {d.close}</span></li>
-              ))}
-              {closedLabel && (
-                <li class="flex justify-between text-forest/60"><span>{closedLabel}:</span> <span>Gesloten</span></li>
-              )}
-            </ul>
-          </div>
-        </div>
-      </div>
-
+  <section class="section-lg">
+    <div class="container-wide grid gap-5 md:grid-cols-2 md:gap-6">
+      <article class="reveal flex flex-col rounded-[1.5rem] border border-ink/12 p-8 md:p-12">
+        <Icon name="ph:flower-tulip-light" class="h-9 w-9 text-accent-500" />
+        <h2 class="mt-8 type-display-sm text-ink">Neem je eigen vaas mee!</h2>
+        <p class="mt-4 leading-relaxed text-ink-muted">
+          Heb je thuis een favoriete vaas staan die wel opgefleurd kan worden? Breng hem gerust mee naar de winkel. Zo maken we er een mooi vers boeket in, of een blijvend boeket met kunstbloemen. Precies zoals je wilt en passend bij jouw interieur.
+        </p>
+      </article>
+      <article class="reveal grain relative flex flex-col overflow-hidden rounded-[1.5rem] bg-dark p-8 text-base md:p-12">
+        <Icon name="ph:truck-light" class="relative z-10 h-9 w-9 text-accent-300" />
+        <h2 class="relative z-10 mt-8 type-display-sm text-base">Liever een boeket laten bezorgen?</h2>
+        <p class="relative z-10 mt-4 leading-relaxed text-base/75">
+          Kun je niet langskomen? Geen probleem! Ik bezorg dagverse, handgebonden boeketten op Walcheren en in Lewedorp en Nieuwdorp. Kies je favoriete bos en laat hem bij je thuisbezorgen.
+        </p>
+        <a href="/bestellen" class="relative z-10 btn-primary btn-light mt-10 self-start">Bekijk de boeketten <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+      </article>
     </div>
   </section>
 

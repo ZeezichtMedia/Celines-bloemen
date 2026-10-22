@@ -1,46 +1,192 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
-import ServiceCards from '../components/home/ServiceCards.astro';
-import AboutSection from '../components/home/AboutSection.astro';
 import CtaSection from '../components/home/CtaSection.astro';
+import { PLANS, formatEuro } from '../lib/plans';
+
+const vanaf = Math.min(...PLANS.filter((p) => p.type === 'fresh' && p.price != null).map((p) => p.price as number));
+
+const services = [
+  {
+    nr: '01',
+    title: 'Boeket bestellen',
+    description: 'Dagverse, handgebonden boeketten. Bezorgd in Arnemuiden, Middelburg, Vlissingen en omgeving.',
+    image: '/images/opt/boeket-wit-roze-800.webp',
+    alt: 'Handgebonden boeket met roze en witte bloemen, vastgehouden in een lavendelveld',
+    link: '/bestellen',
+    cta: 'Kies je boeket',
+  },
+  {
+    nr: '02',
+    title: 'Winkel Arnemuiden',
+    description: 'De winkel in de winkelstraat van Arnemuiden. Vol decoratie, verse bloemen, droogbloemen en kunstbloemen.',
+    image: '/images/opt/winkelpui-800.webp',
+    alt: "De winkelpui van Celine's Bloemen aan de Langstraat in Arnemuiden",
+    link: '/winkel',
+    cta: 'Bekijk de winkel',
+  },
+  {
+    nr: '03',
+    title: 'Webshop',
+    description: 'Mijn favoriete vazen, potten en bloemen. Online bestellen, ophalen in de winkel of bezorgen in de regio.',
+    image: '/images/opt/krans-800.webp',
+    alt: 'Krans van droogbloemen aan een ronde metalen ring',
+    link: '/webshop',
+    cta: 'Naar de webshop',
+  },
+];
+
 ---
 
 <Layout title="Home - Celine's bloemen">
-  <!-- Hero Section -->
-  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-sand-600">
-    <div class="absolute inset-0 z-0 overflow-hidden">
-      <div class="absolute inset-0 bg-forest/40 mix-blend-multiply flex items-center justify-center z-10"></div>
-      <!-- Decorative background placeholder -->
-      <img 
-        src="/images/bruiloft-bloemen/bruiloft-bloemen-op-bruiloft-kussend.jpeg" 
-        alt="Prachtige droogbloemen en bruidsboeketten" 
-        class="w-full min-h-[130vh] object-cover relative -top-[15vh]"
-        data-speed="0.8"
-      />
-    </div>
 
-    <div class="relative z-10 max-w-5xl mx-auto px-4 md:px-6 text-center space-y-6 md:space-y-8 mt-12 md:mt-20">
-      <!-- Hero Text -->
-      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-white font-medium leading-[1.1] drop-shadow-lg stagger-reveal">
-        Bloemen voor de <span class="italic text-sand-500">mooiste</span> momenten
-      </h1>
-      
-      <p class="font-sans text-lg md:text-xl text-sand-500/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md stagger-reveal">
-        Bloemen maken jouw huis, bruiloft of evenement compleet. Samen gaan we op zoek naar het perfecte bloemwerk voor jou. Verse bloemen, droogbloemen of kunstbloemen: voor alles kun je terecht bij Celine's Bloemen.
-      </p>
-      
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 stagger-reveal">
-        <a href="/bestellen" class="px-8 py-4 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 w-full sm:w-auto text-center rounded-sm" data-cursor="hover">
-          Bestel een boeket
-        </a>
-        <a href="/bruiloften-verhuur" class="px-8 py-4 bg-transparent border-2 border-white text-white font-sans text-sm tracking-widest uppercase hover:bg-white hover:text-forest transition-colors duration-300 w-full sm:w-auto text-center rounded-sm glass-card border-none" data-cursor="hover">
-          Bruiloften & verhuur
-        </a>
+  <!-- Opening: tekst links, boog met foto rechts (de boog komt uit het logo) -->
+  <section class="page-top relative overflow-hidden pb-16 md:pb-24">
+    <div class="container-wide grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-6 lg:pr-6">
+        <p class="eyebrow reveal">Bloemenwinkel in Arnemuiden</p>
+        <h1 class="reveal mt-7 font-display text-[clamp(3rem,6.2vw,6.1rem)] leading-[0.98] tracking-[-0.018em] text-ink heading-balance">
+          Bloemen voor de <em class="font-display-italic text-accent-500">mooiste</em> momenten
+        </h1>
+        <p class="reveal mt-8 max-w-xl type-lead text-ink-muted">
+          Bloemen maken jouw huis, bruiloft of evenement compleet. Samen gaan we op zoek naar het perfecte bloemwerk voor jou. Verse bloemen, droogbloemen of kunstbloemen: voor alles kun je terecht bij Celine's Bloemen.
+        </p>
+        <div class="reveal mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a href="/bestellen" class="btn-primary">Bestel een boeket <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+          <a href="/bruiloften-verhuur" class="btn-ghost">Bruiloften & verhuur</a>
+        </div>
+      </div>
+
+      <div class="relative lg:col-span-6">
+        <div class="relative mx-auto w-[82%] max-w-[480px] sm:w-[70%] lg:w-[78%]">
+          <div class="arch-line reveal"></div>
+          <figure class="reveal-image arch relative aspect-[3/4] bg-base-2">
+            <img
+              src="/images/opt/lavendel-boeket-800.webp"
+              alt="Een grote bos droogbloemen in roze, wit en paars, vastgehouden in een lavendelveld"
+              width="683"
+              height="1024"
+              fetchpriority="high"
+              class="ken-burns h-full w-full object-cover"
+            />
+          </figure>
+          <figure class="reveal absolute -bottom-10 -left-6 w-[42%] overflow-hidden rounded-2xl border-[6px] border-base shadow-[0_30px_60px_-30px_rgb(43_23_18/0.5)] sm:-left-14">
+            <img src="/images/opt/vaas-tuin-800.webp" alt="Een vaas met verse bloemen op een gedekte tafel in de tuin" width="683" height="1024" loading="lazy" class="aspect-[4/5] h-full w-full object-cover" />
+          </figure>
+        </div>
       </div>
     </div>
   </section>
 
-  <ServiceCards />
-  <AboutSection />
+  <div class="container-wide"><div class="hairline"></div></div>
+
+  <!-- Wat ik doe -->
+  <section class="section-lg">
+    <div class="container-wide">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-7">
+          <p class="eyebrow reveal">Wat ik doe</p>
+          <h2 class="reveal mt-6 type-display-lg text-ink">Bij Celine's Bloemen worden de boeketten vers gemaakt met de mooiste bloemen.</h2>
+        </div>
+      </div>
+
+      <div class="mt-16 grid gap-x-10 gap-y-16 md:mt-24 lg:grid-cols-12">
+        {services.map((s, i) => (
+          <a
+            href={s.link}
+            class:list={[
+              'group block',
+              i === 0 && 'lg:col-span-6 lg:row-span-2',
+              i === 1 && 'lg:col-span-5 lg:col-start-8 lg:mt-24',
+              i === 2 && 'lg:col-span-5 lg:col-start-8',
+            ]}
+          >
+            <figure class:list={['reveal-image relative overflow-hidden rounded-[1.5rem] bg-base-2', i === 0 ? 'aspect-[4/5]' : 'aspect-[16/11]']}>
+              <img src={s.image} alt={s.alt} loading="lazy" class="zoom-img h-full w-full object-cover" />
+            </figure>
+            <div class="reveal mt-7 flex items-start gap-5">
+              <span class="pt-2 text-xs tabular-nums text-accent-600">{s.nr}</span>
+              <div>
+                <h3 class="type-display-sm text-ink">{s.title}</h3>
+                <p class="mt-3 max-w-md leading-relaxed text-ink-muted">{s.description}</p>
+                <span class="btn-link mt-5">{s.cta} <Icon name="ph:arrow-right-light" class="h-4 w-4" /></span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Bruiloften: brede foto -->
+  <section class="pb-6">
+    <div class="container-wide">
+      <a href="/bruiloften-verhuur" class="group relative block overflow-hidden rounded-[1.75rem] bg-dark">
+        <figure class="reveal-image aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
+          <img src="/images/opt/trouwtafel-1400.webp" alt="Lange trouwtafel met vaasjes vol verse bloemen" loading="lazy" class="zoom-img h-full w-full object-cover" />
+        </figure>
+        <div class="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/55 to-dark/5"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-dark/60 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 grid gap-6 p-7 sm:p-10 lg:grid-cols-12 lg:items-end lg:p-14">
+          <div class="lg:col-span-7">
+            <p class="eyebrow-bone">04 · Bruiloften & verhuur</p>
+            <h2 class="mt-5 type-display-md text-base">Bruidsboeket, backdrop, tafelvaasjes of een prachtig bloemstuk.</h2>
+          </div>
+          <div class="lg:col-span-4 lg:col-start-9 lg:justify-self-end">
+            <span class="btn-primary btn-light">Bekijk de mogelijkheden <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Over Celine -->
+  <section class="section-lg">
+    <div class="container-wide grid gap-14 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-5">
+        <div class="lg:sticky lg:top-32">
+          <div class="relative mx-auto max-w-[440px]">
+            <div class="arch-line reveal"></div>
+            <figure class="reveal-image arch aspect-[3/4] bg-base-2">
+              <img src="/images/opt/celine-schuur-800.webp" alt="Celine met een bos verse bloemen tussen de hangende droogbloemen" width="768" height="1041" loading="lazy" class="h-full w-full object-cover" />
+            </figure>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7 lg:pt-16">
+        <p class="eyebrow reveal">Over mij</p>
+        <h2 class="reveal mt-6 type-display-lg text-ink">Van de schuur thuis naar een eigen winkel</h2>
+        <div class="reveal prose-celine mt-10 max-w-xl">
+          <p>Hoihoi, mijn naam is Celine. Al op jonge leeftijd wist ik dat ik iets met bloemen wilde doen. Als dochter van een bloemenboer werd mijn weg al snel duidelijk.</p>
+          <p>Het begon met droogbloemen thuis kweken en verkopen vanuit de schuur. Na heel wat droogbloemenboeketten, kransen en bruidswerk kon ik in 2024 mijn eigen winkel in Arnemuiden openen.</p>
+          <p>Naast de bloemen en decoratie in de winkel ben ik gespecialiseerd in bloemwerk voor bruiloften: een bruidsboeket, backdrop, tafelvaasjes of een prachtig bloemstuk.</p>
+        </div>
+        <a href="/over-mij" class="reveal btn-link mt-10">Lees mijn hele verhaal <Icon name="ph:arrow-right-light" class="h-4 w-4" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abonnement -->
+  <section class="section bg-dark text-base grain relative overflow-hidden">
+    <div class="container-wide relative z-10 grid items-center gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-6">
+        <p class="eyebrow-bone reveal">Bloemenabonnement</p>
+        <h2 class="reveal mt-6 type-display-lg text-base">Nooit meer een lege vaas</h2>
+        <p class="reveal mt-7 max-w-lg type-lead text-base/75">
+          Krijg elke twee weken, elke drie weken of maandelijks jouw boeket in huis. Met een bloemenabonnement geniet je altijd van de mooiste seizoensbloemen, zonder dat je er achteraan hoeft te gaan.
+        </p>
+        <div class="reveal mt-10 flex flex-col gap-5 sm:flex-row sm:items-center">
+          <a href="/abonnementen" class="btn-primary btn-light">Bekijk de abonnementen <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+          <p class="text-sm text-base/60">Vanaf {formatEuro(vanaf)} per boeket</p>
+        </div>
+      </div>
+      <div class="lg:col-span-5 lg:col-start-8">
+        <figure class="reveal-image overflow-hidden rounded-[1.5rem] aspect-[4/5]">
+          <img src="/images/opt/abonnement-boeket-800.webp" alt="Een wit boeket met ranonkels in een glazen vaas" loading="lazy" class="h-full w-full object-cover" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <CtaSection />
 </Layout>

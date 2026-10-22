@@ -85,20 +85,20 @@ export default function SubscriptionForm() {
 
           <div className="flex items-start justify-between p-5 pb-0">
             <div>
-              <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#a06d69] font-bold">Abonnement</span>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2B0000] leading-tight mt-1">{plan.label}</h2>
+              <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#b2765b] font-bold">Abonnement</span>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2b1712] leading-tight mt-1">{plan.label}</h2>
             </div>
-            <button onClick={() => setPlan(null)} className="text-[#2B0000]/30 hover:text-[#2B0000] transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#2B0000]/5" aria-label="Sluiten">
+            <button onClick={() => setPlan(null)} className="text-[#2b1712]/30 hover:text-[#2b1712] transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#2b1712]/5" aria-label="Sluiten">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
           </div>
 
-          <div className="mx-5 mt-4 p-4 bg-[#F2E5D9] rounded-xl flex items-center justify-between">
+          <div className="mx-5 mt-4 p-4 bg-[#f0e5da] rounded-xl flex items-center justify-between">
             <div>
-              <span className="font-sans text-sm text-[#2B0000]">{plan.type === 'fresh' ? 'Verse bloemen' : 'Kunstbloemen'}, {plan.size}</span>
-              <span className="block font-sans text-xs text-[#2B0000]/50 mt-0.5">{freqLabels[plan.frequency] || plan.frequency}{vase ? ' · in vaas' : ''}</span>
+              <span className="font-sans text-sm text-[#2b1712]">{plan.type === 'fresh' ? 'Verse bloemen' : 'Kunstbloemen'}, {plan.size}</span>
+              <span className="block font-sans text-xs text-[#2b1712]/50 mt-0.5">{freqLabels[plan.frequency] || plan.frequency}{vase ? ' · in vaas' : ''}</span>
             </div>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2B0000]">{plan.price}</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2b1712]">{plan.price}</span>
           </div>
 
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
@@ -108,8 +108,8 @@ export default function SubscriptionForm() {
             </div>
             <Input label="Telefoon" value={phone} onChange={setPhone} placeholder="+31 6 ..." />
 
-            <div className="pt-3 border-t border-[#E3D4C6] space-y-3">
-              <h3 className="font-sans text-[11px] tracking-widest uppercase text-[#2B0000]/40 font-semibold">Bezorgadres</h3>
+            <div className="pt-3 border-t border-[#e4d6c8] space-y-3">
+              <h3 className="font-sans text-[11px] tracking-widest uppercase text-[#2b1712]/40 font-semibold">Bezorgadres</h3>
               <Input label="Straat + huisnummer" value={address} onChange={setAddress} required placeholder="Langstraat 81" />
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Postcode" value={postalCode} onChange={setPostalCode} required placeholder="4341 ED" />
@@ -117,50 +117,50 @@ export default function SubscriptionForm() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#E3D4C6] space-y-3">
-              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#E3D4C6] hover:border-[#a06d69] cursor-pointer transition-colors">
+            <div className="pt-3 border-t border-[#e4d6c8] space-y-3">
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#e4d6c8] hover:border-[#b2765b] cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   checked={vase}
                   onChange={(e) => setVase(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer"
+                  className="mt-0.5 w-4 h-4 accent-[#b2765b] cursor-pointer"
                 />
-                <span className="font-sans text-sm text-[#2B0000] leading-snug">
+                <span className="font-sans text-sm text-[#2b1712] leading-snug">
                   Lever het boeket in een vaas
-                  <span className="block text-xs text-[#2B0000]/50 mt-0.5">Bij de volgende levering ruil ik de vaas weer om.</span>
+                  <span className="block text-xs text-[#2b1712]/50 mt-0.5">Bij de volgende levering ruil ik de vaas weer om.</span>
                 </span>
               </label>
               <Input label="Kleurvoorkeur (optioneel)" value={colorPref} onChange={setColorPref} placeholder="Bijv. warme tinten, pastel, geen voorkeur..." />
               <div>
-                <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5 font-sans">Opmerking (optioneel)</label>
+                <label className="block text-[11px] uppercase tracking-widest text-[#2b1712]/40 font-semibold mb-1.5 font-sans">Opmerking (optioneel)</label>
                 <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2}
-                  className="w-full px-4 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] font-sans text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20 resize-none"
+                  className="w-full px-4 py-2.5 border border-[#e4d6c8] rounded-lg text-[#2b1712] font-sans text-sm focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 resize-none"
                   placeholder="Bijv. allergieën, voorkeur voor bepaalde bloemen..." />
               </div>
             </div>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" required checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="mt-0.5 w-4 h-4 accent-[#a06d69] cursor-pointer flex-shrink-0" />
-              <span className="font-sans text-xs text-[#2B0000]/70 leading-snug">
-                Ik ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#a06d69]">algemene voorwaarden</a> en de automatische incasso per levering. Opzeggen kan altijd.
+                className="mt-0.5 w-4 h-4 accent-[#b2765b] cursor-pointer flex-shrink-0" />
+              <span className="font-sans text-xs text-[#2b1712]/70 leading-snug">
+                Ik ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" className="underline hover:text-[#b2765b]">algemene voorwaarden</a> en de automatische incasso per levering. Opzeggen kan altijd.
               </span>
             </label>
 
             {error && <p className="text-red-500 text-sm font-sans">{error}</p>}
 
-            <div className="pt-4 border-t border-[#E3D4C6] flex items-center gap-4">
+            <div className="pt-4 border-t border-[#e4d6c8] flex items-center gap-4">
               <div className="flex-shrink-0">
-                <span className="block font-sans text-[10px] text-[#2B0000]/35 uppercase tracking-widest font-semibold">Eerste betaling</span>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2B0000] leading-tight">{plan.price}</span>
+                <span className="block font-sans text-[10px] text-[#2b1712]/35 uppercase tracking-widest font-semibold">Eerste betaling</span>
+                <span style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-2xl text-[#2b1712] leading-tight">{plan.price}</span>
               </div>
               <button type="submit" disabled={loading}
-                className="flex-1 py-4 bg-[#a06d69] text-white font-sans tracking-widest uppercase text-xs rounded-xl hover:bg-[#885c59] transition-colors disabled:opacity-50 shadow-lg">
+                className="flex-1 py-4 bg-[#b2765b] text-white font-sans tracking-widest uppercase text-xs rounded-xl hover:bg-[#8f5a42] transition-colors disabled:opacity-50 shadow-lg">
                 {loading ? 'Even geduld...' : 'Betalen met iDEAL'}
               </button>
             </div>
 
-            <p className="text-center text-[10px] text-[#2B0000]/30 font-sans leading-relaxed">
+            <p className="text-center text-[10px] text-[#2b1712]/30 font-sans leading-relaxed">
               Prijs inclusief btw. Na de eerste betaling wordt automatisch een incassomandaat aangemaakt. Je kunt op elk moment pauzeren of stoppen.
             </p>
           </form>
@@ -182,9 +182,9 @@ function Input({ label, value, onChange, required, type = 'text', placeholder }:
 }) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-widest text-[#2B0000]/40 font-semibold mb-1.5 font-sans">{label}</label>
+      <label className="block text-[11px] uppercase tracking-widest text-[#2b1712]/40 font-semibold mb-1.5 font-sans">{label}</label>
       <input type={type} value={value} onChange={(e) => onChange(e.target.value)} required={required} placeholder={placeholder}
-        className="w-full px-4 py-2.5 border border-[#E3D4C6] rounded-lg text-[#2B0000] font-sans text-sm focus:outline-none focus:border-[#a06d69] focus:ring-2 focus:ring-[#a06d69]/20" />
+        className="w-full px-4 py-2.5 border border-[#e4d6c8] rounded-lg text-[#2b1712] font-sans text-sm focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20" />
     </div>
   );
 }

@@ -1,57 +1,49 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 ---
 
 <Layout title="Over mij - Celine's bloemen" description="Lees het verhaal van Celine: van de schuur thuis naar een eigen bloemenwinkel in Arnemuiden.">
-  
-  <!-- Page Header -->
-  <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative">
-    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 md:space-y-6">
-      <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Het gezicht achter de bloemen</span>
-      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl text-forest leading-tight">Over Celine</h1>
-    </div>
-  </section>
 
-  <!-- Content Section -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
-    <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-12 md:gap-16 items-start">
-      
-      <div class="w-full md:w-1/2 relative md:sticky top-32">
-        <div class="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl">
-          <img 
-            src="/images/celine/holding-bouquet.jpeg"
-            alt="Celine tussen de bloemen"
-            loading="lazy"
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <!-- Decorative element -->
-        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-sage-400/20 rounded-full blur-2xl -z-10"></div>
-      </div>
-
-      <div class="w-full md:w-1/2 space-y-6 md:space-y-8 font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg">
-        <h2 class="font-serif text-3xl sm:text-4xl text-forest stagger-reveal leading-tight">Hoihoi, mijn naam is Celine</h2>
-        <p class="stagger-reveal">
-          Al op jonge leeftijd wist ik dat ik iets met bloemen wilde doen. Als dochter van een bloemenboer werd mijn weg al snel duidelijk. Zo begon ik in 2013 tijdens mijn middelbare school met werken bij de bloemist, waar mijn passie voor bloemen echt begon te leven. Deze bijbaan leidde mij naar de bloemistenopleiding tot vakexpert.
-        </p>
-        <p class="stagger-reveal">
-          De afgelopen jaren heb ik waardevolle praktijkervaring opgedaan. Van het creëren van boeketten tot het maken van prachtig bloemwerk voor bruiloften. Via via kwamen de eerste klanten bij <strong>Celine's Bloemen</strong> en zo veranderde mijn hobby in een officieel bedrijf.
-        </p>
-
-        <h2 class="font-serif text-3xl sm:text-4xl text-forest pt-4 md:pt-6 stagger-reveal leading-tight">Van de schuur thuis naar een eigen winkel</h2>
-        <p class="stagger-reveal">
-          Het begon met droogbloemen thuis kweken en verkopen vanuit de schuur. Na heel wat droogbloemenboeketten, kransen en bruidswerk daar gemaakt te hebben, kon ik in 2024 mijn winkel in Arnemuiden openen. Een winkel met verse bloemen, droogbloemen, kunstbloemen en decoratie.
-        </p>
-        <p class="stagger-reveal">
-          Naast de bloemen en decoratie ben ik ook gespecialiseerd in bloemwerk voor bruiloften: een bruidsboeket, backdrop, tafelvaasjes of een prachtig bloemstuk.
-        </p>
-
-        <div class="pt-8 border-t border-sand-600/30 stagger-reveal">
-          <p class="font-serif text-2xl italic text-forest">"Benieuwd geworden? Kom langs in de winkel in Arnemuiden voor een leuke inkijk."</p>
+  <section class="page-top pb-16 md:pb-24">
+    <div class="container-wide grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <div class="lg:sticky lg:top-32">
+          <div class="relative mx-auto max-w-[460px]">
+            <div class="arch-line reveal"></div>
+            <figure class="reveal-image arch aspect-[3/4] bg-base-2">
+              <img src="/images/opt/celine-schuur-800.webp" alt="Celine met een bos verse bloemen tussen de hangende droogbloemen" width="768" height="1041" fetchpriority="high" class="h-full w-full object-cover" />
+            </figure>
+          </div>
         </div>
       </div>
 
+      <div class="lg:col-span-6 lg:col-start-7">
+        <p class="eyebrow reveal">Het gezicht achter de bloemen</p>
+        <h1 class="reveal mt-6 type-display-xl text-ink">Over Celine</h1>
+
+        <h2 class="reveal mt-14 type-display-sm text-ink">Hoihoi, mijn naam is Celine</h2>
+        <div class="reveal prose-celine mt-6">
+          <p>Al op jonge leeftijd wist ik dat ik iets met bloemen wilde doen. Als dochter van een bloemenboer werd mijn weg al snel duidelijk. Zo begon ik in 2013 tijdens mijn middelbare school met werken bij de bloemist, waar mijn passie voor bloemen echt begon te leven. Deze bijbaan leidde mij naar de bloemistenopleiding tot vakexpert.</p>
+          <p>De afgelopen jaren heb ik waardevolle praktijkervaring opgedaan. Van het creëren van boeketten tot het maken van prachtig bloemwerk voor bruiloften. Via via kwamen de eerste klanten bij <strong class="font-medium text-ink">Celine's Bloemen</strong> en zo veranderde mijn hobby in een officieel bedrijf.</p>
+        </div>
+
+        <figure class="reveal-image my-14 aspect-[16/10] overflow-hidden rounded-[1.5rem]">
+          <img src="/images/opt/krans-groot-1400.webp" alt="Grote krans van droogbloemen aan een ronde ring" loading="lazy" class="h-full w-full object-cover" />
+        </figure>
+
+        <h2 class="reveal type-display-sm text-ink">Van de schuur thuis naar een eigen winkel</h2>
+        <div class="reveal prose-celine mt-6">
+          <p>Het begon met droogbloemen thuis kweken en verkopen vanuit de schuur. Na heel wat droogbloemenboeketten, kransen en bruidswerk daar gemaakt te hebben, kon ik in 2024 mijn winkel in Arnemuiden openen. Een winkel met verse bloemen, droogbloemen, kunstbloemen en decoratie.</p>
+          <p>Naast de bloemen en decoratie ben ik ook gespecialiseerd in bloemwerk voor bruiloften: een bruidsboeket, backdrop, tafelvaasjes of een prachtig bloemstuk.</p>
+        </div>
+
+        <blockquote class="reveal mt-14 border-t border-ink/12 pt-10 font-display-italic text-[clamp(1.6rem,2.6vw,2.2rem)] leading-snug text-ink">
+          "Benieuwd geworden? Kom langs in de winkel in Arnemuiden voor een leuke inkijk."
+        </blockquote>
+        <a href="/winkel" class="reveal btn-link mt-8">Bekijk de winkel <Icon name="ph:arrow-right-light" class="h-4 w-4" /></a>
+      </div>
     </div>
   </section>
 

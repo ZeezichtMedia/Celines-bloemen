@@ -1,32 +1,24 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Layout from '../../layouts/Layout.astro';
-
 const orderNumber = Astro.url.searchParams.get('order') || '';
 const isStorePayment = Astro.url.searchParams.get('method') === 'store';
 ---
 
 <Layout title="Bedankt! - Celine's bloemen" description="Je bestelling is ontvangen." noindex>
-  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-sand-600 px-4 md:px-6 min-h-[70vh] flex items-center">
-    <div class="max-w-2xl mx-auto text-center space-y-6">
-      <div class="w-20 h-20 bg-sage-500 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <h1 class="font-serif text-4xl md:text-5xl text-forest leading-tight">Bedankt voor je bestelling!</h1>
+  <section class="page-top flex min-h-[80svh] items-center pb-20">
+    <div class="container-narrow">
+      <span class="reveal flex h-16 w-16 items-center justify-center rounded-full bg-ink text-base"><Icon name="ph:check-light" class="h-8 w-8" /></span>
+      <h1 class="reveal mt-10 type-display-lg text-ink">Bedankt voor je bestelling!</h1>
       {orderNumber && (
-        <p class="font-sans text-lg text-forest/60">
-          Bestelnummer: <span class="font-semibold text-forest">{orderNumber}</span>
-        </p>
+        <p class="reveal mt-6 text-lg text-ink-muted">Bestelnummer: <span class="font-medium text-ink">{orderNumber}</span></p>
       )}
-      <p class="font-sans text-base text-forest/60 font-light max-w-lg mx-auto leading-relaxed">
+      <p class="reveal mt-4 max-w-lg type-lead text-ink-muted">
         {isStorePayment
           ? 'Je bestelling is geplaatst. Je kunt afrekenen wanneer je het ophaalt in de winkel.'
           : 'Je ontvangt een bevestiging per e-mail. Ik ga direct aan de slag met je bestelling!'}
       </p>
-      <div class="pt-4">
-        <a href="/" class="inline-block px-8 py-3 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase rounded-sm hover:bg-sage-600 transition-colors">
-          Terug naar home
-        </a>
-      </div>
+      <a href="/" class="reveal btn-primary mt-10">Terug naar home</a>
     </div>
   </section>
 </Layout>

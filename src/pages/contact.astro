@@ -1,233 +1,116 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { siteConfig } from "../config";
+import { Icon } from 'astro-icon/components';
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config';
+
+const onderwerpen = [
+  { value: 'bruiloft', label: 'Bruiloft bloemen' },
+  { value: 'droogbloemen', label: 'Droogbloemen bestellen' },
+  { value: 'verhuur', label: 'Verhuur materiaal' },
+  { value: 'abonnement', label: 'Bloemenabonnement' },
+  { value: 'anders', label: 'Anders' },
+];
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.address.street}, ${siteConfig.address.postalCode} ${siteConfig.address.city}`)}`;
 ---
 
 <Layout
   title="Contact - Celine's bloemen"
   description="Neem contact met mij op voor jouw droogbloemen, verse bloemen of het ontwerpen van je bruidsboeket."
 >
-  <!-- Page Header -->
-  <section
-    class="pt-32 pb-16 md:pt-40 md:pb-20 bg-sand-600 px-4 md:px-6 overflow-hidden relative"
-  >
-    <div class="absolute inset-0 z-0 opacity-20">
-      <img
-        src="/images/contact/contact-hero.jpeg"
-        loading="lazy"
-        class="w-full h-full object-cover blur-sm"
-        alt="Background contact"
-      />
-    </div>
-    <div
-      class="relative z-10 max-w-4xl mx-auto text-center space-y-4 md:space-y-6"
-    >
-      <span
-        class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-sage-600"
-        >Kom langs of stuur een bericht</span
-      >
-      <h1
-        class="font-serif text-4xl sm:text-5xl md:text-7xl text-forest leading-tight"
-      >
-        Neem contact op
-      </h1>
-    </div>
-  </section>
+  <section class="page-top pb-20 md:pb-28">
+    <div class="container-wide">
+      <p class="eyebrow reveal">Kom langs of stuur een bericht</p>
+      <h1 class="reveal mt-6 type-display-xl text-ink">Neem contact op</h1>
 
-  <!-- Content Section -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
-    <div
-      class="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-16 items-start"
-    >
-      <!-- Contact Details -->
-      <div
-        class="w-full md:w-5/12 space-y-10 md:space-y-12 font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg"
-      >
-        <div class="stagger-reveal">
-          <h2 class="font-serif text-3xl sm:text-4xl text-forest mb-4 md:mb-6">
-            Kom gezellig langs of stuur een berichtje
-          </h2>
-          <p class="mb-6">
-            Of je nu vragen hebt over een bloemenabonnement, stylingadvies nodig
-            hebt voor jullie droomhuwelijk, of een boeket wil laten bezorgen op
-            Walcheren of in de omgeving: ik denk graag met je mee.
-          </p>
-          <p>
-            Je bent natuurlijk ook van harte welkom in de winkel aan de
-            Langstraat 81 in Arnemuiden. Hier kun je onder het genot van een
-            kopje koffie heerlijk rondsnuffelen in de verse bloemen of samen met
-            mij jullie plannen bespreken.
-          </p>
+      <div class="mt-16 grid gap-16 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <h2 class="reveal type-display-sm text-ink">Kom gezellig langs of stuur een berichtje</h2>
+          <div class="reveal prose-celine mt-6">
+            <p>Of je nu vragen hebt over een bloemenabonnement, stylingadvies nodig hebt voor jullie droomhuwelijk, of een boeket wil laten bezorgen op Walcheren of in de omgeving: ik denk graag met je mee.</p>
+            <p>Je bent natuurlijk ook van harte welkom in de winkel aan de Langstraat 81 in Arnemuiden. Hier kun je onder het genot van een kopje koffie heerlijk rondsnuffelen in de verse bloemen of samen met mij jullie plannen bespreken.</p>
+          </div>
+
+          <ul class="reveal-stagger mt-12 border-t border-ink/12">
+            <li class="flex flex-col items-start gap-2 border-b border-ink/12 py-5">
+              <p class="eyebrow-ink">Telefoon of WhatsApp</p>
+              <a href={`tel:${siteConfig.phone}`} class="inline-block font-display text-[1.7rem] text-ink transition hover:text-accent-600">{siteConfig.phoneDisplay}</a>
+            </li>
+            <li class="flex flex-col items-start gap-2 border-b border-ink/12 py-5">
+              <p class="eyebrow-ink">E-mail</p>
+              <a href={`mailto:${siteConfig.email}`} class="inline-block break-all font-display text-[1.7rem] text-ink transition hover:text-accent-600">{siteConfig.email}</a>
+            </li>
+            <li class="flex flex-col items-start gap-2 border-b border-ink/12 py-5">
+              <p class="eyebrow-ink">Winkel</p>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 font-display text-[1.7rem] text-ink transition hover:text-accent-600">
+                Langstraat 81, Arnemuiden <Icon name="ph:arrow-up-right-light" class="h-5 w-5" />
+              </a>
+            </li>
+          </ul>
         </div>
 
-        <ul class="space-y-6 text-forest">
-          <li class="flex flex-col gap-2">
-            <span
-              class="text-sm tracking-widest uppercase text-sage-500 font-medium"
-              >E-mail</span
-            >
-            <a
-              href={`mailto:${siteConfig.email}`}
-              class="text-xl font-serif hover:text-sage-600 transition-colors duration-300"
-              >{siteConfig.email}</a
-            >
-          </li>
-          <li class="flex flex-col gap-2">
-            <span
-              class="text-sm tracking-widest uppercase text-sage-500 font-medium"
-              >Telefoon / WhatsApp</span
-            >
-            <a
-              href={`tel:${siteConfig.phone}`}
-              class="text-xl font-serif hover:text-sage-600 transition-colors duration-300"
-              >{siteConfig.phoneDisplay}</a
-            >
-          </li>
-          <li class="flex flex-col gap-2">
-            <span
-              class="text-sm tracking-widest uppercase text-sage-500 font-medium"
-              >Winkel</span
-            >
-            <span class="text-xl font-serif">Langstraat 81, Arnemuiden</span>
-          </li>
-        </ul>
-      </div>
+        <div class="lg:col-span-6 lg:col-start-7">
+          <div class="reveal rounded-[1.75rem] bg-base-2 p-7 sm:p-10 md:p-12">
+            <h2 class="type-display-sm text-ink">Stuur een berichtje</h2>
+            <form id="contact-form" class="mt-10 space-y-9">
+              <div class="grid gap-9 sm:grid-cols-2">
+                <div class="space-y-2">
+                  <label for="contact-name" class="eyebrow-ink">Jouw naam</label>
+                  <input type="text" id="contact-name" name="name" required class="field-line" placeholder="Bijv. Sofie Jansen" />
+                </div>
+                <div class="space-y-2">
+                  <label for="contact-email" class="eyebrow-ink">E-mailadres</label>
+                  <input type="email" id="contact-email" name="email" required class="field-line" placeholder="jouw@email.nl" />
+                </div>
+              </div>
 
-      <!-- Contact Form -->
-      <div
-        class="w-full md:w-7/12 bg-sand-500 p-8 md:p-12 rounded-sm shadow-xl relative z-10"
-      >
-        <h3 class="font-serif text-3xl text-forest mb-8">
-          Stuur een berichtje
-        </h3>
+              <fieldset class="space-y-4">
+                <legend class="eyebrow-ink">Onderwerp</legend>
+                <div class="flex flex-wrap gap-2">
+                  {onderwerpen.map((o, i) => (
+                    <label class="opt px-4 py-2.5 text-[0.9rem]">
+                      <input type="radio" name="subject" value={o.value} data-label={o.label} class="sr-only" checked={i === 0} />
+                      {o.label}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
 
-        <form id="contact-form" class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label
-                for="contact-name"
-                class="text-sm tracking-widest uppercase text-forest font-medium"
-                >Jouw Naam</label
-              >
-              <input
-                type="text"
-                id="contact-name"
-                name="name"
-                required
-                class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 focus:ring-2 focus:ring-sage-500/30"
-                placeholder="Bijv. Sofie Jansen"
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="contact-email"
-                class="text-sm tracking-widest uppercase text-forest font-medium"
-                >E-mailadres</label
-              >
-              <input
-                type="email"
-                id="contact-email"
-                name="email"
-                required
-                class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 focus:ring-2 focus:ring-sage-500/30"
-                placeholder="jouw@email.nl"
-              />
-            </div>
+              <div class="space-y-2">
+                <label for="contact-message" class="eyebrow-ink">Jouw bericht</label>
+                <textarea id="contact-message" name="message" rows="4" required class="field-line resize-none" placeholder="Typ hier je bericht"></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary w-full sm:w-auto">
+                <Icon name="ph:whatsapp-logo-light" class="h-5 w-5" />
+                Verstuur via WhatsApp
+              </button>
+            </form>
           </div>
-
-          <div class="space-y-2">
-            <label
-              for="contact-subject"
-              class="text-sm tracking-widest uppercase text-forest font-medium"
-              >Onderwerp</label
-            >
-            <select
-              id="contact-subject"
-              name="subject"
-              class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 text-forest/80 appearance-none focus:ring-2 focus:ring-sage-500/30"
-            >
-              <option value="bruiloft">Bruiloft bloemen</option>
-              <option value="droogbloemen">Droogbloemen bestellen</option>
-              <option value="verhuur">Verhuur materiaal</option>
-              <option value="abonnement">Bloemenabonnement</option>
-              <option value="anders">Anders...</option>
-            </select>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="contact-message"
-              class="text-sm tracking-widest uppercase text-forest font-medium"
-              >Jouw Bericht</label
-            >
-            <textarea
-              id="contact-message"
-              name="message"
-              rows="5"
-              required
-              class="w-full px-4 py-3 bg-white border border-sand-600 focus:border-sage-500 focus:outline-none transition-colors duration-300 resize-none focus:ring-2 focus:ring-sage-500/30"
-              placeholder="Typ hier je bericht..."></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-sage-500 text-white font-sans text-sm tracking-widest uppercase hover:bg-sage-600 transition-colors duration-300 rounded-sm w-full md:w-auto text-center mt-4 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:ring-offset-2"
-          >
-            <span>Verstuur via WhatsApp</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-              ></path></svg
-            >
-          </button>
-        </form>
-
-        <script
-          is:inline
-          define:vars={{ whatsappNumber: siteConfig.whatsappNumber }}
-        >
-          const initContactForm = () => {
-            const form = document.getElementById("contact-form");
-            if (!form) return;
-
-            // Prevent duplicate listeners on page transitions
-            if (form.__contactInit) return;
-            form.__contactInit = true;
-
-            form.addEventListener("submit", (e) => {
-              e.preventDefault();
-
-              const name = document.getElementById("contact-name").value;
-              const email = document.getElementById("contact-email").value;
-              const subject = document.getElementById("contact-subject");
-              const subjectText = subject.options[subject.selectedIndex].text;
-              const message = document.getElementById("contact-message").value;
-
-              let msg = `Hi Celine! Ik stuur je een berichtje via de website.\n\n`;
-              msg += `Naam: ${name}\n`;
-              msg += `E-mail: ${email}\n`;
-              msg += `Onderwerp: ${subjectText}\n\n`;
-              msg += `Bericht:\n${message}`;
-
-              window.open(
-                `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,
-                "_blank",
-              );
-            });
-          };
-          initContactForm();
-          document.addEventListener("astro:page-load", initContactForm);
-        </script>
+        </div>
       </div>
     </div>
   </section>
+
+  <script is:inline define:vars={{ whatsappNumber: siteConfig.whatsappNumber }}>
+    (() => {
+      const form = document.getElementById("contact-form");
+      if (!form) return;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("contact-name").value;
+        const email = document.getElementById("contact-email").value;
+        const subject = form.querySelector('input[name="subject"]:checked');
+        const subjectText = subject ? subject.dataset.label : "Anders";
+        const message = document.getElementById("contact-message").value;
+
+        let msg = `Hi Celine! Ik stuur je een berichtje via de website.\n\n`;
+        msg += `Naam: ${name}\n`;
+        msg += `E-mail: ${email}\n`;
+        msg += `Onderwerp: ${subjectText}\n\n`;
+        msg += `Bericht:\n${message}`;
+
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
+      });
+    })();
+  </script>
 </Layout>

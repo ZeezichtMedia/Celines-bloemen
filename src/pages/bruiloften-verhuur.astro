@@ -1,332 +1,244 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { siteConfig } from '../config';
+
+const mogelijk = ['Bruidsboeket', 'Bruidegomscorsage', 'Backdrop', 'Vazen', 'Tafeldecoratie', 'Autobloemstuk'];
+
+const stappen = [
+  { t: 'Inspiratie opdoen', d: "Verzamel Pinterest-borden, foto's en kleuren. Ik denk graag mee over de perfecte bloemen voor jullie dag." },
+  { t: 'Kennismakingsgesprek', d: 'We zitten samen om tafel, onder het genot van een kopje koffie, om al jullie wensen te bespreken.' },
+  { t: 'Jullie bruiloft!', d: 'Ik maak de dag ervoor al het bloemwerk, zodat jullie alleen nog maar hoeven te genieten.' },
+];
+
+const uitgelicht = [
+  { t: 'Kandelaren', d: 'Mooie rosé gouden kandelaren in verschillende hoogtes, een prachtige aanvulling op jullie dinertafels. Kaarsen zijn niet inbegrepen.', img: '/images/opt/kandelaren-800.webp', alt: 'Drie gouden kandelaren in verschillende hoogtes' },
+  { t: 'Backdrop', d: 'Een mooie houten backdrop inclusief doeken. Makkelijk in en uit elkaar te halen, dus prima zelf op te bouwen voor de ceremonie of als fotobooth.', img: '/images/opt/backdrop-laken-800.webp', alt: 'Houten backdrop met witte doeken in een tuin' },
+  { t: 'Vazen & vaasjes', d: 'Mooie glazen vaasjes waar de bloemen perfect in uitkomen, en grote vazen van 30 en 40 cm voor een echte eyecatcher.', img: '/images/opt/vaas-800.webp', alt: 'Glazen vaas met ribbels' },
+];
+
+const alles = [
+  { name: 'Kandelaren', desc: 'Mooie rosé gouden kandelaren in verschillende hoogtes.', spec: 'Exclusief kaarsen' },
+  { name: 'Vaasjes', desc: 'Mooie glazen vaasjes waar de bloemen perfect in uitkomen.', spec: 'Rond, smal en hoog' },
+  { name: 'Vazen', desc: 'Mooie grote vazen voor een eyecatcher boeket.', spec: '30 cm (2x) en 40 cm (2x)' },
+  { name: 'Backdrop', desc: 'Een mooie houten backdrop inclusief doeken, makkelijk in en uit elkaar te halen.', spec: '1 beschikbaar' },
+  { name: 'Spiegel', desc: "Een mooie grote spiegel voor de perfecte foto's.", spec: '180 x 90 cm, 1 beschikbaar' },
+  { name: 'Lintenslinger', desc: 'Een vrolijke lintenslinger van 100 meter lang.', spec: 'Licht roze, fuchsia roze en groen' },
+];
 ---
 
-<Layout title="Bruiloften & Verhuur - Celine's bloemen" description="Bruidsboeket, corsage, backdrop, tafeldecoratie en autobloemstuk. Plus de verhuur van kandelaren, vazen, spiegel en lintenslinger.">
+<Layout title="Bruiloften & Verhuur - Celine's bloemen" description="Bruidsboeket, corsage, backdrop, tafeldecoratie en autobloemstuk. Plus de verhuur van kandelaren, vazen, spiegel en lintenslinger." heroTone="light">
 
-  <!-- Hero -->
-  <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <div class="absolute inset-0 bg-forest/40 mix-blend-multiply z-10"></div>
-      <img
-        src="/images/lifestyle/wedding-couple.jpeg"
-        alt="Bruiloft bloemen en decoratie"
-        class="w-full h-full object-cover"
-        data-speed="0.8"
-      />
+  <section class="grain relative flex min-h-[92svh] flex-col overflow-hidden bg-dark text-base">
+    <div class="absolute inset-0">
+      <div class="reveal-image absolute inset-0">
+        <img src="/images/opt/backdrop-bruiloft-1400.webp" alt="Bruidspaar onder een backdrop met doeken en bloemen" fetchpriority="high" class="ken-burns h-full w-full object-cover object-[60%_center]" />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-dark/60 via-dark/10 to-dark/90"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-dark/70 via-dark/20 to-transparent"></div>
     </div>
-    <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 text-center text-white space-y-4 md:space-y-6 mt-16 md:mt-20">
-      <span class="text-xs md:text-sm font-sans font-bold uppercase tracking-[0.2em] text-sand-500 stagger-reveal">Jullie de dag, ik de bloemen</span>
-      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl drop-shadow-lg stagger-reveal leading-tight">Bruiloften & Verhuur</h1>
+    <div class="container-wide relative z-10 flex flex-1 flex-col justify-end pb-16 pt-44 md:pb-24">
+      <div class="max-w-3xl">
+        <p class="eyebrow-bone reveal">Jullie de dag, ik de bloemen</p>
+        <h1 class="reveal mt-7 type-display-xl text-base">Bruiloften & verhuur</h1>
+        <p class="reveal mt-7 max-w-xl type-lead text-base/85">
+          Gefeliciteerd, jullie gaan trouwen! Hierbij horen natuurlijk bloemen. Als bruidsbloemist denk ik graag met jullie mee voor de grote dag.
+        </p>
+        <div class="reveal mt-10 flex flex-col gap-3 sm:flex-row">
+          <a href="#brochure" class="btn-primary btn-light">Vraag de brochure aan <Icon name="ph:arrow-down-light" class="h-4 w-4" /></a>
+          <a href="#verhuur-aanbod" class="btn-ghost btn-ghost-light">Bekijk het verhuuraanbod</a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Trouwbrochure Aanvragen -->
-  <section class="py-16 md:py-24 bg-sage-500 px-4 md:px-6 relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-64 h-64 bg-sage-400 rounded-full mix-blend-multiply opacity-50 blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-    <div class="max-w-4xl mx-auto relative z-10">
-      <div class="text-center mb-10 space-y-4 stagger-reveal">
-        <span class="text-xs md:text-sm font-sans font-bold uppercase tracking-widest text-white/70">Start hier</span>
-        <h2 class="font-serif text-3xl md:text-5xl text-white italic leading-tight">Vraag de Trouwbrochure aan</h2>
-        <p class="font-sans text-white/80 font-light text-base md:text-lg max-w-xl mx-auto">Ontvang de brochure met alle mogelijkheden voor jullie droomdag. Vul onderstaand formulier in en ik neem zo snel mogelijk contact op.</p>
+  <section class="section-lg">
+    <div class="container-wide">
+      <div class="max-w-[1100px]">
+        <p class="eyebrow reveal">Bruidsbloemen</p>
+        <h2 class="reveal mt-8 type-display-lg text-ink">Het bloemwerk maakt de sfeer op een bruiloft.</h2>
+      </div>
+      <div class="mt-12 grid gap-10 md:mt-16 lg:grid-cols-12">
+        <div class="reveal prose-celine lg:col-span-6">
+          <p>We kijken samen naar de kleuren, sfeer en mogelijkheden op jullie bruiloft. Samen zorgen we ervoor dat het bloemwerk helemaal past bij jullie.</p>
+          <p>Door bloemen toe te voegen aan de styling krijg je een persoonlijk geheel. Met bloemen maak je de bruiloft echt jullie bruiloft! Of het nou wit, roze, pastel of felle kleuren zijn, ik ga graag voor jullie aan de slag.</p>
+        </div>
+        <div class="reveal lg:col-span-5 lg:col-start-8">
+          <ul class="border-t border-ink/12">
+            {mogelijk.map((m) => (
+              <li class="flex items-center justify-between border-b border-ink/12 py-3.5">
+                <span class="font-display text-[1.45rem] text-ink">{m}</span>
+                <Icon name="ph:flower-light" class="h-5 w-5 text-accent-500" />
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-sm text-ink-faint">en zoveel meer mogelijkheden</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="container-wide grid gap-14 md:grid-cols-12 md:gap-8">
+      <article class="md:col-span-7">
+        <figure class="reveal-image aspect-[4/3] overflow-hidden rounded-[1.5rem]">
+          <img src="/images/opt/bruidsboeket-hand-1400.webp" alt="Bruidsboeket in de hand van de bruid naast de bruidegom" loading="lazy" class="h-full w-full object-cover" />
+        </figure>
+        <h2 class="reveal mt-8 type-display-sm text-ink">Puur natuur bruidsbloemen</h2>
+        <p class="reveal mt-4 max-w-lg leading-relaxed text-ink-muted">
+          Het bruidsboeket is het meest persoonlijke bloemwerk van de dag. Of jullie nu kiezen voor droogbloemen, verse bloemen of een combinatie: ik ga graag met jullie aan de slag. Vergeet ook de corsage voor de bruidegom niet, ik maak alles op maat.
+        </p>
+      </article>
+      <article class="md:col-span-4 md:col-start-9 md:mt-40">
+        <figure class="reveal-image aspect-[3/4] overflow-hidden rounded-[1.5rem]">
+          <img src="/images/opt/tafel-aankleding-800.webp" alt="Gedekte trouwtafel met vaasjes en kandelaren" loading="lazy" class="h-full w-full object-cover" />
+        </figure>
+        <h2 class="reveal mt-8 type-display-sm text-ink">Verhuur eyecatchers</h2>
+        <p class="reveal mt-4 leading-relaxed text-ink-muted">
+          Vazen, kandelaars, backdrops en decoratie: huur het erbij zodat alles naadloos aansluit bij jullie stijl en de bloemen die ik voor jullie maak. Geen gedoe, geen stress.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-lg bg-base-2">
+    <div class="container-wide grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <div class="lg:sticky lg:top-32">
+          <p class="eyebrow reveal">Van aanvraag tot trouwdag</p>
+          <h2 class="reveal mt-6 type-display-lg text-ink">Zo werkt het</h2>
+          <figure class="reveal-image mt-10 hidden aspect-[4/5] overflow-hidden rounded-[1.5rem] lg:block">
+            <img src="/images/opt/corsage-800.webp" alt="Corsage met een perzikkleurige roos op een blauw pak" loading="lazy" class="h-full w-full object-cover" />
+          </figure>
+        </div>
+      </div>
+      <ol class="space-y-16 lg:col-span-6 lg:col-start-7 lg:pt-28">
+        {stappen.map((s, i) => (
+          <li class="reveal border-t border-ink/15 pt-8">
+            <p class="font-display text-[4.5rem] leading-none text-accent-400">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="mt-6 type-display-sm text-ink">{s.t}</h3>
+            <p class="mt-4 max-w-md leading-relaxed text-ink-muted">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="verhuur-aanbod" class="section-lg scroll-mt-24">
+    <div class="container-wide">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-6">
+          <p class="eyebrow reveal">Wat ik verhuur</p>
+          <h2 class="reveal mt-6 type-display-lg text-ink">Het verhuuraanbod</h2>
+        </div>
+        <p class="reveal leading-relaxed text-ink-muted lg:col-span-5 lg:col-start-8">
+          Naast dat ik al het bloemwerk kan maken, heb ik ook veel items in de verhuur. Zo kun je naast de bloemen ook de vaasjes en kandelaren huren bij Celine's Bloemen. Naast vazen, kandelaren en een backdrop heb ik ook een mooie grote spiegel en een lintenslinger in de verhuur.
+        </p>
       </div>
 
-      <form id="brochure-form" class="max-w-lg mx-auto space-y-5 stagger-reveal" data-whatsapp={siteConfig.whatsappNumber}>
-        <div class="space-y-2">
-          <label for="brochure-name" class="text-sm tracking-widest uppercase text-white/70 font-medium">Jullie namen</label>
-          <input type="text" id="brochure-name" required class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:border-white focus:outline-none transition-colors duration-300 rounded-lg backdrop-blur-sm" placeholder="Bijv. Sophie & Thomas">
+      <div class="mt-16 grid gap-12 md:grid-cols-3 md:gap-8">
+        {uitgelicht.map((u, i) => (
+          <article class:list={['reveal', i === 1 && 'md:mt-16']}>
+            <figure class="group aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-base-2">
+              <img src={u.img} alt={u.alt} loading="lazy" class="zoom-img h-full w-full object-cover" />
+            </figure>
+            <h3 class="mt-7 type-display-sm text-ink">{u.t}</h3>
+            <p class="mt-3 leading-relaxed text-ink-muted">{u.d}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-24 grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <h3 class="reveal type-display-sm text-ink">Alles wat ik verhuur</h3>
+          <p class="reveal mt-4 text-ink-muted">Benieuwd naar de prijzen? Die staan in de brochure.</p>
+          <a href="#brochure" class="reveal btn-link mt-6">Vraag de brochure aan <Icon name="ph:arrow-down-light" class="h-4 w-4" /></a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <ul class="reveal lg:col-span-8 border-t border-ink/12">
+          {alles.map((item) => (
+            <li class="grid gap-1 border-b border-ink/12 py-5 sm:grid-cols-12 sm:items-baseline sm:gap-6">
+              <span class="font-display text-[1.45rem] text-ink sm:col-span-3">{item.name}</span>
+              <span class="text-ink-muted sm:col-span-6">{item.desc}</span>
+              <span class="text-sm text-accent-600 sm:col-span-3 sm:text-right">{item.spec}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-6">
+    <div class="container-wide grid grid-cols-2 gap-3 md:grid-cols-12 md:gap-5">
+      <figure class="reveal-image col-span-2 aspect-[16/10] overflow-hidden rounded-[1.25rem] md:col-span-7"><img src="/images/opt/backdrop-luxe-1400.webp" loading="lazy" alt="Backdrop met doeken en droogbloemen op een kleed in de tuin" class="h-full w-full object-cover" /></figure>
+      <figure class="reveal-image aspect-[4/5] overflow-hidden rounded-[1.25rem] md:col-span-5 md:aspect-[8/7]"><img src="/images/opt/trouwtafel-lavendel-800.webp" loading="lazy" alt="Gedekte tafel met bloemen in een lavendelveld" class="h-full w-full object-cover" /></figure>
+      <figure class="reveal-image aspect-[4/5] overflow-hidden rounded-[1.25rem] md:hidden"><img src="/images/opt/verhuur-veld-800.webp" loading="lazy" alt="Tafel met vaas en kandelaren in een veld" class="h-full w-full object-cover" /></figure>
+    </div>
+  </section>
+
+  <section id="brochure" class="grain relative mt-20 overflow-hidden bg-dark text-base scroll-mt-16">
+    <div class="container-wide section-lg relative z-10 grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="eyebrow-bone reveal">Start hier</p>
+        <h2 class="reveal mt-6 type-display-lg text-base">Vraag de trouwbrochure aan</h2>
+        <p class="reveal mt-7 max-w-md type-lead text-base/75">
+          Ontvang de brochure met alle mogelijkheden voor jullie droomdag. Ieder bloemwerk wordt op maat samengesteld. Vul het formulier in en ik neem zo snel mogelijk contact op.
+        </p>
+      </div>
+
+      <form id="brochure-form" class="reveal space-y-9 lg:col-span-6 lg:col-start-7" data-whatsapp={siteConfig.whatsappNumber}>
+        <div class="space-y-2">
+          <label for="brochure-name" class="eyebrow-bone">Jullie namen</label>
+          <input type="text" id="brochure-name" required class="field-line field-line-light" placeholder="Bijv. Sophie & Thomas" />
+        </div>
+        <div class="grid gap-9 sm:grid-cols-2">
           <div class="space-y-2">
-            <label for="brochure-date" class="text-sm tracking-widest uppercase text-white/70 font-medium">Trouwdatum</label>
-            <input type="date" id="brochure-date" class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white focus:border-white focus:outline-none transition-colors duration-300 rounded-lg backdrop-blur-sm">
+            <label for="brochure-date" class="eyebrow-bone">Trouwdatum</label>
+            <input type="date" id="brochure-date" class="field-line field-line-light" />
           </div>
           <div class="space-y-2">
-            <label for="brochure-location" class="text-sm tracking-widest uppercase text-white/70 font-medium">Locatie</label>
-            <input type="text" id="brochure-location" class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:border-white focus:outline-none transition-colors duration-300 rounded-lg backdrop-blur-sm" placeholder="Trouwlocatie">
+            <label for="brochure-location" class="eyebrow-bone">Locatie</label>
+            <input type="text" id="brochure-location" class="field-line field-line-light" placeholder="Trouwlocatie" />
           </div>
         </div>
         <div class="space-y-2">
-          <label for="brochure-contact" class="text-sm tracking-widest uppercase text-white/70 font-medium">Telefoonnummer of e-mail</label>
-          <input type="text" id="brochure-contact" required class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:border-white focus:outline-none transition-colors duration-300 rounded-lg backdrop-blur-sm" placeholder="+31 6 ... of jullie@email.nl">
+          <label for="brochure-contact" class="eyebrow-bone">Telefoonnummer of e-mail</label>
+          <input type="text" id="brochure-contact" required class="field-line field-line-light" placeholder="06 ... of jullie@email.nl" />
         </div>
         <div class="space-y-2">
-          <label for="brochure-notes" class="text-sm tracking-widest uppercase text-white/70 font-medium">Opmerkingen</label>
-          <textarea id="brochure-notes" rows="3" class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:border-white focus:outline-none transition-colors duration-300 rounded-lg backdrop-blur-sm resize-none" placeholder="Bijv. stijl, kleuren, aantal gasten..."></textarea>
+          <label for="brochure-notes" class="eyebrow-bone">Opmerkingen</label>
+          <textarea id="brochure-notes" rows="3" class="field-line field-line-light resize-none" placeholder="Bijv. stijl, kleuren, aantal gasten"></textarea>
         </div>
-        <button type="submit" class="w-full py-5 bg-white text-forest font-sans text-sm tracking-widest uppercase hover:bg-sand-500 transition-colors duration-300 rounded-full font-bold shadow-xl flex items-center justify-center gap-3">
-          <span>Brochure aanvragen via WhatsApp</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <button type="submit" class="btn-primary btn-light w-full sm:w-auto">
+          <Icon name="ph:whatsapp-logo-light" class="h-5 w-5" />
+          Brochure aanvragen via WhatsApp
         </button>
       </form>
     </div>
 
     <script>
-      const initBrochureForm = () => {
-        const form = document.getElementById('brochure-form') as HTMLFormElement;
-        if (!form) return;
+      const form = document.getElementById('brochure-form') as HTMLFormElement | null;
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const val = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement).value;
+        const name = val('brochure-name');
+        const date = val('brochure-date');
+        const location = val('brochure-location');
+        const contact = val('brochure-contact');
+        const notes = val('brochure-notes');
 
-        const controller = new AbortController();
-        const { signal } = controller;
-        const prev = (form as any).__formCleanup;
-        if (prev) prev();
-        (form as any).__formCleanup = () => controller.abort();
+        const waNumber = form.dataset.whatsapp || '31614500402';
+        let msg = `Hi Celine! Wij willen graag de trouwbrochure aanvragen.\n\n`;
+        msg += `Namen: ${name}\n`;
+        if (date) msg += `Trouwdatum: ${date}\n`;
+        if (location) msg += `Locatie: ${location}\n`;
+        msg += `Contact: ${contact}\n`;
+        if (notes) msg += `Opmerkingen: ${notes}\n`;
+        msg += `\nKunnen jullie de brochure sturen?`;
 
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const name = (document.getElementById('brochure-name') as HTMLInputElement).value;
-          const date = (document.getElementById('brochure-date') as HTMLInputElement).value;
-          const location = (document.getElementById('brochure-location') as HTMLInputElement).value;
-          const contact = (document.getElementById('brochure-contact') as HTMLInputElement).value;
-          const notes = (document.getElementById('brochure-notes') as HTMLTextAreaElement).value;
-
-          const waNumber = form.dataset.whatsapp || '31614500402';
-          let msg = `Hi Celine! Wij willen graag de trouwbrochure aanvragen.\n\n`;
-          msg += `Namen: ${name}\n`;
-          if (date) msg += `Trouwdatum: ${date}\n`;
-          if (location) msg += `Locatie: ${location}\n`;
-          msg += `Contact: ${contact}\n`;
-          if (notes) msg += `Opmerkingen: ${notes}\n`;
-          msg += `\nKunnen jullie de brochure sturen?`;
-
-          window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-        }, { signal });
-      };
-      initBrochureForm();
-      document.addEventListener('astro:page-load', initBrochureForm);
+        window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+      });
     </script>
-  </section>
-
-  <!-- Tijdlijn: Hoe het werkt -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
-    <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-16 space-y-4 stagger-reveal">
-        <span class="text-terra-600 font-sans text-xs md:text-sm uppercase tracking-widest font-bold">Van aanvraag tot trouwdag</span>
-        <h2 class="font-serif text-3xl md:text-5xl text-forest italic leading-tight">Zo werkt het</h2>
-        <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full"></div>
-      </div>
-
-      <ol class="relative stagger-reveal list-none p-0 m-0">
-        <!-- Vertical line -->
-        <div class="absolute left-6 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-sand-600/40" aria-hidden="true"></div>
-
-        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
-          <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-16 md:pl-0">
-            <h3 class="font-serif text-2xl text-forest mb-2">Inspiratie opdoen</h3>
-            <p class="font-sans font-light text-forest/70 text-sm md:text-base">Verzamel Pinterest-borden, foto's en kleuren. Ik denk graag mee over de perfecte bloemen voor jullie dag.</p>
-          </div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
-          <div class="md:w-1/2 md:pl-12 order-3"></div>
-        </li>
-
-        <li class="relative flex flex-col md:flex-row items-start md:items-center mb-12 md:mb-16">
-          <div class="md:w-1/2 md:pr-12 order-2 md:order-1"></div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-terra-500 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
-          <div class="md:w-1/2 md:pl-12 md:text-left order-3 pl-16 md:pl-12">
-            <h3 class="font-serif text-2xl text-forest mb-2">Kennismakingsgesprek</h3>
-            <p class="font-sans font-light text-forest/70 text-sm md:text-base">We zitten samen om tafel, onder het genot van een kopje koffie, om al jullie wensen te bespreken.</p>
-          </div>
-        </li>
-
-        <li class="relative flex flex-col md:flex-row items-start md:items-center">
-          <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-16 md:pl-0">
-            <h3 class="font-serif text-2xl text-forest mb-2">Jullie bruiloft!</h3>
-            <p class="font-sans font-light text-forest/70 text-sm md:text-base">Ik maak de dag ervoor al het bloemwerk, zodat jullie alleen nog maar hoeven te genieten.</p>
-          </div>
-          <div class="absolute left-3 md:left-1/2 md:-translate-x-1/2 w-7 h-7 bg-sage-600 ring-4 ring-sage-500/30 rounded-full border-4 border-white shadow-md z-10 order-1 md:order-2" aria-hidden="true"></div>
-          <div class="md:w-1/2 md:pl-12 order-3"></div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- Tekstgedeelte -->
-  <section class="py-16 md:py-24 bg-sand-500/30 px-4 md:px-6">
-     <div class="max-w-4xl mx-auto text-center font-sans font-light text-forest/80 leading-relaxed text-base md:text-lg space-y-5 md:space-y-6 stagger-reveal">
-        <p>
-          Gefeliciteerd, jullie gaan trouwen! Hierbij horen natuurlijk bloemen. Als bruidsbloemist denk ik graag met jullie mee voor de grote dag. We kijken samen naar de kleuren, sfeer en mogelijkheden op jullie bruiloft. Samen zorgen we ervoor dat het bloemwerk helemaal past bij jullie.
-        </p>
-        <p>
-          Naast dat ik al het bloemwerk kan maken, heb ik ook veel items in de verhuur. Zo kun je naast de bloemen ook de vaasjes en kandelaren huren bij Celine's Bloemen. Naast vazen, kandelaren en een backdrop heb ik ook een mooie grote spiegel en een lintenslinger in de verhuur.
-        </p>
-        <p class="font-medium text-forest">
-          Benieuwd naar de prijzen en mogelijkheden? Vraag de brochure aan, dan stuur ik alles toe.
-        </p>
-        <div class="pt-2">
-          <a href="#brochure-form" class="brochure-link inline-block px-8 py-4 bg-forest text-white rounded-full font-bold tracking-widest uppercase text-xs hover:bg-terra-600 transition-colors shadow-md">
-            Brochure aanvragen
-          </a>
-        </div>
-     </div>
-  </section>
-
-  <!-- Wat er mogelijk is -->
-  <section class="py-12 md:py-16 bg-white px-4 md:px-6">
-    <div class="max-w-4xl mx-auto text-center space-y-6 stagger-reveal">
-      <p class="font-sans font-light text-forest/80 text-base md:text-lg leading-relaxed">
-        Het bloemwerk maakt de sfeer op een bruiloft. Door bloemen toe te voegen aan de styling krijg je een persoonlijk geheel. Met bloemen maak je de bruiloft echt jullie bruiloft! Of het nou wit, roze, pastel of felle kleuren zijn, ik ga graag voor jullie aan de slag.
-      </p>
-      <div class="flex flex-wrap justify-center gap-2.5 pt-2">
-        {['Bruidsboeket', 'Bruidegomscorsage', 'Backdrop', 'Vazen', 'Tafeldecoratie', 'Autobloemstuk'].map((item) => (
-          <span class="px-5 py-2.5 bg-sand-500 rounded-full font-sans text-xs md:text-sm tracking-wide text-forest">{item}</span>
-        ))}
-      </div>
-      <p class="font-sans text-forest/50 font-light text-sm">en zoveel meer mogelijkheden</p>
-    </div>
-  </section>
-
-  <!-- Split Sectie: Bruidsbloemen vs Verhuur -->
-  <section class="py-16 md:py-24 bg-white px-4 md:px-6">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
-
-      <div class="space-y-6 md:space-y-8 stagger-reveal">
-        <div class="aspect-square rounded-sm overflow-hidden relative">
-           <img src="/images/bruiloft-bloemen/foto-bruiloft-met-backdrop-en-bloemen.jpeg" loading="lazy" class="w-full h-full object-cover" alt="Bruidsboeket Celine" />
-        </div>
-        <h2 class="font-serif text-3xl md:text-4xl text-forest leading-tight">Puur Natuur Bruidsbloemen</h2>
-        <p class="font-light text-forest/80 text-base md:text-lg">
-          Het bruidsboeket is het meest persoonlijke bloemwerk van de dag. Of jullie nu kiezen voor droogbloemen, verse bloemen of een combinatie: ik ga graag met jullie aan de slag. Vergeet ook de corsage voor de bruidegom niet, ik maak alles op maat.
-        </p>
-      </div>
-
-      <div class="space-y-6 md:space-y-8 stagger-reveal lg:mt-24">
-        <div class="aspect-square rounded-sm overflow-hidden relative">
-           <img src="/images/verhuur/voorbeeld-van-verhuur-alles-in-een.jpeg" loading="lazy" class="w-full h-full object-cover" alt="Sfeer en Verhuur" />
-        </div>
-        <h2 class="font-serif text-3xl md:text-4xl text-forest leading-tight">Verhuur Eyecatchers</h2>
-        <p class="font-light text-forest/80 text-base md:text-lg">
-          Vazen, kandelaars, backdrops en decoratie: huur het erbij zodat alles naadloos aansluit bij jullie stijl en de bloemen die ik voor jullie maak. Geen gedoe, geen stress.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Verhuur Aanbod -->
-  <section class="py-16 md:py-24 bg-sand-500 px-4 md:px-6" id="verhuur-aanbod">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16 md:mb-20 space-y-4 stagger-reveal">
-        <span class="text-xs md:text-sm font-sans font-medium uppercase tracking-widest text-terra-600">Wat ik verhuur</span>
-        <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl text-forest italic leading-tight">Het Verhuur Aanbod</h2>
-        <div class="h-1 w-20 bg-terra-400 mx-auto rounded-full mt-6 md:mt-8"></div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div class="space-y-6 stagger-reveal">
-          <div class="aspect-[4/3] rounded-sm overflow-hidden">
-            <img src="/images/verhuur/kandelaar-laag-goud-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover" alt="Gouden kandelaren verhuur" />
-          </div>
-          <h3 class="font-serif text-2xl md:text-3xl text-forest">Kandelaren</h3>
-          <p class="font-light text-forest/80 leading-relaxed">
-Mooie rosé gouden kandelaren in verschillende hoogtes, een prachtige aanvulling op jullie dinertafels. Kaarsen zijn niet inbegrepen.
-          </p>
-          <a href="#" class="brochure-link inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
-        </div>
-
-        <div class="space-y-6 stagger-reveal">
-          <div class="aspect-[4/3] rounded-sm overflow-hidden">
-            <img src="/images/verhuur/backdrop-met-laken-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover" alt="Backdrop verhuur bruiloft" />
-          </div>
-          <h3 class="font-serif text-2xl md:text-3xl text-forest">Backdrop</h3>
-          <p class="font-light text-forest/80 leading-relaxed">
-Een mooie houten backdrop inclusief doeken. Makkelijk in en uit elkaar te halen, dus prima zelf op te bouwen voor de ceremonie of als fotobooth.
-          </p>
-          <a href="#" class="brochure-link inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
-        </div>
-
-        <div class="space-y-6 stagger-reveal">
-          <div class="aspect-[4/3] rounded-sm overflow-hidden">
-            <img src="/images/verhuur/vaas-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover" alt="Vazen verhuur bruiloft" />
-          </div>
-          <h3 class="font-serif text-2xl md:text-3xl text-forest">Vazen & vaasjes</h3>
-          <p class="font-light text-forest/80 leading-relaxed">
-Mooie glazen vaasjes waar de bloemen perfect in uitkomen, en grote vazen van 30 en 40 cm voor een echte eyecatcher.
-          </p>
-          <a href="#" class="brochure-link inline-block text-sm uppercase tracking-widest font-medium text-sage-600 border-b border-sage-600 hover:text-forest hover:border-forest transition-colors duration-300">Informatie opvragen →</a>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="max-w-4xl mx-auto mt-16 md:mt-20">
-      <div class="bg-white rounded-3xl p-8 md:p-12 shadow-sm stagger-reveal">
-        <h3 class="font-serif text-2xl md:text-3xl text-forest mb-8 text-center">Alles wat ik verhuur</h3>
-        <ul class="divide-y divide-sand-600/30">
-          {[
-            { name: 'Kandelaren', desc: 'Mooie rosé gouden kandelaren in verschillende hoogtes.', spec: 'Exclusief kaarsen' },
-            { name: 'Vaasjes', desc: 'Mooie glazen vaasjes waar de bloemen perfect in uitkomen.', spec: 'Rond, smal en hoog' },
-            { name: 'Vazen', desc: 'Mooie grote vazen voor een eyecatcher boeket.', spec: '30 cm (2x) en 40 cm (2x)' },
-            { name: 'Backdrop', desc: 'Een mooie houten backdrop inclusief doeken, makkelijk in en uit elkaar te halen.', spec: '1 beschikbaar' },
-            { name: 'Spiegel', desc: 'Een mooie grote spiegel voor de perfecte foto\'s.', spec: '180 x 90 cm, 1 beschikbaar' },
-            { name: 'Lintenslinger', desc: 'Een vrolijke lintenslinger van 100 meter lang.', spec: 'Licht roze, fuchsia roze en groen' },
-          ].map((item) => (
-            <li class="py-5 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
-              <span class="font-serif text-xl text-forest sm:w-40 flex-shrink-0">{item.name}</span>
-              <span class="font-sans font-light text-forest/70 flex-1">{item.desc}</span>
-              <span class="font-sans text-xs uppercase tracking-widest text-sage-600 sm:text-right sm:w-48 flex-shrink-0">{item.spec}</span>
-            </li>
-          ))}
-        </ul>
-        <p class="text-center font-sans text-sm text-forest/50 font-light mt-8">
-          Benieuwd naar de prijzen? Die staan in de brochure.
-        </p>
-      </div>
-    </div>
-
-    <script>
-      const initBrochureLinks = () => {
-        const links = document.querySelectorAll('.brochure-link');
-        if (!links.length) return;
-
-        const controller = new AbortController();
-        const { signal } = controller;
-        const prev = (links[0] as any).__linkCleanup;
-        if (prev) prev();
-        (links[0] as any).__linkCleanup = () => controller.abort();
-
-        links.forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('#brochure-form')?.scrollIntoView({ behavior: 'smooth' });
-          }, { signal });
-        });
-      };
-      initBrochureLinks();
-      document.addEventListener('astro:page-load', initBrochureLinks);
-    </script>
-  </section>
-
-  <!-- Foto's -->
-  <section class="py-12 md:py-16 bg-sand-500/30 px-4 md:px-6">
-    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 stagger-reveal">
-      <div class="aspect-square overflow-hidden rounded-sm">
-        <img src="/images/verhuur/backdrop-de-luxe-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Luxe backdrop" />
-      </div>
-      <div class="aspect-square overflow-hidden rounded-sm">
-        <img src="/images/verhuur/aankleding-tafel.jpeg" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Tafelaankleding" />
-      </div>
-      <div class="aspect-square overflow-hidden rounded-sm">
-        <img src="/images/verhuur/aangeklede-tafel-bruiloft-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Aangeklede trouwtafel" />
-      </div>
-      <div class="aspect-square overflow-hidden rounded-sm">
-        <img src="/images/verhuur/backdrop-op-bruiloft-verhuur.jpeg" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Backdrop op bruiloft" />
-      </div>
-    </div>
-  </section>
-
-  <!-- Tarieven Callout -->
-  <section class="py-12 md:py-16 bg-white px-4 md:px-6">
-    <div class="max-w-4xl mx-auto bg-forest text-white rounded-3xl p-8 md:p-16 text-center space-y-6 stagger-reveal">
-      <h2 class="font-serif text-3xl md:text-4xl italic leading-tight">Tarieven op maat</h2>
-      <p class="font-sans font-light text-white/80 text-base md:text-lg leading-relaxed">
-        Ieder bloemwerk wordt op maat samengesteld. Vraag de trouwbrochure aan of neem direct contact op voor een vrijblijvend kennismakingsgesprek.
-      </p>
-      <a href="#brochure-form" class="brochure-link inline-block px-8 py-4 md:px-10 md:py-5 bg-white text-forest rounded-full font-bold tracking-widest uppercase text-[10px] md:text-xs hover:bg-sand-500 transition-colors shadow-xl">
-        Brochure aanvragen
-      </a>
-    </div>
   </section>
 
   <CtaSection />

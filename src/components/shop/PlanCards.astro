@@ -1,0 +1,49 @@
+---
+// Prijskaarten voor de abonnementen. De knoppen (.sub-btn) openen het formulier,
+// zie het script op /abonnementen. Plannen zonder prijs verwijzen naar contact.
+import { Icon } from 'astro-icon/components';
+import { planPriceLabel, planLabel, type Plan } from '../../lib/plans';
+
+interface Props { plans: Plan[]; cta: string }
+const { plans, cta } = Astro.props;
+---
+
+<div class="reveal-stagger grid gap-5 lg:grid-cols-3 lg:gap-6">
+  {plans.map((plan) => (
+    <article class:list={[
+      'relative flex flex-col rounded-[1.5rem] p-8 md:p-10',
+      plan.featured ? 'bg-ink text-base' : 'border border-ink/12 bg-base',
+    ]}>
+      {plan.featured && (
+        <span class="absolute right-6 top-6 rounded-full border border-base/25 px-3 py-1 text-[0.7rem] uppercase tracking-[0.16em] text-accent-300">Favoriet</span>
+      )}
+      <h3 class:list={['font-display text-[2.2rem] leading-none', plan.featured ? 'text-base' : 'text-ink']}>{plan.size}</h3>
+      <p class:list={['mt-4 min-h-[4.5rem] text-[0.95rem] leading-relaxed', plan.featured ? 'text-base/70' : 'text-ink-muted']}>{plan.description}</p>
+      <p class:list={['mt-6 border-t pb-6 pt-6', plan.featured ? 'border-base/15' : 'border-ink/10']}>
+        <span class="font-display text-[2.6rem] leading-none tabular-nums">{planPriceLabel(plan)}</span>
+        {plan.price != null && <span class:list={['ml-2 text-sm', plan.featured ? 'text-base/55' : 'text-ink-faint']}>per keer</span>}
+      </p>
+      <ul class:list={['mb-10 space-y-3 text-[0.95rem]', plan.featured ? 'text-base/80' : 'text-ink-soft']}>
+        {plan.bullets.map((b) => (
+          <li class="flex gap-3">
+            <Icon name="ph:check-light" class:list={['mt-0.5 h-5 w-5 shrink-0', plan.featured ? 'text-accent-300' : 'text-accent-500']} />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+      {plan.price == null ? (
+        <a href="/contact" class:list={['btn-primary mt-auto w-full', plan.featured && 'btn-light']}>Vraag de prijs op</a>
+      ) : (
+        <button
+          type="button"
+          class:list={['sub-btn btn-primary mt-auto w-full', plan.featured && 'btn-light']}
+          data-type={plan.type}
+          data-size={plan.size}
+          data-frequency={plan.defaultFrequency}
+          data-price={planPriceLabel(plan)}
+          data-label={planLabel(plan)}
+        >{cta}</button>
+      )}
+    </article>
+  ))}
+</div>
