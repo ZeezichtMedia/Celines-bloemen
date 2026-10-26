@@ -46,7 +46,7 @@ const isCurrent = (url: string) => path === url;
       </nav>
 
       <div class="flex items-center gap-1">
-        <a href="/contact" class="nav-cta hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-5 py-2.5 text-[0.9rem] font-medium text-base hover:bg-accent-500 hover:border-accent-500">
+        <a href="/contact" class="nav-cta hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-5 py-2.5 text-[0.76rem] text-base hover:bg-accent-500 hover:border-accent-500">
           Contact
         </a>
         {shop && (
@@ -91,7 +91,7 @@ const isCurrent = (url: string) => path === url;
         <li class="menu-item">
           <a href={l.url} class="flex items-baseline gap-4 py-2" aria-current={isCurrent(l.url) ? 'page' : undefined}>
             <span class="w-6 text-xs tabular-nums text-accent-600">{String(i + 1).padStart(2, '0')}</span>
-            <span class:list={['font-display text-[2.1rem] leading-tight', isCurrent(l.url) ? 'text-accent-600' : 'text-ink']}>{l.name}</span>
+            <span class:list={['font-nav text-[1.85rem] leading-tight', isCurrent(l.url) ? 'text-accent-600' : 'text-ink']}>{l.name}</span>
           </a>
         </li>
       ))}

@@ -10,6 +10,8 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
   const pad = ctx.url.pathname.replace(/\/$/, '') || '/';
   if (NIET_BEWAREN.some((p) => pad === p || pad.startsWith(`${p}/`))) return res;
   if (!(res.headers.get('content-type') ?? '').includes('text/html')) return res;
+  // Een pagina die zelf no-store zet (voorbeeld voor wie is ingelogd) blijft persoonlijk
+  if ((res.headers.get('Cache-Control') ?? '').includes('no-store')) return res;
 
   // Browser vraagt altijd opnieuw, de CDN bewaart een uur en ververst daarna op de achtergrond.
   // Een wijziging in het beheer leegt de CDN direct (purgeSiteCache).

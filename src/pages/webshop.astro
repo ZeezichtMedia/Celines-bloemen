@@ -6,13 +6,17 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleProducts } from '../lib/data';
 import { getPublicSettings, publicShippingInfo, checkoutOpen } from '../lib/settings';
+import { isAuthenticated } from '../lib/auth';
 import { formatEuro } from '../lib/plans';
 import { licht } from '../lib/img';
 
 const settings = await getPublicSettings();
 const open = checkoutOpen(settings);
-// Zolang online afrekenen uit staat, is de webshop van de site gehaald
-if (!open) return Astro.redirect('/', 302);
+// Zolang online afrekenen uit staat, is de webshop van de site gehaald.
+// Wie in het beheer is ingelogd ziet de pagina wel, als voorbeeld (en nooit uit de CDN-cache).
+const voorbeeld = !open && isAuthenticated(Astro.request.headers.get('cookie'));
+if (!open && !voorbeeld) return Astro.redirect('/', 302);
+if (voorbeeld) Astro.response.headers.set('Cache-Control', 'private, no-store');
 
 const allProducts = await getVisibleProducts();
 const shipping = publicShippingInfo(settings);
@@ -41,7 +45,13 @@ const categories = [
 ];
 ---
 
-<Layout title="Webshop - Celine's bloemen" description={intro}>
+<Layout title="Webshop - Celine's bloemen" description={intro} noindex={voorbeeld}>
+  {voorbeeld && (
+    <p class="fixed bottom-4 left-4 right-4 z-[60] max-w-md rounded-2xl bg-ink px-5 py-3.5 text-[0.88rem] leading-snug text-base shadow-lg sm:right-auto" role="status">
+      <strong class="font-medium">Voorbeeld.</strong> Alleen jij ziet deze pagina, omdat je bent ingelogd. Bezoekers zien hem pas als online afrekenen in het beheer aan staat.
+    </p>
+  )}
+
 
   <section class="page-top pb-14 md:pb-20">
     <div class="container-wide grid gap-10 lg:grid-cols-12 lg:items-end">

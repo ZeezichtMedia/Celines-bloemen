@@ -301,10 +301,32 @@ function ItemRow({ image, title, meta, available, onToggle, onEdit, onDelete }: 
   );
 }
 
+// Telefoonfoto's zijn vaak groter dan de 4,5 MB die Vercel per upload toelaat.
+// Daarom verkleinen we in de browser naar max. 2000 px aan de lange kant, als JPEG.
+// Lukt dat niet (bijv. HEIC in een browser die het niet kan lezen), dan gaat het origineel.
+async function verkleinFoto(file: File): Promise<File> {
+  const MAX = 2000;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const schaal = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+    if (schaal === 1 && file.size < 1.5 * 1024 * 1024 && file.type === 'image/jpeg') return file;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * schaal);
+    canvas.height = Math.round(bitmap.height * schaal);
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.85));
+    if (!blob) return file;
+    const naam = file.name.replace(/\.[^.]+$/, '') || 'foto';
+    return new File([blob], `${naam}.jpg`, { type: 'image/jpeg' });
+  } catch {
+    return file;
+  }
+}
+
 async function uploadPhoto(file: File): Promise<string | null> {
   try {
     const fd = new FormData();
-    fd.append('file', file);
+    fd.append('file', await verkleinFoto(file));
     const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
     if (!res.ok) {
       const { error } = await res.json().catch(() => ({ error: `Upload mislukt (${res.status})` }));
@@ -408,11 +430,12 @@ function BouquetsTab({ showToast }: { showToast: (m: string) => void }) {
       <PageHeader
         title="Boeketten"
         subtitle={`${bouquets.length} boeket${bouquets.length !== 1 ? 'ten' : ''} op de bestelpagina`}
-        actions={
+        actions={<>
+          <a href="/bestellen" target="_blank" rel="noopener" className={cls.secondary}><Ph name="external" size={18} /> Bekijk op de site</a>
           <button type="button" className={cls.primary} onClick={() => setEditing({ id: '', name: '', color: '', description: '', image: '', priceSmall: '€ 0,00', priceMid: '€ 0,00', priceLarge: '€ 0,00', available: true, sortOrder: bouquets.length })}>
             <Ph name="plus" size={18} /> Nieuw boeket
           </button>
-        }
+        </>}
       />
       {bouquets.length === 0 ? (
         <EmptyState icon="flower" text="Nog geen boeketten" />
@@ -515,7 +538,10 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
       <PageHeader
         title="Webshop"
         subtitle={`${products.length} product${products.length !== 1 ? 'en' : ''} in de webshop`}
-        actions={<button type="button" className={cls.primary} onClick={() => setEditing(newProduct())}><Ph name="plus" size={18} /> Nieuw product</button>}
+        actions={<>
+          <a href="/webshop" target="_blank" rel="noopener" className={cls.secondary}><Ph name="external" size={18} /> Bekijk op de site</a>
+          <button type="button" className={cls.primary} onClick={() => setEditing(newProduct())}><Ph name="plus" size={18} /> Nieuw product</button>
+        </>}
       />
       {products.length === 0 ? (
         <EmptyState icon="shop" text="Nog geen producten" />

@@ -17,6 +17,8 @@
   --font-mono: "Jost", system-ui, sans-serif;
   /* Oude naam, nog gebruikt door formulieren en voorwaarden */
   --font-serif: "Cormorant Garamond", Georgia, serif;
+  /* Menu: klassieke serif met uitlopende schreven, zoals de letters in het logo */
+  --font-nav: "Marcellus", "Cormorant Garamond", Georgia, serif;
 
   --display-weight: 500;
 
@@ -196,10 +198,10 @@ html.lenis { height: auto; }
 .site-header .nav-logo { height: 4.75rem; width: auto; transition: height 0.6s cubic-bezier(0.32,0.72,0,1), filter 0.6s; }
 @media (min-width: 1024px) { .site-header .nav-logo { height: 5.75rem; } }
 .site-header[data-scrolled="true"] .nav-logo { height: 2.9rem; }
-.nav-link { position: relative; color: var(--color-ink-soft); font-size: 0.92rem; transition: color 0.4s; }
+.nav-link { position: relative; color: var(--color-ink-soft); font-family: var(--font-nav); font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; transition: color 0.4s; }
 .nav-link:hover, .nav-link[aria-current="page"] { color: var(--color-ink); }
 .nav-link[aria-current="page"]::after { content: ""; position: absolute; left: 50%; bottom: -0.45rem; width: 4px; height: 4px; border-radius: 99px; background: var(--color-accent-500); transform: translateX(-50%); }
-.nav-cta { transition: background 0.5s, color 0.5s, border-color 0.5s; }
+.nav-cta { font-family: var(--font-nav); letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.5s, color 0.5s, border-color 0.5s; }
 
 /* Over een donkere foto: lichte header zolang je bovenaan staat */
 body.hero-light .site-header[data-scrolled="false"] .nav-link { color: color-mix(in srgb, var(--color-base) 85%, transparent); }

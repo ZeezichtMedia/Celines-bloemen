@@ -7,12 +7,16 @@ import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleBouquets } from '../lib/data';
 import { licht } from '../lib/img';
 import { getPublicSettings, checkoutOpen } from '../lib/settings';
+import { isAuthenticated } from '../lib/auth';
 
-const [allBouquets, settings] = await Promise.all([getVisibleBouquets(), getPublicSettings()]);
-const open = checkoutOpen(settings);
-// Zolang online afrekenen uit staat, is boeketten bestellen van de site gehaald
-if (!open) return Astro.redirect('/', 302);
+const open = checkoutOpen(await getPublicSettings());
+// Zolang online afrekenen uit staat, is boeketten bestellen van de site gehaald.
+// Wie in het beheer is ingelogd ziet de pagina wel, als voorbeeld (en nooit uit de CDN-cache).
+const voorbeeld = !open && isAuthenticated(Astro.request.headers.get('cookie'));
+if (!open && !voorbeeld) return Astro.redirect('/', 302);
+if (voorbeeld) Astro.response.headers.set('Cache-Control', 'private, no-store');
 
+const allBouquets = await getVisibleBouquets();
 const bouquets = allBouquets.map((b) => ({
   id: b.id,
   name: b.name,
@@ -28,7 +32,13 @@ const bouquets = allBouquets.map((b) => ({
 }));
 ---
 
-<Layout title="Boeket Bestellen - Celine's bloemen" description="Bestel dagverse, handgebonden boeketten vanaf € 17,95. Bezorgd in Arnemuiden, Middelburg, Vlissingen en omgeving.">
+<Layout title="Boeket Bestellen - Celine's bloemen" description="Bestel dagverse, handgebonden boeketten vanaf € 17,95. Bezorgd in Arnemuiden, Middelburg, Vlissingen en omgeving." noindex={voorbeeld}>
+  {voorbeeld && (
+    <p class="fixed bottom-4 left-4 right-4 z-[60] max-w-md rounded-2xl bg-ink px-5 py-3.5 text-[0.88rem] leading-snug text-base shadow-lg sm:right-auto" role="status">
+      <strong class="font-medium">Voorbeeld.</strong> Alleen jij ziet deze pagina, omdat je bent ingelogd. Bezoekers zien hem pas als online afrekenen in het beheer aan staat.
+    </p>
+  )}
+
 
   <section class="page-top pb-14 md:pb-20">
     <div class="container-wide grid gap-10 lg:grid-cols-12 lg:items-end">
