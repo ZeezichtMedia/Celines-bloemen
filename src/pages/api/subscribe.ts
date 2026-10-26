@@ -3,6 +3,7 @@ import { db, schema } from '../../lib/db';
 import { createFirstPayment } from '../../lib/mollie';
 import { subscribeSchema, validateOrError } from '../../lib/validation';
 import { resolvePlan, formatEuro } from '../../lib/plans';
+import { getSettings, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { eq } from 'drizzle-orm';
 
 export const prerender = false;
@@ -12,6 +13,7 @@ const json = (body: unknown, status = 200) =>
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!checkoutOpen(await getSettings())) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
     const body = await request.json();
 
     const { data, error } = validateOrError(subscribeSchema, body);

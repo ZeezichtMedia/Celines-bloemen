@@ -3,6 +3,7 @@ import { purgeSiteCache } from './cache';
 
 export interface Settings {
   shipping_enabled: string;    // "true" | "false" — pakketverzending aanbieden (Celine wil dit nu niet)
+  checkout_enabled: string;    // "true" | "false" — online afrekenen; uit = bestellen via WhatsApp (tot Mollie gekoppeld is)
   shipping_cost: string;       // "6.95" — pakketverzending heel Nederland
   free_shipping_from: string;  // "75.00" — gratis verzending vanaf dit subtotaal ("" = nooit gratis)
   notify_email: string;        // waar nieuwe bestellingen/abonnementen heen gemaild worden
@@ -34,6 +35,7 @@ const DEFAULT_HOURS: DayHours[] = [
 
 export const DEFAULT_SETTINGS: Settings = {
   shipping_enabled: 'false',
+  checkout_enabled: 'false',
   shipping_cost: '6.95',
   free_shipping_from: '75.00',
   notify_email: '',
@@ -111,3 +113,10 @@ export function publicShippingInfo(settings: Settings) {
   const freeFrom = settings.free_shipping_from ? parseFloat(settings.free_shipping_from) : null;
   return { enabled: settings.shipping_enabled === 'true', cost, freeFrom: freeFrom && freeFrom > 0 ? freeFrom : null };
 }
+
+/** Online afrekenen aan? Staat standaard uit tot Celine's eigen Mollie-account gekoppeld is. */
+export function checkoutOpen(settings: Settings): boolean {
+  return settings.checkout_enabled === 'true';
+}
+
+export const CHECKOUT_CLOSED_MESSAGE = 'Online bestellen kan op dit moment nog niet. Stuur Celine een berichtje via WhatsApp, dan regelt ze het met je.';

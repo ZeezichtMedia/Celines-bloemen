@@ -3,7 +3,7 @@ import { db, schema } from '../../lib/db';
 import { createPayment } from '../../lib/mollie';
 import { checkoutSchema, validateOrError } from '../../lib/validation';
 import { priceOrder, PricingError, euro } from '../../lib/pricing';
-import { getSettings, resolveNotifyEmail } from '../../lib/settings';
+import { getSettings, resolveNotifyEmail, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData } from '../../lib/email';
 import { eq } from 'drizzle-orm';
 
@@ -23,6 +23,7 @@ function generateOrderNumber(): string {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!checkoutOpen(await getSettings())) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
     const body = await request.json();
 
     const { data, error } = validateOrError(checkoutSchema, body);

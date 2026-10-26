@@ -4,7 +4,7 @@ import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import WhatsAppPopup from '../components/common/WhatsAppPopup.astro';
 import { siteConfig } from '../config';
-import { getPublicSettings, parseOpeningHours, openingHoursSchema } from '../lib/settings';
+import { getPublicSettings, parseOpeningHours, openingHoursSchema, checkoutOpen } from '../lib/settings';
 
 interface Props {
 	title: string;
@@ -22,6 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname.replace(/\/?$/, '/'), siteConfig
 const settings = await getPublicSettings();
 const announcement = settings.announcement.trim();
 const hours = parseOpeningHours(settings);
+const checkout = checkoutOpen(settings);
 const openingHours = openingHoursSchema(hours);
 ---
 
@@ -82,7 +83,7 @@ const openingHours = openingHoursSchema(hours);
 	  <!-- Vercel Web Analytics: bezoekers meten zonder cookies, alleen op productie -->
 	  {import.meta.env.PROD && <script is:inline defer src="/_vercel/insights/script.js"></script>}
 	</head>
-	<body class:list={['bg-base text-ink font-sans antialiased min-h-screen flex flex-col overflow-x-clip', heroTone === 'light' && 'hero-light']}>
+	<body class:list={['bg-base text-ink font-sans antialiased min-h-screen flex flex-col overflow-x-clip', heroTone === 'light' && 'hero-light']} data-checkout={checkout ? 'open' : 'closed'} data-wa={siteConfig.whatsappNumber}>
 		<!-- Skip to content link -->
 		<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-forest focus:text-white focus:rounded-md focus:outline-none">
 			Ga naar inhoud

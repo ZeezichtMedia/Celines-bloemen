@@ -5,6 +5,9 @@ import CtaSection from '../components/home/CtaSection.astro';
 import SubscriptionForm from '../components/shop/SubscriptionForm';
 import PlanCards from '../components/shop/PlanCards.astro';
 import { PLANS, FRESH_FREQUENCIES } from '../lib/plans';
+import { getPublicSettings, checkoutOpen } from '../lib/settings';
+
+const open = checkoutOpen(await getPublicSettings());
 
 const freshPlans = PLANS.filter((p) => p.type === 'fresh');
 const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
@@ -81,7 +84,7 @@ const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
       </div>
 
       <div class="mt-10">
-        <PlanCards plans={freshPlans} cta="Kies dit boeket" />
+        <PlanCards plans={freshPlans} cta={open ? "Kies dit boeket" : "Aanvragen via WhatsApp"} />
       </div>
 
       <div class="reveal mt-10 grid gap-4 rounded-[1.5rem] bg-base-2 p-8 md:grid-cols-12 md:items-center md:p-10">
@@ -105,7 +108,7 @@ const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
         </p>
       </div>
       <div class="mt-14">
-        <PlanCards plans={artificialPlans} cta="Kies dit plan" />
+        <PlanCards plans={artificialPlans} cta={open ? "Kies dit plan" : "Aanvragen via WhatsApp"} />
       </div>
 
       <div class="mt-14 grid gap-6 lg:grid-cols-12">
@@ -144,6 +147,14 @@ const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
 
   <!-- Wire up buttons to open the subscription form -->
   <script>
+
+    // Online afrekenen staat uit (beheer > Instellingen): bestellen gaat dan via WhatsApp
+    const viaWhatsApp = (tekst: string) => {
+      if (document.body.dataset.checkout !== 'closed') return false;
+      window.open(`https://wa.me/${document.body.dataset.wa}?text=${encodeURIComponent(tekst)}`, '_blank');
+      return true;
+    };
+
     const initSubButtons = () => {
       const controller = new AbortController();
       const { signal } = controller;
@@ -177,6 +188,8 @@ const artificialPlans = PLANS.filter((p) => p.type === 'artificial');
             price: el.dataset.price,
             label: el.dataset.label,
           };
+          const freqLabel = (document.querySelector('.freq-btn[aria-pressed="true"]') as HTMLElement | null)?.textContent?.trim().toLowerCase();
+          if (viaWhatsApp(`Hoi Celine! Ik heb interesse in het abonnement ${plan.label}${plan.type === 'fresh' && freqLabel ? `, ${freqLabel}` : ''}.`)) return;
           if ((window as any).__openSubscription) {
             (window as any).__openSubscription(plan);
           }

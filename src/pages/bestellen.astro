@@ -6,8 +6,10 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleBouquets } from '../lib/data';
 import { licht } from '../lib/img';
+import { getPublicSettings, checkoutOpen } from '../lib/settings';
 
-const allBouquets = await getVisibleBouquets();
+const [allBouquets, settings] = await Promise.all([getVisibleBouquets(), getPublicSettings()]);
+const open = checkoutOpen(settings);
 
 const bouquets = allBouquets.map((b) => ({
   id: b.id,
@@ -78,9 +80,9 @@ const bouquets = allBouquets.map((b) => ({
                 </div>
               </fieldset>
 
-              <button type="button" class="add-to-cart-btn btn-primary mt-4 w-full" aria-label={`Voeg ${bouquet.name} toe aan je winkelwagen`}>
-                <Icon name="ph:shopping-bag-open-light" class="h-5 w-5" />
-                <span>In winkelwagen</span>
+              <button type="button" class="add-to-cart-btn btn-primary mt-4 w-full" aria-label={open ? `Voeg ${bouquet.name} toe aan je winkelwagen` : `Bestel ${bouquet.name} via WhatsApp`}>
+                <Icon name={open ? 'ph:shopping-bag-open-light' : 'ph:whatsapp-logo-light'} class="h-5 w-5" />
+                <span>{open ? 'In winkelwagen' : 'Bestellen via WhatsApp'}</span>
               </button>
             </div>
           </article>
@@ -146,6 +148,14 @@ const bouquets = allBouquets.map((b) => ({
   <script>
     import { addToCart } from '../lib/cart';
 
+
+    // Online afrekenen staat uit (beheer > Instellingen): bestellen gaat dan via WhatsApp
+    const viaWhatsApp = (tekst: string) => {
+      if (document.body.dataset.checkout !== 'closed') return false;
+      window.open(`https://wa.me/${document.body.dataset.wa}?text=${encodeURIComponent(tekst)}`, '_blank');
+      return true;
+    };
+
     const initBestellen = () => {
       const controller = new AbortController();
       const { signal } = controller;
@@ -183,6 +193,7 @@ const bouquets = allBouquets.map((b) => ({
           const size = activeBtn?.dataset.size || 'middel';
           const priceStr = activeBtn?.dataset.price || '€ 0,00';
           const price = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
+          if (viaWhatsApp(`Hoi Celine! Ik wil graag het boeket ${name} bestellen, maat ${size} (${priceStr}).`)) return;
 
           addToCart({
             productId: cardEl.dataset.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),

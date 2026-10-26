@@ -859,7 +859,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
 // Instellingen
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
-type ShopSettings = { shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
+type ShopSettings = { checkout_enabled?: string; shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
 type DayHours = { open: string; close: string } | null;
 const DAGEN = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
 
@@ -959,6 +959,7 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        checkout_enabled: settings.checkout_enabled === 'true' ? 'true' : 'false',
         shipping_enabled: settings.shipping_enabled === 'true' ? 'true' : 'false',
         shipping_cost: settings.shipping_cost,
         free_shipping_from: settings.free_shipping_from,
@@ -993,6 +994,7 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
   if (loading) return <Spinner />;
 
   const shippingOn = settings.shipping_enabled === 'true';
+  const checkoutOn = settings.checkout_enabled === 'true';
 
   return (
     <>
@@ -1024,6 +1026,10 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       </Section>
 
       <Section title="Verzending & meldingen">
+        <Toggle on={checkoutOn} onChange={() => setSettings({ ...settings, checkout_enabled: checkoutOn ? 'false' : 'true' })}
+          label={checkoutOn ? 'Online afrekenen staat aan' : 'Online afrekenen staat uit'}
+          sub="Uit betekent dat klanten via WhatsApp bestellen. Zet het pas aan als je Mollie-account gekoppeld is." />
+
         <Toggle on={shippingOn} onChange={() => setSettings({ ...settings, shipping_enabled: shippingOn ? 'false' : 'true' })}
           label={shippingOn ? 'Verzenden per post staat aan' : 'Verzenden per post staat uit'}
           sub="Uit betekent dat klanten alleen kunnen ophalen of lokaal laten bezorgen. De webshop past zijn teksten hierop aan." />
