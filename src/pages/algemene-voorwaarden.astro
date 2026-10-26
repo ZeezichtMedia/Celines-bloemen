@@ -1,6 +1,10 @@
 ---
 import LegalLayout from '../components/legal/LegalLayout.astro';
 import { siteConfig } from '../config';
+import { getPublicSettings, checkoutOpen } from '../lib/settings';
+
+// Zolang online afrekenen uit staat, noemen de voorwaarden geen Mollie en geen incasso
+const open = checkoutOpen(await getPublicSettings());
 ---
 
 <LegalLayout title="Algemene voorwaarden" eyebrow="Duidelijke afspraken" description="De algemene voorwaarden van Celine's Bloemen voor bestellingen, bezorging, verzending, retouren en bloemenabonnementen." updated="september 2026">
@@ -16,7 +20,11 @@ import { siteConfig } from '../config';
   <p>Een kennelijke vergissing in een prijs bindt mij niet. Als dat gebeurt neem ik contact met je op voordat ik iets maak of verstuur.</p>
 
   <h2>4. Bestellen en betalen</h2>
-  <p>Je betaalt online via Mollie (iDEAL, Bancontact of creditcard). Je bestelling is definitief zodra de betaling is gelukt; je ontvangt dan een bevestiging per e-mail. Kies je voor ophalen in de winkel, dan kun je ook bij het ophalen betalen. In dat geval leg ik de bestelling klaar op basis van je bestelling; als je niet komt ophalen binnen 3 dagen na de afgesproken datum, vervalt de bestelling.</p>
+  {open ? (
+    <p>Je betaalt online via Mollie (iDEAL, Bancontact of creditcard). Je bestelling is definitief zodra de betaling is gelukt; je ontvangt dan een bevestiging per e-mail. Kies je voor ophalen in de winkel, dan kun je ook bij het ophalen betalen. In dat geval leg ik de bestelling klaar op basis van je bestelling; als je niet komt ophalen binnen 3 dagen na de afgesproken datum, vervalt de bestelling.</p>
+  ) : (
+    <p>Online afrekenen kan op dit moment nog niet. Je bestelt via WhatsApp of in de winkel, en hoe je betaalt spreken we dan samen af. Je bestelling is definitief zodra ik hem heb bevestigd. Haal je op in de winkel en kom je niet binnen 3 dagen na de afgesproken datum, dan vervalt de bestelling.</p>
+  )}
 
   <h2>5. Bezorgen en verzenden</h2>
   <p><strong>Lokaal bezorgen.</strong> Verse boeketten bezorg ik zelf in de plaatsen die je bij het afrekenen kunt kiezen, op de dag die je opgeeft. De bezorgkosten hangen af van de plaats. Ben je niet thuis, dan laat ik het boeket als het kan bij de buren of op een veilige plek en stuur je een berichtje.</p>
@@ -28,7 +36,9 @@ import { siteConfig } from '../config';
   <p>Het herroepingsrecht geldt <strong>niet</strong> voor verse boeketten, bloemwerk op maat en andere producten die snel bederven of speciaal voor jou zijn gemaakt. Dat is wettelijk zo geregeld (artikel 6:230p van het Burgerlijk Wetboek). Is er toch iets mis met je boeket, dan hoor ik het graag zo snel mogelijk, liefst met een foto, dan zoeken we samen een oplossing.</p>
 
   <h2>7. Bloemenabonnementen</h2>
-  <p>Een abonnement loopt voor onbepaalde tijd en je kunt het op elk moment pauzeren of stoppen door mij een berichtje te sturen. Stoppen of pauzeren gaat in vóór de eerstvolgende incasso; een levering die al is betaald, wordt nog gewoon bezorgd. Bij het afsluiten betaal je de eerste levering via iDEAL. Daarmee geef je een doorlopende machtiging af, waarna de volgende leveringen automatisch worden geïncasseerd op de gekozen frequentie. Mislukt een incasso, dan neem ik contact met je op en wordt er niet bezorgd tot de betaling in orde is.</p>
+  <p>Een abonnement loopt voor onbepaalde tijd en je kunt het op elk moment pauzeren of stoppen door mij een berichtje te sturen.{open
+    ? ' Stoppen of pauzeren gaat in vóór de eerstvolgende incasso; een levering die al is betaald, wordt nog gewoon bezorgd. Bij het afsluiten betaal je de eerste levering via iDEAL. Daarmee geef je een doorlopende machtiging af, waarna de volgende leveringen automatisch worden geïncasseerd op de gekozen frequentie. Mislukt een incasso, dan neem ik contact met je op en wordt er niet bezorgd tot de betaling in orde is.'
+    : ' Een levering die al is betaald, wordt nog gewoon bezorgd. Hoe je betaalt, spreken we af als je het abonnement aanvraagt.'}</p>
   <p>Kies je voor levering in een vaas, dan blijft de vaas van mij. Ik ruil hem bij de volgende levering om. Stop je het abonnement, dan spreken we af wanneer ik de vaas kom ophalen of wanneer jij hem langsbrengt.</p>
 
   <h2>8. Klachten en garantie</h2>

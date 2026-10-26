@@ -38,8 +38,20 @@ const allServices = [
     link: '/webshop',
     cta: 'Naar de webshop',
   },
+  {
+    nr: '04',
+    title: 'Abonnementen',
+    description: 'Elke twee weken, elke drie weken of maandelijks een boeket met de bloemen van het seizoen in huis.',
+    image: '/images/opt/abonnement-boeket-800.webp',
+    alt: 'Een wit boeket met ranonkels in een glazen vaas',
+    link: '/abonnementen',
+    cta: 'Bekijk de abonnementen',
+  },
 ];
-const services = allServices.filter((s) => shop || s.link !== '/bestellen');
+// Zolang online afrekenen uit staat: geen bestellen en webshop, wel abonnementen (die lopen dan via WhatsApp)
+const services = allServices
+  .filter((s) => (shop ? s.link !== '/abonnementen' : !['/bestellen', '/webshop'].includes(s.link)))
+  .map((s, i) => ({ ...s, nr: String(i + 1).padStart(2, '0') }));
 
 ---
 

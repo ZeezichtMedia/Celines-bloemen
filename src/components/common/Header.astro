@@ -6,11 +6,10 @@ import { siteConfig } from '../../config';
 interface Props { announcement?: string; shop?: boolean }
 const { announcement = '', shop = true } = Astro.props;
 
-// Boeket bestellen staat alleen in het menu als online afrekenen aan staat
+// Boeket bestellen en Webshop staan alleen in het menu als online afrekenen aan staat
 const links = [
   { name: 'Winkel', url: '/winkel' },
-  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }] : []),
-  { name: 'Webshop', url: '/webshop' },
+  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }, { name: 'Webshop', url: '/webshop' }] : []),
   { name: 'Abonnementen', url: '/abonnementen' },
   { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },
 ];
@@ -50,9 +49,11 @@ const isCurrent = (url: string) => path === url;
         <a href="/contact" class="nav-cta hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-5 py-2.5 text-[0.9rem] font-medium text-base hover:bg-accent-500 hover:border-accent-500">
           Contact
         </a>
-        <div class="nav-icon text-ink">
-          <CartWidget client:load />
-        </div>
+        {shop && (
+          <div class="nav-icon text-ink">
+            <CartWidget client:load />
+          </div>
+        )}
         <button
           id="menu-open"
           type="button"

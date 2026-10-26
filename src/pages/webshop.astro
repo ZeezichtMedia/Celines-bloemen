@@ -5,13 +5,17 @@ import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleProducts } from '../lib/data';
-import { getSettings, publicShippingInfo, checkoutOpen } from '../lib/settings';
+import { getPublicSettings, publicShippingInfo, checkoutOpen } from '../lib/settings';
 import { formatEuro } from '../lib/plans';
 import { licht } from '../lib/img';
 
-const [allProducts, settings] = await Promise.all([getVisibleProducts(), getSettings()]);
-const shipping = publicShippingInfo(settings);
+const settings = await getPublicSettings();
 const open = checkoutOpen(settings);
+// Zolang online afrekenen uit staat, is de webshop van de site gehaald
+if (!open) return Astro.redirect('/', 302);
+
+const allProducts = await getVisibleProducts();
+const shipping = publicShippingInfo(settings);
 const intro = shipping.enabled
   ? 'Laat de mooiste vazen, potten en bloemen thuisbezorgen, waar in Nederland je ook woont.'
   : 'De mooiste vazen, potten en bloemen uit de winkel. Bestel online en haal op in Arnemuiden, of laat het bezorgen in de regio.';

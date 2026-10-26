@@ -10,8 +10,7 @@ const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
 const nav = [
   { name: 'Winkel Arnemuiden', url: '/winkel' },
-  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }] : []),
-  { name: 'Webshop', url: '/webshop' },
+  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }, { name: 'Webshop', url: '/webshop' }] : []),
   { name: 'Abonnementen', url: '/abonnementen' },
   { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },
   { name: 'Over mij', url: '/over-mij' },
