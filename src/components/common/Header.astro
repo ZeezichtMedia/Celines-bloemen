@@ -3,12 +3,13 @@ import { Icon } from 'astro-icon/components';
 import CartWidget from '../shop/CartWidget';
 import { siteConfig } from '../../config';
 
-interface Props { announcement?: string }
-const { announcement = '' } = Astro.props;
+interface Props { announcement?: string; shop?: boolean }
+const { announcement = '', shop = true } = Astro.props;
 
+// Boeket bestellen staat alleen in het menu als online afrekenen aan staat
 const links = [
   { name: 'Winkel', url: '/winkel' },
-  { name: 'Boeket bestellen', url: '/bestellen' },
+  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }] : []),
   { name: 'Webshop', url: '/webshop' },
   { name: 'Abonnementen', url: '/abonnementen' },
   { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },

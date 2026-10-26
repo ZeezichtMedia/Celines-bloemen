@@ -3,10 +3,14 @@ import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { PLANS, formatEuro } from '../lib/plans';
+import { getPublicSettings, checkoutOpen } from '../lib/settings';
+
+// Zolang online afrekenen uit staat, verdwijnt Boeket bestellen van de homepage
+const shop = checkoutOpen(await getPublicSettings());
 
 const vanaf = Math.min(...PLANS.filter((p) => p.type === 'fresh' && p.price != null).map((p) => p.price as number));
 
-const services = [
+const allServices = [
   {
     nr: '01',
     title: 'Boeket bestellen',
@@ -35,6 +39,7 @@ const services = [
     cta: 'Naar de webshop',
   },
 ];
+const services = allServices.filter((s) => shop || s.link !== '/bestellen');
 
 ---
 
@@ -52,7 +57,9 @@ const services = [
           Bloemen maken jouw huis, bruiloft of evenement compleet. Samen gaan we op zoek naar het perfecte bloemwerk voor jou. Verse bloemen, droogbloemen of kunstbloemen: voor alles kun je terecht bij Celine's Bloemen.
         </p>
         <div class="reveal mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href="/bestellen" class="btn-primary">Bestel een boeket <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+          {shop
+            ? <a href="/bestellen" class="btn-primary">Bestel een boeket <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+            : <a href="/winkel" class="btn-primary">Bekijk de winkel <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>}
           <a href="/bruiloften-verhuur" class="btn-ghost">Bruiloften & verhuur</a>
         </div>
       </div>

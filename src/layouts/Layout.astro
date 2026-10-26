@@ -88,11 +88,11 @@ const openingHours = openingHoursSchema(hours);
 		<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-forest focus:text-white focus:rounded-md focus:outline-none">
 			Ga naar inhoud
 		</a>
-		<Header announcement={announcement} />
+		<Header announcement={announcement} shop={checkout} />
 		<main id="main-content" class="flex-grow">
 			<slot />
 		</main>
-		<Footer hours={hours} />
+		<Footer hours={hours} shop={checkout} />
 		<WhatsAppPopup />
 		<script>
 			import { bootMotion } from '../lib/motion';

@@ -10,6 +10,8 @@ import { getPublicSettings, checkoutOpen } from '../lib/settings';
 
 const [allBouquets, settings] = await Promise.all([getVisibleBouquets(), getPublicSettings()]);
 const open = checkoutOpen(settings);
+// Zolang online afrekenen uit staat, is boeketten bestellen van de site gehaald
+if (!open) return Astro.redirect('/', 302);
 
 const bouquets = allBouquets.map((b) => ({
   id: b.id,

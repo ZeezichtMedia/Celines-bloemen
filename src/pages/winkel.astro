@@ -3,9 +3,11 @@ import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { siteConfig } from '../config';
-import { getPublicSettings, parseOpeningHours, WEEKDAYS } from '../lib/settings';
+import { getPublicSettings, parseOpeningHours, WEEKDAYS, checkoutOpen } from '../lib/settings';
 
-const hours = parseOpeningHours(await getPublicSettings());
+const settings = await getPublicSettings();
+const hours = parseOpeningHours(settings);
+const shop = checkoutOpen(settings);
 const openDays = hours.flatMap((h, i) => (h ? [{ day: WEEKDAYS[i].nl, ...h }] : []));
 const closedDays = hours.flatMap((h, i) => (h ? [] : [WEEKDAYS[i].nl]));
 // Bijv. "Maandag & zondag": alleen de eerste dag met een hoofdletter
@@ -74,7 +76,9 @@ const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         <p class="relative z-10 mt-4 leading-relaxed text-base/75">
           Kun je niet langskomen? Geen probleem! Ik bezorg dagverse, handgebonden boeketten op Walcheren en in Lewedorp en Nieuwdorp. Kies je favoriete bos en laat hem bij je thuisbezorgen.
         </p>
-        <a href="/bestellen" class="relative z-10 btn-primary btn-light mt-10 self-start">Bekijk de boeketten <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+        {shop
+          ? <a href="/bestellen" class="relative z-10 btn-primary btn-light mt-10 self-start">Bekijk de boeketten <Icon name="ph:arrow-right-light" class="ico h-4 w-4" /></a>
+          : <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Hoi Celine! Ik wil graag een boeket laten bezorgen.')}`} target="_blank" rel="noopener noreferrer" class="relative z-10 btn-primary btn-light mt-10 self-start"><Icon name="ph:whatsapp-logo-light" class="h-5 w-5" /> Bestel via WhatsApp</a>}
       </article>
     </div>
   </section>

@@ -3,14 +3,14 @@ import { Icon } from 'astro-icon/components';
 import { siteConfig } from '../../config';
 import { WEEKDAYS, type DayHours } from '../../lib/settings';
 
-interface Props { hours: DayHours[] }
-const { hours } = Astro.props;
+interface Props { hours: DayHours[]; shop?: boolean }
+const { hours, shop = true } = Astro.props;
 const currentYear = new Date().getFullYear();
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.address.street}, ${siteConfig.address.postalCode} ${siteConfig.address.city}`)}`;
 
 const nav = [
   { name: 'Winkel Arnemuiden', url: '/winkel' },
-  { name: 'Boeket bestellen', url: '/bestellen' },
+  ...(shop ? [{ name: 'Boeket bestellen', url: '/bestellen' }] : []),
   { name: 'Webshop', url: '/webshop' },
   { name: 'Abonnementen', url: '/abonnementen' },
   { name: 'Bruiloften & verhuur', url: '/bruiloften-verhuur' },
