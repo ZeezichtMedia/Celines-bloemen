@@ -3,7 +3,7 @@ import { db, schema } from '../../lib/db';
 import { createPayment } from '../../lib/mollie';
 import { checkoutSchema, validateOrError } from '../../lib/validation';
 import { priceOrder, PricingError, euro } from '../../lib/pricing';
-import { getSettings, resolveNotifyEmail, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
+import { getSettings, resolveNotifyEmail, checkoutOpen, closedWeekdays, weekdayIndex, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData } from '../../lib/email';
 import { eq } from 'drizzle-orm';
 
@@ -23,7 +23,8 @@ function generateOrderNumber(): string {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!checkoutOpen(await getSettings())) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
+    const settings = await getSettings();
+    if (!checkoutOpen(settings)) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
     const body = await request.json();
 
     const { data, error } = validateOrError(checkoutSchema, body);
@@ -38,6 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (deliveryDate <= today) return json({ error: 'Bezorgdatum moet in de toekomst liggen' }, 400);
+      if (closedWeekdays(settings).includes(weekdayIndex(delivery.date))) return json({ error: 'Op die dag is de winkel dicht en wordt er niet bezorgd. Kies een andere dag.' }, 400);
     }
 
     // Alle bedragen komen van de server, nooit uit de request

@@ -5,7 +5,8 @@ type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number 
 type ShippingInfo = { enabled: boolean; cost: number; freeFrom: number | null };
 type DeliveryMethod = 'pickup' | 'local' | 'shipping';
 
-export default function CheckoutForm() {
+/** closedDays: dagen dat de winkel dicht is (0 = maandag). Daarop kun je geen bezorgdatum kiezen. */
+export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[] }) {
   const [cart, setCart] = useState<{ items: CartItem[] }>({ items: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -212,7 +213,7 @@ export default function CheckoutForm() {
                     ))}
                   </select>
                 </div>
-                <DatePicker label="Bezorgdatum" value={deliveryDate} onChange={setDeliveryDate} minDate={minDate} required />
+                <DatePicker label="Bezorgdatum" value={deliveryDate} onChange={setDeliveryDate} minDate={minDate} closedDays={closedDays} required />
               </div>
             )}
 
@@ -362,8 +363,8 @@ export default function CheckoutForm() {
 const MONTHS_NL = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 const DAYS_NL = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
-function DatePicker({ label, value, onChange, minDate, required }: {
-  label: string; value: string; onChange: (v: string) => void; minDate: string; required?: boolean;
+function DatePicker({ label, value, onChange, minDate, closedDays = [], required }: {
+  label: string; value: string; onChange: (v: string) => void; minDate: string; closedDays?: number[]; required?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const today = new Date();
@@ -395,7 +396,7 @@ function DatePicker({ label, value, onChange, minDate, required }: {
 
   const isDisabled = (day: number) => {
     const date = new Date(viewYear, viewMonth, day);
-    return date < min;
+    return date < min || closedDays.includes((date.getDay() + 6) % 7);
   };
 
   const isSelected = (day: number) => {

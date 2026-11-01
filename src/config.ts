@@ -7,7 +7,7 @@ export const siteConfig = {
   whatsappNumber: "31614500402",
   email: "info@celinesbloemen.nl",
   // Wettelijk verplicht op voorwaarden/privacy/footer. Leeg = nog invullen (valt op in de tekst)
-  kvk: "",
+  kvk: "83951008",
   btw: "",
   legalName: "Celine's Bloemen",
   instagram: "https://www.instagram.com/celinesbloemen",

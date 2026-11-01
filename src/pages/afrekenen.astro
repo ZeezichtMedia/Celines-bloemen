@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CheckoutForm from '../components/shop/CheckoutForm';
-import { getPublicSettings, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../lib/settings';
+import { getPublicSettings, checkoutOpen, closedWeekdays, CHECKOUT_CLOSED_MESSAGE } from '../lib/settings';
 import { siteConfig } from '../config';
 
-const open = checkoutOpen(await getPublicSettings());
+const settings = await getPublicSettings();
+const open = checkoutOpen(settings);
 ---
 
 <Layout title="Afrekenen - Celine's bloemen" description="Rond je bestelling af en betaal veilig met iDEAL." noindex>
@@ -16,7 +17,7 @@ const open = checkoutOpen(await getPublicSettings());
     </div>
   </section>
   <section class="pb-20 md:pb-28 px-4 md:px-6">
-    {open ? <CheckoutForm client:load /> : (
+    {open ? <CheckoutForm closedDays={closedWeekdays(settings)} client:load /> : (
       <div class="container-wide">
         <div class="max-w-xl rounded-[1.5rem] border border-line bg-white p-8">
           <p class="text-ink-soft">{CHECKOUT_CLOSED_MESSAGE}</p>

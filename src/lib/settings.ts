@@ -88,6 +88,17 @@ export function parseOpeningHours(settings: Settings): DayHours[] {
   return isValidOpeningHours(settings.opening_hours) ? JSON.parse(settings.opening_hours) : DEFAULT_HOURS;
 }
 
+/** Dagen waarop de winkel dicht is (0 = maandag, 6 = zondag). Daarop wordt niet bezorgd. */
+export function closedWeekdays(settings: Settings): number[] {
+  return parseOpeningHours(settings).flatMap((h, i) => (h ? [] : [i]));
+}
+
+/** Weekdag van een datum als 'JJJJ-MM-DD', met maandag = 0. */
+export function weekdayIndex(date: string): number {
+  const [y, m, d] = date.split('-').map(Number);
+  return (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7;
+}
+
 /** Voor schema.org: dagen met dezelfde tijden samen in één regel. */
 export function openingHoursSchema(hours: DayHours[]) {
   const groups = new Map<string, string[]>();
