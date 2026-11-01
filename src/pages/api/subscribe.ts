@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     await db.update(schema.subscriptions)
-      .set({ mollieCustomerId: customerId })
+      .set({ mollieCustomerId: customerId, lastPaymentId: payment.id })
       .where(eq(schema.subscriptions.id, sub.id));
 
     return json({ subscriptionId: sub.id, price: formatEuro(plan.price), paymentUrl: (payment as any).getCheckoutUrl() });

@@ -72,7 +72,8 @@ export async function createFirstPayment({
     description,
     sequenceType: SequenceType.first,
     customerId: customer.id,
-    redirectUrl: `${SITE_URL}/abonnementen/bevestiging`,
+    // Met het abonnementsnummer kan de bedankpagina de echte uitkomst opzoeken
+    redirectUrl: `${SITE_URL}/abonnementen/bevestiging${subscriptionMeta.subscriptionId ? `?id=${subscriptionMeta.subscriptionId}` : ''}`,
     webhookUrl: `${SITE_URL}/api/webhooks/mollie-subscription`,
     metadata: {
       type: 'subscription_first',

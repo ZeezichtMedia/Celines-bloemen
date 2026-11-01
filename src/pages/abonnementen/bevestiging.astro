@@ -1,20 +1,66 @@
 ---
 import { Icon } from 'astro-icon/components';
 import Layout from '../../layouts/Layout.astro';
+import { db, schema } from '../../lib/db';
+import { getPayment } from '../../lib/mollie';
+import { siteConfig } from '../../config';
+import { eq } from 'drizzle-orm';
+
+// Mollie stuurt de klant hierheen bij elke uitkomst, ook als de eerste betaling is geannuleerd.
+// Daarom kijken we naar de echte status: eerst in de database, en als de webhook er nog
+// niet was, rechtstreeks bij Mollie.
+type Uitkomst = 'gelukt' | 'mislukt' | 'onbekend';
+let uitkomst: Uitkomst = 'onbekend';
+
+const id = Number(Astro.url.searchParams.get('id'));
+if (Number.isInteger(id) && id > 0) {
+  try {
+    const [sub] = await db.select({ status: schema.subscriptions.status, paymentId: schema.subscriptions.lastPaymentId })
+      .from(schema.subscriptions).where(eq(schema.subscriptions.id, id)).limit(1);
+    if (sub) {
+      if (sub.status === 'active') uitkomst = 'gelukt';
+      else if (sub.paymentId) {
+        const payment = await getPayment(sub.paymentId);
+        if (payment.status === 'paid') uitkomst = 'gelukt';
+        else if (['canceled', 'expired', 'failed'].includes(payment.status)) uitkomst = 'mislukt';
+      }
+    }
+  } catch (err) {
+    console.error('Status abonnement ophalen mislukt:', err);
+  }
+}
 ---
 
-<Layout title="Welkom! - Celine's bloemen" description="Je bloemenabonnement is gestart." noindex>
+<Layout title={uitkomst === 'mislukt' ? "Betaling niet gelukt - Celine's bloemen" : "Welkom! - Celine's bloemen"} description="Je bloemenabonnement." noindex>
   <section class="page-top flex min-h-[80svh] items-center pb-20">
     <div class="container-narrow">
-      <span class="reveal flex h-16 w-16 items-center justify-center rounded-full bg-ink text-base"><Icon name="ph:check-light" class="h-8 w-8" /></span>
-      <h1 class="reveal mt-10 type-display-lg text-ink">Welkom bij je abonnement!</h1>
-      <p class="reveal mt-6 max-w-lg type-lead text-ink-muted">
-        Je eerste betaling is ontvangen en je abonnement is nu actief. Ik ga direct aan de slag met je eerste arrangement!
-      </p>
-      <p class="reveal mt-4 max-w-md text-sm text-ink-faint">
-        Je ontvangt een bevestiging per e-mail. Toekomstige betalingen worden automatisch via SEPA incasso verwerkt.
-      </p>
-      <a href="/" class="reveal btn-primary mt-10">Terug naar home</a>
+      {uitkomst === 'mislukt' ? (
+        <>
+          <span class="reveal flex h-16 w-16 items-center justify-center rounded-full border border-ink/20 text-ink"><Icon name="ph:x-light" class="h-8 w-8" /></span>
+          <h1 class="reveal mt-10 type-display-lg text-ink">De betaling is niet gelukt</h1>
+          <p class="reveal mt-6 max-w-lg type-lead text-ink-muted">
+            Je abonnement is niet gestart en er is niets afgeschreven. Wil je het nog een keer proberen? Of stuur me een berichtje, dan regelen we het samen.
+          </p>
+          <div class="reveal mt-10 flex flex-col gap-3 sm:flex-row">
+            <a href="/abonnementen" class="btn-primary">Opnieuw proberen</a>
+            <a href={`https://wa.me/${siteConfig.whatsappNumber}`} target="_blank" rel="noopener noreferrer" class="btn-ghost">Stuur een WhatsApp</a>
+          </div>
+        </>
+      ) : (
+        <>
+          <span class="reveal flex h-16 w-16 items-center justify-center rounded-full bg-ink text-base"><Icon name="ph:check-light" class="h-8 w-8" /></span>
+          <h1 class="reveal mt-10 type-display-lg text-ink">Welkom bij je abonnement!</h1>
+          <p class="reveal mt-6 max-w-lg type-lead text-ink-muted">
+            {uitkomst === 'gelukt'
+              ? 'Je eerste betaling is ontvangen en je abonnement is nu actief. Ik ga direct aan de slag met je eerste arrangement!'
+              : 'Zodra je eerste betaling binnen is, staat je abonnement aan en ga ik aan de slag met je eerste arrangement.'}
+          </p>
+          <p class="reveal mt-4 max-w-md text-sm text-ink-faint">
+            Je ontvangt een bevestiging per e-mail. Toekomstige betalingen worden automatisch via SEPA incasso verwerkt.
+          </p>
+          <a href="/" class="reveal btn-primary mt-10">Terug naar home</a>
+        </>
+      )}
     </div>
   </section>
 </Layout>
