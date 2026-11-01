@@ -116,6 +116,8 @@ export function publicShippingInfo(settings: Settings) {
 
 /** Online afrekenen aan? Staat standaard uit tot Celine's eigen Mollie-account gekoppeld is. */
 export function checkoutOpen(settings: Settings): boolean {
+  // Alleen voor een testversie op Vercel (Preview): afrekenen aan zonder de gedeelde database-instelling te raken
+  if (process.env.CHECKOUT_FORCE_OPEN === 'true') return true;
   return settings.checkout_enabled === 'true';
 }
 
