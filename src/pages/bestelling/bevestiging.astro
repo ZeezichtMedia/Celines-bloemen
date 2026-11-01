@@ -1,24 +1,71 @@
 ---
 import { Icon } from 'astro-icon/components';
 import Layout from '../../layouts/Layout.astro';
+import { db, schema } from '../../lib/db';
+import { getPayment } from '../../lib/mollie';
+import { siteConfig } from '../../config';
+import { eq } from 'drizzle-orm';
+
 const orderNumber = Astro.url.searchParams.get('order') || '';
 const isStorePayment = Astro.url.searchParams.get('method') === 'store';
+
+// Mollie stuurt de klant hierheen bij elke uitkomst, ook als de betaling is geannuleerd.
+// Daarom kijken we naar de echte status: eerst in de database, en als de webhook er nog
+// niet was, rechtstreeks bij Mollie.
+type Uitkomst = 'gelukt' | 'mislukt' | 'onbekend';
+let uitkomst: Uitkomst = isStorePayment ? 'gelukt' : 'onbekend';
+
+if (!isStorePayment && orderNumber) {
+  try {
+    const [order] = await db.select({ status: schema.orders.status, paymentId: schema.orders.molliePaymentId })
+      .from(schema.orders).where(eq(schema.orders.orderNumber, orderNumber)).limit(1);
+    if (order) {
+      if (order.status === 'cancelled') uitkomst = 'mislukt';
+      else if (order.status !== 'pending') uitkomst = 'gelukt';
+      else if (order.paymentId) {
+        const payment = await getPayment(order.paymentId);
+        if (payment.status === 'paid' || payment.status === 'authorized') uitkomst = 'gelukt';
+        else if (['canceled', 'expired', 'failed'].includes(payment.status)) uitkomst = 'mislukt';
+      }
+    }
+  } catch (err) {
+    console.error('Status bestelling ophalen mislukt:', err);
+  }
+}
 ---
 
-<Layout title="Bedankt! - Celine's bloemen" description="Je bestelling is ontvangen." noindex>
+<Layout title={uitkomst === 'mislukt' ? "Betaling niet gelukt - Celine's bloemen" : "Bedankt! - Celine's bloemen"} description="Je bestelling." noindex>
   <section class="page-top flex min-h-[80svh] items-center pb-20">
     <div class="container-narrow">
-      <span class="reveal flex h-16 w-16 items-center justify-center rounded-full bg-ink text-base"><Icon name="ph:check-light" class="h-8 w-8" /></span>
-      <h1 class="reveal mt-10 type-display-lg text-ink">Bedankt voor je bestelling!</h1>
-      {orderNumber && (
-        <p class="reveal mt-6 text-lg text-ink-muted">Bestelnummer: <span class="font-medium text-ink">{orderNumber}</span></p>
+      {uitkomst === 'mislukt' ? (
+        <>
+          <span class="reveal flex h-16 w-16 items-center justify-center rounded-full border border-ink/20 text-ink"><Icon name="ph:x-light" class="h-8 w-8" /></span>
+          <h1 class="reveal mt-10 type-display-lg text-ink">De betaling is niet gelukt</h1>
+          <p class="reveal mt-6 max-w-lg type-lead text-ink-muted">
+            Je bestelling is niet afgerond en er is niets afgeschreven. Wil je het nog een keer proberen? Of stuur me een berichtje, dan regelen we het samen.
+          </p>
+          <div class="reveal mt-10 flex flex-col gap-3 sm:flex-row">
+            <a href="/afrekenen" class="btn-primary">Opnieuw proberen</a>
+            <a href={`https://wa.me/${siteConfig.whatsappNumber}`} target="_blank" rel="noopener noreferrer" class="btn-ghost">Stuur een WhatsApp</a>
+          </div>
+        </>
+      ) : (
+        <>
+          <span class="reveal flex h-16 w-16 items-center justify-center rounded-full bg-ink text-base"><Icon name="ph:check-light" class="h-8 w-8" /></span>
+          <h1 class="reveal mt-10 type-display-lg text-ink">Bedankt voor je bestelling!</h1>
+          {orderNumber && (
+            <p class="reveal mt-6 text-lg text-ink-muted">Bestelnummer: <span class="font-medium text-ink">{orderNumber}</span></p>
+          )}
+          <p class="reveal mt-4 max-w-lg type-lead text-ink-muted">
+            {isStorePayment
+              ? 'Je bestelling is geplaatst. Je kunt afrekenen wanneer je het ophaalt in de winkel.'
+              : uitkomst === 'gelukt'
+                ? 'Je ontvangt een bevestiging per e-mail. Ik ga direct aan de slag met je bestelling!'
+                : 'Zodra je betaling binnen is, krijg je een bevestiging per e-mail.'}
+          </p>
+          <a href="/" class="reveal btn-primary mt-10">Terug naar home</a>
+        </>
       )}
-      <p class="reveal mt-4 max-w-lg type-lead text-ink-muted">
-        {isStorePayment
-          ? 'Je bestelling is geplaatst. Je kunt afrekenen wanneer je het ophaalt in de winkel.'
-          : 'Je ontvangt een bevestiging per e-mail. Ik ga direct aan de slag met je bestelling!'}
-      </p>
-      <a href="/" class="reveal btn-primary mt-10">Terug naar home</a>
     </div>
   </section>
 </Layout>
