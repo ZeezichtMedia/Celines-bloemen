@@ -3,6 +3,10 @@ import { isAuthenticated } from '../../../lib/auth';
 import { getProducts, upsertProduct, deleteProduct } from '../../../lib/data';
 import type { Product } from '../../../lib/types';
 
+// Een product zonder prijs mag niet zichtbaar in de webshop staan
+const zonderPrijs = (i: Product) => i.available && !(Number(i.price) > 0);
+const PRIJS_EERST = 'Vul eerst een prijs in voordat je dit product zichtbaar maakt.';
+
 export const prerender = false;
 
 const json = (body: unknown, status = 200) =>
@@ -20,6 +24,7 @@ export const PUT: APIRoute = async ({ request }) => {
   const body = (await request.json()) as Product | Product[];
   const items = Array.isArray(body) ? body : [body];
   if (items.some((i) => !i?.name?.trim())) return json({ error: 'Naam is verplicht' }, 400);
+  if (items.some(zonderPrijs)) return json({ error: PRIJS_EERST }, 400);
   const saved: Product[] = [];
   for (const item of items) saved.push(await upsertProduct(item));
   return json(Array.isArray(body) ? saved : saved[0]);
@@ -29,6 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!isAuthenticated(request.headers.get('cookie'))) return json({ error: 'Niet ingelogd' }, 401);
   const item = (await request.json()) as Product;
   if (!item?.name?.trim()) return json({ error: 'Naam is verplicht' }, 400);
+  if (zonderPrijs(item)) return json({ error: PRIJS_EERST }, 400);
   return json(await upsertProduct({ ...item, id: '' }), 201);
 };
 

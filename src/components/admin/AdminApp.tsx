@@ -502,6 +502,7 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [editing, setEditing] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
+  const [filter, setFilter] = useState<'alles' | 'zichtbaar' | 'verborgen'>('alles');
 
   useEffect(() => { fetch('/api/admin/products').then((r) => r.json()).then(setProducts).catch(() => {}); }, []);
 
@@ -527,9 +528,15 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
     showToast('Verwijderd');
   };
 
+  // Categorieën die al in gebruik zijn, plus de vaste; Celine kan er ook zelf een bij maken
+  const categories = Array.from(new Set([...CATEGORIES.map((c) => c.value), ...products.map((p) => p.category).filter(Boolean)]));
+
   if (editing) {
-    return <ProductEditForm product={editing} onSave={saveProduct} onBack={() => setEditing(null)} saving={saving} isNew={!editing.id} />;
+    return <ProductEditForm product={editing} categories={categories} onSave={saveProduct} onBack={() => setEditing(null)} saving={saving} isNew={!editing.id} />;
   }
+
+  const zichtbaar = products.filter((p) => p.available).length;
+  const shown = products.filter((p) => filter === 'alles' || (filter === 'zichtbaar') === p.available);
 
   const newProduct = (): Product => ({ id: '', name: '', description: '', price: 0, priceLabel: '€ 0,00', image: '', category: 'decoratie', available: true, sortOrder: products.length });
 
@@ -537,17 +544,27 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
     <>
       <PageHeader
         title="Webshop"
-        subtitle={`${products.length} product${products.length !== 1 ? 'en' : ''} in de webshop`}
+        subtitle={`${products.length} product${products.length !== 1 ? 'en' : ''}, waarvan ${zichtbaar} zichtbaar in de webshop`}
         actions={<>
           <a href="/webshop" target="_blank" rel="noopener" className={cls.secondary}><Ph name="external" size={18} /> Bekijk op de site</a>
           <button type="button" className={cls.primary} onClick={() => setEditing(newProduct())}><Ph name="plus" size={18} /> Nieuw product</button>
         </>}
       />
+      {products.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {(['alles', 'zichtbaar', 'verborgen'] as const).map((f) => (
+            <button key={f} type="button" onClick={() => setFilter(f)}
+              className={`rounded-full border px-4 py-1.5 text-[0.85rem] capitalize transition ${filter === f ? 'border-ink bg-ink text-base' : 'border-ink/15 bg-white text-ink hover:border-ink/40'}`}>
+              {f}
+            </button>
+          ))}
+        </div>
+      )}
       {products.length === 0 ? (
         <EmptyState icon="shop" text="Nog geen producten" />
       ) : (
         <div className="space-y-3">
-          {products.map((p) => (
+          {shown.map((p) => (
             <ItemRow key={p.id} image={p.image} title={p.name}
               meta={<>
                 <span className="capitalize">{p.category}</span> <span className="text-ink-faint">·</span> <span className="whitespace-nowrap">{p.priceLabel}</span>
@@ -556,7 +573,10 @@ function ProductsTab({ showToast }: { showToast: (m: string) => void }) {
                 )}
               </>}
               available={p.available}
-              onToggle={() => saveProduct({ ...p, available: !p.available })}
+              onToggle={() => {
+                if (!p.available && !(p.price > 0)) { alert('Vul eerst een prijs in voordat je dit product zichtbaar maakt.'); setEditing(p); return; }
+                saveProduct({ ...p, available: !p.available });
+              }}
               onEdit={() => setEditing(p)}
               onDelete={() => deleteProduct(p.id)} />
           ))}
@@ -573,8 +593,10 @@ const CATEGORIES = [
   { value: 'cadeaus', label: 'Cadeaus' },
 ];
 
-function ProductEditForm({ product, onSave, onBack, saving, isNew }: { product: Product; onSave: (p: Product) => void; onBack: () => void; saving: boolean; isNew: boolean }) {
+function ProductEditForm({ product, categories, onSave, onBack, saving, isNew }: { product: Product; categories: string[]; onSave: (p: Product) => void; onBack: () => void; saving: boolean; isNew: boolean }) {
   const [form, setForm] = useState<Product>(product);
+  const [nieuweCategorie, setNieuweCategorie] = useState('');
+  const label = (c: string) => CATEGORIES.find((x) => x.value === c)?.label ?? c.charAt(0).toUpperCase() + c.slice(1);
   const set = (key: keyof Product, value: any) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const updatePrice = (val: string) => {
@@ -585,7 +607,12 @@ function ProductEditForm({ product, onSave, onBack, saving, isNew }: { product: 
 
   return (
     <FormShell title={isNew ? 'Nieuw product' : `${product.name} bewerken`} onBack={onBack} saving={saving}
-      onSubmit={(e) => { e.preventDefault(); if (!form.image) { alert('Kies eerst een foto'); return; } onSave(form); }}>
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!form.image) { alert('Kies eerst een foto'); return; }
+        if (form.available && !(form.price > 0)) { alert('Vul eerst een prijs in, of zet het product op verborgen.'); return; }
+        onSave(form);
+      }}>
       <PhotoPicker image={form.image} onChange={(url) => set('image', url)} />
 
       <Field label="Naam" value={form.name} onChange={(v) => set('name', v)} required />
@@ -593,13 +620,22 @@ function ProductEditForm({ product, onSave, onBack, saving, isNew }: { product: 
       <div>
         <p className={cls.label}>Categorie</p>
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((c) => (
-            <button key={c.value} type="button" onClick={() => set('category', c.value)}
-              className={`rounded-full border px-4 py-2 text-[0.9rem] transition ${form.category === c.value ? 'border-ink bg-ink text-base' : 'border-ink/15 bg-white text-ink hover:border-ink/40'}`}>
-              {c.label}
+          {Array.from(new Set([...categories, form.category].filter(Boolean))).map((c) => (
+            <button key={c} type="button" onClick={() => set('category', c)}
+              className={`rounded-full border px-4 py-2 text-[0.9rem] transition ${form.category === c ? 'border-ink bg-ink text-base' : 'border-ink/15 bg-white text-ink hover:border-ink/40'}`}>
+              {label(c)}
             </button>
           ))}
         </div>
+        <div className="mt-3 flex gap-2">
+          <input type="text" value={nieuweCategorie} onChange={(e) => setNieuweCategorie(e.target.value)} placeholder="Of maak een nieuwe categorie, bijv. kaarsen"
+            className={`${cls.input} min-w-0 flex-1`} aria-label="Nieuwe categorie" />
+          <button type="button" className={cls.secondary} disabled={!nieuweCategorie.trim()}
+            onClick={() => { set('category', nieuweCategorie.trim().toLowerCase()); setNieuweCategorie(''); }}>
+            <Ph name="plus" size={18} /> Toevoegen
+          </button>
+        </div>
+        <p className={cls.hint}>De categorieën zijn ook de filterknoppen in de webshop.</p>
       </div>
 
       <div>
@@ -622,7 +658,8 @@ function ProductEditForm({ product, onSave, onBack, saving, isNew }: { product: 
         <Field label="Volgorde" type="number" value={String(form.sortOrder)} onChange={(v) => set('sortOrder', parseInt(v) || 0)} hint="Lager getal staat eerder." />
       </div>
 
-      <Toggle on={form.available} onChange={() => set('available', !form.available)} label={form.available ? 'Zichtbaar in de webshop' : 'Verborgen'} />
+      <Toggle on={form.available} onChange={() => set('available', !form.available)} label={form.available ? 'Zichtbaar in de webshop' : 'Verborgen'}
+        sub={!(form.price > 0) ? 'Een product kan pas zichtbaar worden als er een prijs is ingevuld.' : undefined} />
     </FormShell>
   );
 }
@@ -885,7 +922,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
 // Instellingen
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
-type ShopSettings = { checkout_enabled?: string; shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
+type ShopSettings = { mollie?: 'live' | 'test' | 'geen'; checkout_enabled?: string; shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
 type DayHours = { open: string; close: string } | null;
 const DAGEN = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
 
@@ -985,7 +1022,6 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        checkout_enabled: settings.checkout_enabled === 'true' ? 'true' : 'false',
         shipping_enabled: settings.shipping_enabled === 'true' ? 'true' : 'false',
         shipping_cost: settings.shipping_cost,
         free_shipping_from: settings.free_shipping_from,
@@ -1021,10 +1057,37 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
 
   const shippingOn = settings.shipping_enabled === 'true';
   const checkoutOn = settings.checkout_enabled === 'true';
+  const mollieLive = settings.mollie === 'live';
+
+  // De webshop aan- of uitzetten slaat meteen op, los van de andere instellingen
+  const toggleCheckout = async () => {
+    const aan = !checkoutOn;
+    if (aan && !mollieLive) { alert('Mollie is nog niet live gekoppeld. Zodra dat zo is, kun je de webshop hier aanzetten.'); return; }
+    if (!confirm(aan
+      ? 'Webshop online zetten? Klanten kunnen dan boeketten, producten en abonnementen online bestellen en betalen.'
+      : 'Webshop offline halen? Klanten bestellen dan weer via WhatsApp.')) return;
+    const res = await fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ checkout_enabled: aan ? 'true' : 'false' }) });
+    if (res.ok) { setSettings({ ...settings, checkout_enabled: aan ? 'true' : 'false' }); showToast(aan ? 'De webshop staat online' : 'De webshop staat offline'); }
+    else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
+  };
 
   return (
     <>
-      <PageHeader title="Instellingen" subtitle="Openingstijden, mededeling, bezorging en meldingen" />
+      <PageHeader title="Instellingen" subtitle="Webshop, openingstijden, mededeling, bezorging en meldingen" />
+
+      <Section title="Webshop online" sub="Hiermee zet je de webshop, Boeket bestellen en online betalen voor abonnementen aan of uit.">
+        <Toggle on={checkoutOn} onChange={toggleCheckout}
+          label={checkoutOn ? 'De webshop staat online' : 'De webshop staat offline'}
+          sub={checkoutOn
+            ? 'Klanten kunnen online bestellen en betalen.'
+            : 'Klanten zien de webshop en Boeket bestellen nu niet, en bestellen via WhatsApp. Ingelogd zie je de pagina\'s wel, als voorbeeld.'} />
+        <p className={`text-sm ${mollieLive ? 'text-emerald-700' : 'text-ink-muted'}`}>
+          {mollieLive ? 'Mollie is gekoppeld, betalingen komen binnen op je eigen rekening.' : 'Mollie is nog niet live gekoppeld. Zodra dat zo is, kun je de webshop hier aanzetten.'}
+        </p>
+      </Section>
 
       <WebsiteSettings settings={settings} showToast={showToast} />
 
@@ -1052,10 +1115,6 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       </Section>
 
       <Section title="Verzending & meldingen">
-        <Toggle on={checkoutOn} onChange={() => setSettings({ ...settings, checkout_enabled: checkoutOn ? 'false' : 'true' })}
-          label={checkoutOn ? 'Online afrekenen staat aan' : 'Online afrekenen staat uit'}
-          sub="Uit betekent dat klanten via WhatsApp bestellen. Zet het pas aan als je Mollie-account gekoppeld is." />
-
         <Toggle on={shippingOn} onChange={() => setSettings({ ...settings, shipping_enabled: shippingOn ? 'false' : 'true' })}
           label={shippingOn ? 'Verzenden per post staat aan' : 'Verzenden per post staat uit'}
           sub="Uit betekent dat klanten alleen kunnen ophalen of lokaal laten bezorgen. De webshop past zijn teksten hierop aan." />
