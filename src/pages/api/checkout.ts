@@ -6,6 +6,7 @@ import { priceOrder, PricingError, euro } from '../../lib/pricing';
 import { getSettings, resolveNotifyEmail, checkoutOpen, closedWeekdays, weekdayIndex, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData } from '../../lib/email';
 import { eq } from 'drizzle-orm';
+import { vroegsteBezorgdag } from '../../lib/bestelregels';
 
 export const prerender = false;
 
@@ -30,15 +31,14 @@ export const POST: APIRoute = async ({ request }) => {
     const { data, error } = validateOrError(checkoutSchema, body);
     if (error || !data) return json({ error }, 400);
 
-    const { customer, items, delivery, paymentMethod } = data;
+    const { customer, items, delivery, paymentMethod, card } = data;
     const isInStore = paymentMethod === 'in_store' && delivery.method === 'pickup';
 
-    // Bezorgdatum moet in de toekomst liggen
+    // Vandaag bezorgen kan als je vóór 08:00 bestelt, anders vanaf morgen (Nederlandse tijd)
     if (delivery.date) {
-      const deliveryDate = new Date(delivery.date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (deliveryDate <= today) return json({ error: 'Bezorgdatum moet in de toekomst liggen' }, 400);
+      if (delivery.date < vroegsteBezorgdag()) {
+        return json({ error: 'Voor vandaag bezorgen moet je vóór 08:00 bestellen. Kies een andere dag, of bel of app Celine.' }, 400);
+      }
       if (closedWeekdays(settings).includes(weekdayIndex(delivery.date))) return json({ error: 'Op die dag is de winkel dicht en wordt er niet bezorgd. Kies een andere dag.' }, 400);
     }
 
@@ -48,6 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
       priced = await priceOrder({
         items: items.map((i) => ({ productId: i.productId, size: i.size, quantity: i.quantity })),
         delivery: { method: delivery.method, zoneId: delivery.zoneId ?? null },
+        card,
       });
     } catch (err) {
       if (err instanceof PricingError) return json({ error: err.message }, 400);

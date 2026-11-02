@@ -36,6 +36,7 @@ export const checkoutSchema = z.object({
   items: z.array(cartItemSchema).min(1, 'Winkelwagen is leeg'),
   delivery: deliverySchema,
   paymentMethod: z.enum(['online', 'in_store']).optional().default('online'),
+  card: z.string().trim().max(200, 'De tekst op het kaartje mag maximaal 200 tekens zijn').optional().nullable(),
   acceptTerms: z.literal(true, { message: 'Je moet akkoord gaan met de algemene voorwaarden' }),
 });
 

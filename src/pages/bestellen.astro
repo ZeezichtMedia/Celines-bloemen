@@ -8,6 +8,7 @@ import { getVisibleBouquets } from '../lib/data';
 import { licht } from '../lib/img';
 import { getPublicSettings, checkoutOpen } from '../lib/settings';
 import { isAuthenticated } from '../lib/auth';
+import { siteConfig } from '../config';
 
 const open = checkoutOpen(await getPublicSettings());
 // Zolang online afrekenen uit staat, is boeketten bestellen van de site gehaald.
@@ -48,6 +49,7 @@ const bouquets = allBouquets.map((b) => ({
       </div>
       <p class="reveal type-lead text-ink-muted lg:col-span-4 lg:col-start-9">
         Dagvers, handgebonden en bezorgd op Walcheren en omgeving. Kies je favoriete boeket, selecteer een maat en reken veilig af met iDEAL. Alle prijzen zijn inclusief btw.
+        <span class="mt-4 block text-[0.95rem]">Bestel vóór 08:00 en ik bezorg dezelfde dag. Te laat? <a href={`https://wa.me/${siteConfig.whatsappNumber}`} target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:text-ink">App</a> of <a href={`tel:${siteConfig.phone}`} class="underline underline-offset-4 hover:text-ink">bel</a> me even.</span>
       </p>
     </div>
   </section>

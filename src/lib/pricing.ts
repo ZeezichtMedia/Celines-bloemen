@@ -4,6 +4,7 @@ import { getVisibleBouquets, getVisibleProducts } from './data';
 import { getSettings, publicShippingInfo } from './settings';
 import { db, schema } from './db';
 import { eq } from 'drizzle-orm';
+import { KAARTJE_PRIJS } from './bestelregels';
 
 export class PricingError extends Error {}
 
@@ -49,6 +50,7 @@ const cents = (n: number) => Math.round(n * 100) / 100;
 export async function priceOrder(input: {
   items: { productId: string; size?: string | null; quantity: number }[];
   delivery: { method: DeliveryMethod; zoneId?: number | null };
+  card?: string | null;
 }): Promise<PricedOrder> {
   const [bouquets, products, settings] = await Promise.all([
     getVisibleBouquets(),
@@ -94,6 +96,15 @@ export async function priceOrder(input: {
   }
 
   if (items.length === 0) throw new PricingError('Je winkelwagen is leeg');
+
+  // Een kaartje kan alleen bij een boeket; de tekst staat in de regel, zodat Celine hem in mail en beheer ziet
+  const kaartTekst = (input.card ?? '').trim();
+  if (kaartTekst && hasBouquet) {
+    items.push({
+      productId: 'kaartje', name: `Kaartje: "${kaartTekst}"`, quantity: 1,
+      unitPrice: KAARTJE_PRIJS, price: euro(KAARTJE_PRIJS), kind: 'product',
+    });
+  }
 
   const subtotal = cents(items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0));
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { loadCart, cartTotal, formatEuro, clearCart, updateQuantity, removeFromCart, type CartItem } from '../../lib/cart';
+import { vroegsteBezorgdag, KAARTJE_PRIJS } from '../../lib/bestelregels';
+import { siteConfig } from '../../config';
 
 type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number };
 type ShippingInfo = { enabled: boolean; cost: number; freeFrom: number | null };
@@ -27,6 +29,10 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [note, setNote] = useState('');
+
+  // Kaartje bij het boeket
+  const [kaartje, setKaartje] = useState(false);
+  const [kaartTekst, setKaartTekst] = useState('');
 
   // Address
   const [address, setAddress] = useState('');
@@ -67,12 +73,11 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
     deliveryMethod === 'local' ? parseFloat(selectedZone?.cost || '0')
     : deliveryMethod === 'shipping' ? shippingCost
     : 0;
-  const total = subtotal + deliveryCost;
+  const kaartjeKosten = hasBouquet && kaartje && kaartTekst.trim() ? KAARTJE_PRIJS : 0;
+  const total = subtotal + deliveryCost + kaartjeKosten;
 
-  // Min delivery date = tomorrow
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split('T')[0];
+  // Vóór 08:00 besteld kan vandaag nog bezorgd worden, daarna vanaf morgen
+  const minDate = vroegsteBezorgdag();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,6 +104,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
             postalCode: deliveryMethod !== 'pickup' ? postalCode : null,
           },
           paymentMethod: deliveryMethod === 'pickup' ? paymentChoice : 'online',
+          card: hasBouquet && kaartje ? kaartTekst.trim() || null : null,
           acceptTerms,
         }),
       });
@@ -214,6 +220,9 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
                   </select>
                 </div>
                 <DatePicker label="Bezorgdatum" value={deliveryDate} onChange={setDeliveryDate} minDate={minDate} closedDays={closedDays} required />
+                <p className="font-sans text-xs leading-relaxed text-[#2b1712]/60">
+                  Bestel je vóór 08:00, dan bezorg ik dezelfde dag. Te laat? <a href={`tel:${siteConfig.phone}`} className="underline hover:text-[#b2765b]">Bel</a> of <a href={`https://wa.me/${siteConfig.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#b2765b]">app</a> me even, dan kijk ik of het nog lukt.
+                </p>
               </div>
             )}
 
@@ -255,6 +264,25 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
             </div>
           )}
 
+          {/* Kaartje bij het boeket */}
+          {hasBouquet && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Kaartje</h3>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" checked={kaartje} onChange={(e) => setKaartje(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#b2765b] cursor-pointer flex-shrink-0" />
+                <span className="font-sans text-sm text-[#2b1712]">Kaartje bij het boeket <span className="text-[#2b1712]/50">(+ {formatEuro(KAARTJE_PRIJS)})</span></span>
+              </label>
+              {kaartje && (
+                <div>
+                  <textarea value={kaartTekst} onChange={(e) => setKaartTekst(e.target.value)} rows={3} maxLength={200} required
+                    className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg font-sans text-sm text-[#2b1712] focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 resize-none"
+                    placeholder="Tekst op het kaartje" aria-label="Tekst op het kaartje" />
+                  <p className="mt-1 text-right font-sans text-[10px] text-[#2b1712]/35">{kaartTekst.length}/200</p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Note */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712] mb-3">Opmerking (optioneel)</h3>
@@ -263,7 +291,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg font-sans text-sm text-[#2b1712] focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 resize-none"
-              placeholder="Bijv. kaartje toevoegen, specifieke levertijd..."
+              placeholder="Bijv. een specifieke levertijd..."
             />
           </div>
         </div>
@@ -310,6 +338,12 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
                 <span>Subtotaal</span>
                 <span>{formatEuro(subtotal)}</span>
               </div>
+              {kaartjeKosten > 0 && (
+                <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
+                  <span>Kaartje</span>
+                  <span>{formatEuro(kaartjeKosten)}</span>
+                </div>
+              )}
               {deliveryCost > 0 && (
                 <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
                   <span>Bezorgkosten</span>
