@@ -243,7 +243,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Betaalwijze</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { val: 'online' as const, label: 'Online betalen', sub: 'iDEAL / Bancontact' },
+                  { val: 'online' as const, label: 'Online betalen', sub: 'iDEAL' },
                   { val: 'in_store' as const, label: 'Betalen in winkel', sub: 'Bij ophalen' },
                 ].map((opt) => (
                   <button

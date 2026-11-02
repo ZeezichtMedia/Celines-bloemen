@@ -21,7 +21,7 @@ const open = checkoutOpen(await getPublicSettings());
 
   <h2>4. Bestellen en betalen</h2>
   {open ? (
-    <p>Je betaalt online via Mollie (iDEAL, Bancontact of creditcard). Je bestelling is definitief zodra de betaling is gelukt; je ontvangt dan een bevestiging per e-mail. Kies je voor ophalen in de winkel, dan kun je ook bij het ophalen betalen. In dat geval leg ik de bestelling klaar op basis van je bestelling; als je niet komt ophalen binnen 3 dagen na de afgesproken datum, vervalt de bestelling.</p>
+    <p>Je betaalt online met iDEAL via Mollie. Je bestelling is definitief zodra de betaling is gelukt; je ontvangt dan een bevestiging per e-mail. Kies je voor ophalen in de winkel, dan kun je ook bij het ophalen betalen. In dat geval leg ik de bestelling klaar op basis van je bestelling; als je niet komt ophalen binnen 3 dagen na de afgesproken datum, vervalt de bestelling.</p>
   ) : (
     <p>Online afrekenen kan op dit moment nog niet. Je bestelt via WhatsApp of in de winkel, en hoe je betaalt spreken we dan samen af. Je bestelling is definitief zodra ik hem heb bevestigd. Haal je op in de winkel en kom je niet binnen 3 dagen na de afgesproken datum, dan vervalt de bestelling.</p>
   )}
