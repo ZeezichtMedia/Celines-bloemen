@@ -283,7 +283,7 @@ function ItemRow({ image, title, meta, available, onToggle, onEdit, onDelete }: 
   return (
     <div className={`${cls.card} flex items-center gap-4 p-3 sm:p-4`}>
       <button type="button" onClick={onEdit} className="shrink-0" aria-label={`${title} bewerken`}>
-        <img src={image} alt="" className="h-16 w-16 rounded-xl object-cover sm:h-20 sm:w-20" />
+        <img src={image} alt="" className="h-20 w-14 rounded-xl object-cover sm:h-24 sm:w-16" />
       </button>
       <div className="min-w-0 flex-1">
         <button type="button" onClick={onEdit} className="block max-w-full text-left">
@@ -341,11 +341,53 @@ async function uploadPhoto(file: File): Promise<string | null> {
   }
 }
 
+// Meerdere foto's bij een product: de eerste is de hoofdfoto in de webshop
+// Wijzigingen gaan via een functie op de actuele lijst: tijdens een upload kan de lijst al veranderd zijn
+function PhotosPicker({ images, onChange, uploading, setUploading }: {
+  images: string[]; onChange: (wijzig: (urls: string[]) => string[]) => void; uploading: boolean; setUploading: (bezig: boolean) => void;
+}) {
+  return (
+    <div>
+      <p className={cls.label}>Foto's</p>
+      <div className="flex flex-wrap gap-3">
+        {images.map((url, i) => (
+          <div key={url} className="w-24">
+            <div className="relative h-36 w-24 overflow-hidden rounded-2xl border border-line bg-base-2">
+              <img src={url} alt={`Foto ${i + 1}`} className="h-full w-full object-cover" />
+              <button type="button" onClick={() => onChange((urls) => urls.filter((u) => u !== url))} aria-label={`Foto ${i + 1} verwijderen`} title="Verwijderen"
+                className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-ink transition hover:text-red-600"><Ph name="x" size={14} /></button>
+            </div>
+            {i === 0
+              ? <p className="mt-1.5 text-center text-[0.72rem] font-medium text-ink-muted">Hoofdfoto</p>
+              : <button type="button" onClick={() => onChange((urls) => [url, ...urls.filter((u) => u !== url)])} className="mt-1.5 w-full text-center text-[0.72rem] text-ink-muted underline underline-offset-2 hover:text-ink">Maak hoofdfoto</button>}
+          </div>
+        ))}
+        <label className={`flex h-36 w-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-ink/25 bg-white px-2 text-center text-[0.8rem] text-ink transition hover:border-ink/50 ${uploading ? 'opacity-50' : ''}`}>
+          <Ph name="upload" size={20} />
+          {uploading ? 'Uploaden...' : "Foto's toevoegen"}
+          <input type="file" accept="image/*" multiple disabled={uploading} className="hidden" onChange={async (e) => {
+            const files = Array.from(e.target.files ?? []);
+            e.target.value = '';
+            if (!files.length) return;
+            setUploading(true);
+            for (const file of files) {
+              const url = await uploadPhoto(file);
+              if (url) onChange((urls) => [...urls, url]);
+            }
+            setUploading(false);
+          }} />
+        </label>
+      </div>
+      <p className={cls.hint}>Je kunt meerdere foto's tegelijk kiezen. De hoofdfoto zie je als eerste in de webshop, klanten bladeren door de rest. Staande foto's passen er helemaal in, je hoeft niets bij te snijden.</p>
+    </div>
+  );
+}
+
 function PhotoPicker({ image, onChange }: { image: string; onChange: (url: string) => void }) {
   const [uploading, setUploading] = useState(false);
   return (
     <div className="flex items-center gap-5">
-      <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-line bg-base-2">
+      <div className="h-36 w-24 shrink-0 overflow-hidden rounded-2xl border border-line bg-base-2">
         {image ? <img src={image} alt="" className="h-full w-full object-cover" /> : <span className="flex h-full items-center justify-center text-ink-faint"><Ph name="image" size={28} /></span>}
       </div>
       <div>
@@ -595,6 +637,8 @@ const CATEGORIES = [
 
 function ProductEditForm({ product, categories, onSave, onBack, saving, isNew }: { product: Product; categories: string[]; onSave: (p: Product) => void; onBack: () => void; saving: boolean; isNew: boolean }) {
   const [form, setForm] = useState<Product>(product);
+  const fotos = form.images ?? (form.image ? [form.image] : []);
+  const [uploading, setUploading] = useState(false);
   const [nieuweCategorie, setNieuweCategorie] = useState('');
   const label = (c: string) => CATEGORIES.find((x) => x.value === c)?.label ?? c.charAt(0).toUpperCase() + c.slice(1);
   const set = (key: keyof Product, value: any) => setForm((prev) => ({ ...prev, [key]: value }));
@@ -609,11 +653,15 @@ function ProductEditForm({ product, categories, onSave, onBack, saving, isNew }:
     <FormShell title={isNew ? 'Nieuw product' : `${product.name} bewerken`} onBack={onBack} saving={saving}
       onSubmit={(e) => {
         e.preventDefault();
-        if (!form.image) { alert('Kies eerst een foto'); return; }
+        if (uploading) { alert("Even wachten: de foto's worden nog geüpload."); return; }
+        if (!fotos.length) { alert('Kies eerst een foto'); return; }
         if (form.available && !(form.price > 0)) { alert('Vul eerst een prijs in, of zet het product op verborgen.'); return; }
         onSave(form);
       }}>
-      <PhotoPicker image={form.image} onChange={(url) => set('image', url)} />
+      <PhotosPicker images={fotos} uploading={uploading} setUploading={setUploading} onChange={(wijzig) => setForm((prev) => {
+        const urls = wijzig(prev.images ?? (prev.image ? [prev.image] : []));
+        return { ...prev, images: urls, image: urls[0] ?? '' };
+      })} />
 
       <Field label="Naam" value={form.name} onChange={(v) => set('name', v)} required />
 

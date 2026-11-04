@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { asc, eq, and, isNotNull, sql } from 'drizzle-orm';
 import { db, schema } from './db';
 import { purgeSiteCache } from './cache';
+import { leesFotos, schrijfFotos } from './img';
 
 // Boeketten en webshopproducten staan in Postgres (tot okt 2026 als JSON in Vercel Blob).
 // Elke wijziging leegt de CDN-kopie van de publieke pagina's, zie cache.ts.
@@ -59,7 +60,10 @@ export async function deleteBouquet(id: string): Promise<void> {
 
 export async function getProducts(): Promise<Product[]> {
   const rows = await db.select().from(schema.shopProducts).orderBy(asc(schema.shopProducts.sortOrder), asc(schema.shopProducts.name));
-  return rows.map(({ updatedAt, price, ...p }) => ({ ...p, price: Number(price) }));
+  return rows.map(({ updatedAt, price, image, ...p }) => {
+    const images = leesFotos(image);
+    return { ...p, price: Number(price), image: images[0] ?? '', images };
+  });
 }
 
 export async function getVisibleProducts(): Promise<Product[]> {
@@ -69,16 +73,17 @@ export async function getVisibleProducts(): Promise<Product[]> {
 export async function upsertProduct(input: Product): Promise<Product> {
   const p: Product = { ...input, id: input.id || (await uniqueId(input.name, schema.shopProducts)) };
   const stock = p.stock == null || (p.stock as unknown) === '' ? null : Math.max(0, Math.floor(Number(p.stock)));
+  const images = leesFotos(schrijfFotos(p.images?.length ? p.images : [p.image ?? '']));
   const values = {
     id: p.id, name: p.name, description: p.description ?? '', price: (Number(p.price) || 0).toFixed(2),
-    priceLabel: p.priceLabel, image: p.image ?? '', category: p.category ?? '',
+    priceLabel: p.priceLabel, image: schrijfFotos(images), category: p.category ?? '',
     available: !!p.available, sortOrder: Number(p.sortOrder) || 0, stock: Number.isNaN(stock) ? null : stock,
     updatedAt: new Date(),
   };
   await db.insert(schema.shopProducts).values(values)
     .onConflictDoUpdate({ target: schema.shopProducts.id, set: values });
   await purgeSiteCache();
-  return { ...p, stock: values.stock };
+  return { ...p, image: images[0] ?? '', images, stock: values.stock };
 }
 
 export async function deleteProduct(id: string): Promise<void> {

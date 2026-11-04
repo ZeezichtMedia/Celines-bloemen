@@ -32,7 +32,7 @@ const products = allProducts.map((p) => ({
   price: p.price,
   priceLabel: p.priceLabel,
   image: p.image,
-  photo: licht(p.image),
+  photos: (p.images?.length ? p.images : [p.image]).map(licht),
   category: p.category,
   soldOut: p.stock != null && p.stock <= 0,
 }));
@@ -96,11 +96,28 @@ const categories = [
             data-price-label={product.priceLabel}
             data-image={product.image}
           >
-            <figure class="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-base-2">
+            <figure class="relative aspect-[2/3] overflow-hidden rounded-[1.25rem] bg-base-2">
               {product.soldOut && (
                 <span class="absolute left-3 top-3 z-10 rounded-full bg-base/95 px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] text-accent-600">Uitverkocht</span>
               )}
-              <img src={product.photo} alt={product.name} loading={i < 4 ? 'eager' : 'lazy'} class="zoom-img h-full w-full object-cover" />
+              {product.photos.length === 1 ? (
+                <img src={product.photos[0]} alt={product.name} loading={i < 4 ? 'eager' : 'lazy'} class="zoom-img h-full w-full object-cover" />
+              ) : (
+                <>
+                  <div class="foto-strook absolute inset-0 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {product.photos.map((foto, n) => (
+                      <img src={foto} alt={`${product.name}, foto ${n + 1} van ${product.photos.length}`} loading={i < 4 && n === 0 ? 'eager' : 'lazy'} class="h-full w-full flex-none snap-center object-cover" />
+                    ))}
+                  </div>
+                  <button type="button" data-richting="-1" aria-label={`Vorige foto van ${product.name}`} class="foto-pijl absolute left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-base/90 text-ink opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 md:flex"><Icon name="ph:caret-left-light" class="h-4 w-4" /></button>
+                  <button type="button" data-richting="1" aria-label={`Volgende foto van ${product.name}`} class="foto-pijl absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-base/90 text-ink opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 md:flex"><Icon name="ph:caret-right-light" class="h-4 w-4" /></button>
+                  <div class="foto-stippen pointer-events-none absolute inset-x-0 bottom-3 flex justify-center gap-1.5" aria-hidden="true">
+                    {product.photos.map((_, n) => (
+                      <span class:list={['h-1.5 w-1.5 rounded-full bg-base shadow-sm transition-opacity', n === 0 ? 'opacity-100' : 'opacity-50']}></span>
+                    ))}
+                  </div>
+                </>
+              )}
             </figure>
             <div class="mt-5 flex flex-1 flex-col">
               <p class="text-[0.7rem] uppercase tracking-[0.18em] text-ink-faint">{product.category}</p>
@@ -236,6 +253,28 @@ const categories = [
         btn.addEventListener('click', () => {
           updateFilter((btn as HTMLElement).dataset.category || 'alles');
         }, { signal });
+      });
+
+      // Doorbladeren door de foto's van een product: vegen op de telefoon, pijltjes op de computer
+      document.querySelectorAll('.foto-strook').forEach((el) => {
+        const strook = el as HTMLElement;
+        const figuur = strook.parentElement as HTMLElement;
+        const stippen = figuur.querySelectorAll('.foto-stippen span');
+        strook.addEventListener('scroll', () => {
+          const actief = Math.round(strook.scrollLeft / strook.clientWidth);
+          stippen.forEach((s, n) => {
+            s.classList.toggle('opacity-100', n === actief);
+            s.classList.toggle('opacity-50', n !== actief);
+          });
+        }, { signal, passive: true });
+        figuur.querySelectorAll('.foto-pijl').forEach((pijl) => {
+          pijl.addEventListener('click', () => {
+            const richting = Number((pijl as HTMLElement).dataset.richting);
+            const aantal = strook.children.length;
+            const nu = Math.round(strook.scrollLeft / strook.clientWidth);
+            strook.scrollTo({ left: ((nu + richting + aantal) % aantal) * strook.clientWidth, behavior: 'smooth' });
+          }, { signal });
+        });
       });
 
       // Add to cart buttons

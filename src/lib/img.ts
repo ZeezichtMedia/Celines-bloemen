@@ -17,3 +17,13 @@ const WEBP_NAAST = new Set([
 export function licht(src: string): string {
   return WEBP_NAAST.has(src) ? src.replace(/\.(png|jpe?g)$/, '.webp') : src;
 }
+
+// Een product kan meerdere foto's hebben. Ze staan samen in de kolom image, één URL per regel,
+// de eerste is de hoofdfoto. Een bestaande rij met één foto blijft zo gewoon geldig.
+export function leesFotos(kolom: string | null | undefined): string[] {
+  return (kolom ?? '').split('\n').map((u) => u.trim()).filter(Boolean);
+}
+
+export function schrijfFotos(fotos: string[]): string {
+  return fotos.map((u) => u.trim()).filter(Boolean).join('\n');
+}

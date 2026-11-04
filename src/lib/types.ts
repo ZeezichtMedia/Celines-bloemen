@@ -17,7 +17,8 @@ export interface Product {
   description: string;
   price: number;
   priceLabel: string;
-  image: string;
+  image: string;     // hoofdfoto (de eerste van images)
+  images?: string[]; // alle foto's, de eerste is de hoofdfoto
   category: string;
   available: boolean;
   sortOrder: number;

@@ -67,7 +67,7 @@ const bouquets = allBouquets.map((b) => ({
             data-price-middel={bouquet.prices.middel}
             data-price-groot={bouquet.prices.groot}
           >
-            <figure class="group relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-base-2">
+            <figure class="group relative aspect-[3/4] overflow-hidden rounded-[1.5rem] bg-base-2">
               <img src={bouquet.photo} alt={`Boeket ${bouquet.name}, ${bouquet.color}`} width="640" height="640" loading={i < 2 ? 'eager' : 'lazy'} class="zoom-img h-full w-full object-cover" />
             </figure>
             <div class="mt-7">
