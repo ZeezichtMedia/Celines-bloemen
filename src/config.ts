@@ -8,7 +8,7 @@ export const siteConfig = {
   email: "info@celinesbloemen.nl",
   // Wettelijk verplicht op voorwaarden/privacy/footer. Leeg = nog invullen (valt op in de tekst)
   kvk: "83951008",
-  btw: "",
+  btw: "NL003894665B08",
   legalName: "Celine's Bloemen",
   instagram: "https://www.instagram.com/celinesbloemen",
   tiktok: "https://www.tiktok.com/@celinesbloemen",
