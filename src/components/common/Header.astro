@@ -87,10 +87,9 @@ const isCurrent = (url: string) => path === url;
 
   <nav class="flex flex-1 flex-col justify-center px-7" aria-label="Menu">
     <ul class="space-y-1">
-      {[{ name: 'Home', url: '/' }, ...links, { name: 'Over mij', url: '/over-mij' }, { name: 'Contact', url: '/contact' }].map((l, i) => (
+      {[{ name: 'Home', url: '/' }, ...links, { name: 'Over mij', url: '/over-mij' }, { name: 'Contact', url: '/contact' }].map((l) => (
         <li class="menu-item">
-          <a href={l.url} class="flex items-baseline gap-4 py-2" aria-current={isCurrent(l.url) ? 'page' : undefined}>
-            <span class="w-6 text-xs tabular-nums text-accent-600">{String(i + 1).padStart(2, '0')}</span>
+          <a href={l.url} class="block py-2" aria-current={isCurrent(l.url) ? 'page' : undefined}>
             <span class:list={['font-nav text-[1.85rem] leading-tight', isCurrent(l.url) ? 'text-accent-600' : 'text-ink']}>{l.name}</span>
           </a>
         </li>

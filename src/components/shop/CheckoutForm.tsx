@@ -162,7 +162,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
               <Input label="Naam" value={name} onChange={setName} required placeholder="Sophie Jansen" />
               <Input label="E-mail" value={email} onChange={setEmail} required type="email" placeholder="sophie@email.nl" />
             </div>
-            <Input label="Telefoon (optioneel)" value={phone} onChange={setPhone} placeholder="+31 6 ..." />
+            <Input label="Telefoon" value={phone} onChange={setPhone} required placeholder="+31 6 ..." />
           </div>
 
           {/* Delivery method */}

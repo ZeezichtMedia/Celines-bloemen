@@ -32,7 +32,7 @@ export const deliverySchema = z.object({
 });
 
 export const checkoutSchema = z.object({
-  customer: customerSchema,
+  customer: customerSchema.extend({ phone: z.string().trim().min(8, 'Telefoonnummer is verplicht').max(30) }),
   items: z.array(cartItemSchema).min(1, 'Winkelwagen is leeg'),
   delivery: deliverySchema,
   paymentMethod: z.enum(['online', 'in_store']).optional().default('online'),

@@ -111,9 +111,19 @@ const bouquets = allBouquets.map((b) => ({
           <p class="leading-relaxed text-ink-muted">
             Wil je liever een boeket in jouw kleuren, met jouw favoriete bloemen of in een ander formaat? Dat kan ook. Boeketten op maat maak ik vanaf € 17,95.
           </p>
-          <a href="/contact" class="btn-ghost mt-6">Stuur een berichtje <Icon name="ph:arrow-right-light" class="h-4 w-4" /></a>
+          <a href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Hoi Celine! Ik wil graag een boeket op maat.')}`} target="_blank" rel="noopener noreferrer" class="btn-ghost mt-6"><Icon name="ph:whatsapp-logo-light" class="h-5 w-5" /> Stuur een WhatsApp</a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="section-lg">
+    <div class="container-narrow">
+      <p class="eyebrow reveal">Seizoensbloemen in de vaas</p>
+      <blockquote class="reveal mt-8 type-display-md text-ink heading-pretty">
+        Geen massaproductie, maar handwerk. Ik bind met de seizoenen mee, zodat elke bos uniek is.
+      </blockquote>
+      <p class="reveal mt-8 max-w-lg text-ink-muted">Daardoor kan het boeket in werkelijkheid wat afwijken van het boeket op de foto.</p>
     </div>
   </section>
 
@@ -131,24 +141,13 @@ const bouquets = allBouquets.map((b) => ({
           { t: 'Verwijder blad', d: 'Verwijder bladeren die in het water staan. Zo blijft het water schoner en geniet je langer van je boeket.' },
           { t: 'Geen direct zonlicht', d: 'Zet je boeket op een plek zonder direct zonlicht of tocht. Dat verlengt de bloei aanzienlijk.' },
           { t: 'Schone vaas', d: 'Maak de vaas schoon voordat de bloemen erin gaan. Zet de bloemen daarna met koud water in de schone vaas.' },
-        ].map((tip, i) => (
+        ].map((tip) => (
           <article class="border-t border-ink/15 pt-6">
-            <p class="text-xs tabular-nums text-accent-600">{String(i + 1).padStart(2, '0')}</p>
-            <h3 class="mt-4 font-display text-[1.6rem] leading-tight text-ink">{tip.t}</h3>
+            <h3 class="font-display text-[1.6rem] leading-tight text-ink">{tip.t}</h3>
             <p class="mt-3 text-[0.95rem] leading-relaxed text-ink-muted">{tip.d}</p>
           </article>
         ))}
       </div>
-    </div>
-  </section>
-
-  <section class="section-lg">
-    <div class="container-narrow">
-      <p class="eyebrow reveal">Seizoensbloemen in de vaas</p>
-      <blockquote class="reveal mt-8 type-display-md text-ink heading-pretty">
-        Geen massaproductie, maar handwerk. Ik bind met de seizoenen mee, zodat elke bos uniek is.
-      </blockquote>
-      <p class="reveal mt-8 max-w-lg text-ink-muted">Daardoor kan het boeket in werkelijkheid wat afwijken van het boeket op de foto.</p>
     </div>
   </section>
 
