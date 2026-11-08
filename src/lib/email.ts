@@ -65,6 +65,9 @@ function deliveryText(d: OrderMailData): string {
   if (d.deliveryMethod === 'pickup') {
     return `Ophalen in de winkel, ${siteConfig.address.street} in ${siteConfig.address.city}`;
   }
+  if (d.deliveryMethod === 'adressen') {
+    return 'Bezorgen op de adressen bij de boeketten hierboven';
+  }
   const addr = [d.address, [d.postalCode, d.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
   if (d.deliveryMethod === 'local') {
     return `Bezorgen${d.deliveryDate ? ` op ${esc(d.deliveryDate)}` : ''}${d.deliveryRegion ? ` (${esc(d.deliveryRegion)})` : ''}<br>${esc(addr)}`;

@@ -46,7 +46,7 @@ export const POST: APIRoute = async ({ request }) => {
     let priced;
     try {
       priced = await priceOrder({
-        items: items.map((i) => ({ productId: i.productId, size: i.size, quantity: i.quantity })),
+        items: items.map((i) => ({ productId: i.productId, size: i.size, quantity: i.quantity, ontvanger: i.ontvanger ?? null, kaartje: i.kaartje ?? null })),
         delivery: { method: delivery.method, zoneId: delivery.zoneId ?? null },
         card,
       });

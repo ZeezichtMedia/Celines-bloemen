@@ -9,21 +9,31 @@ export const customerSchema = z.object({
 });
 
 // Bedragen worden bewust NIET geaccepteerd: de server rekent alles zelf uit (lib/pricing.ts)
+export const ontvangerSchema = z.object({
+  naam: z.string().trim().min(2, 'Vul de naam van de ontvanger in').max(120),
+  adres: z.string().trim().min(3, 'Vul het adres van de ontvanger in').max(300),
+  postcode: z.string().trim().min(4, 'Vul de postcode van de ontvanger in').max(10),
+  zoneId: z.number().int().positive(),
+  datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Ongeldige bezorgdatum'),
+});
+
 export const cartItemSchema = z.object({
   productId: z.string().min(1).max(255),
   size: z.string().max(50).optional().nullable(),
   quantity: z.number().int().min(1).max(100),
+  ontvanger: ontvangerSchema.optional().nullable(),
+  kaartje: z.string().trim().max(200, 'De tekst op het kaartje mag maximaal 200 tekens zijn').optional().nullable(),
 });
 
 export const deliverySchema = z.object({
-  method: z.enum(['pickup', 'local', 'shipping']),
+  method: z.enum(['pickup', 'local', 'shipping', 'adressen']), // adressen: alles gaat naar de adressen bij de boeketten
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Ongeldige datum').optional().nullable(),
   zoneId: z.number().int().positive().optional().nullable(),
   address: z.string().max(500).optional().nullable(),
   city: z.string().max(255).optional().nullable(),
   postalCode: z.string().max(10).optional().nullable(),
 }).superRefine((d, ctx) => {
-  if (d.method !== 'pickup') {
+  if (d.method === 'local' || d.method === 'shipping') {
     if (!d.address?.trim()) ctx.addIssue({ code: 'custom', message: 'Adres is verplicht', path: ['address'] });
     if (!d.postalCode?.trim()) ctx.addIssue({ code: 'custom', message: 'Postcode is verplicht', path: ['postalCode'] });
     if (!d.city?.trim()) ctx.addIssue({ code: 'custom', message: 'Plaats is verplicht', path: ['city'] });

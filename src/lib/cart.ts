@@ -1,4 +1,16 @@
 // Cart types and helpers — shared between components
+import { KAARTJE_PRIJS } from './bestelregels';
+
+/** Een boeket dat naar een ander adres gaat dan de rest van de bestelling (Celine, 4 nov 2026). */
+export interface Ontvanger {
+  naam: string;
+  adres: string;      // straat + huisnummer
+  postcode: string;
+  zoneId: number;     // bezorgplaats uit de bezorgtarieven
+  plaats: string;     // naam van die bezorgplaats, ter weergave
+  kosten: number;     // bezorgkosten van die plaats, ter weergave (de server rekent zelf)
+  datum: string;      // JJJJ-MM-DD
+}
 
 export interface CartItem {
   productId: string;
@@ -8,6 +20,19 @@ export interface CartItem {
   priceLabel: string; // "€ 29,95"
   image: string;
   quantity: number;
+  ontvanger?: Ontvanger; // alleen bij een boeket dat naar een ander adres gaat
+  kaartje?: string;      // tekst op het kaartje bij een boeket
+  lineId?: string;       // eigen regel: een boeket met adres of kaartje wordt nooit samengevoegd
+}
+
+/** Sleutel van een regel in de winkelwagen. */
+export function cartKey(i: CartItem): string {
+  return i.lineId ?? `${i.productId}-${i.size || ''}`;
+}
+
+/** Bezorgkosten en kaartje van een regel, alleen ter weergave: de server rekent het definitieve bedrag. */
+export function regelExtra(i: CartItem): number {
+  return (i.ontvanger ? i.ontvanger.kosten : 0) + (i.kaartje ? KAARTJE_PRIJS : 0);
 }
 
 export interface Cart {
@@ -35,10 +60,13 @@ export function saveCart(cart: Cart, silent = false): void {
 
 export function addToCart(item: Omit<CartItem, 'quantity'>, quantity = 1): Cart {
   const cart = loadCart();
+  if (item.ontvanger || item.kaartje) {
+    cart.items.push({ ...item, quantity, lineId: `${item.productId}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` });
+    saveCart(cart);
+    return cart;
+  }
   const key = `${item.productId}-${item.size || ''}`;
-  const existing = cart.items.find(
-    (i) => `${i.productId}-${i.size || ''}` === key
-  );
+  const existing = cart.items.find((i) => cartKey(i) === key);
   if (existing) {
     existing.quantity += quantity;
   } else {
@@ -48,25 +76,19 @@ export function addToCart(item: Omit<CartItem, 'quantity'>, quantity = 1): Cart 
   return cart;
 }
 
-export function removeFromCart(productId: string, size?: string, silent = false): Cart {
+export function removeFromCart(key: string, silent = false): Cart {
   const cart = loadCart();
-  const key = `${productId}-${size || ''}`;
-  cart.items = cart.items.filter(
-    (i) => `${i.productId}-${i.size || ''}` !== key
-  );
+  cart.items = cart.items.filter((i) => cartKey(i) !== key);
   saveCart(cart, silent);
   return cart;
 }
 
-export function updateQuantity(productId: string, size: string | undefined, quantity: number, silent = false): Cart {
+export function updateQuantity(key: string, quantity: number, silent = false): Cart {
   const cart = loadCart();
-  const key = `${productId}-${size || ''}`;
-  const item = cart.items.find(
-    (i) => `${i.productId}-${i.size || ''}` === key
-  );
+  const item = cart.items.find((i) => cartKey(i) === key);
   if (item) {
     if (quantity <= 0) {
-      return removeFromCart(productId, size, silent);
+      return removeFromCart(key, silent);
     }
     item.quantity = quantity;
   }
@@ -79,7 +101,7 @@ export function clearCart(): void {
 }
 
 export function cartTotal(cart: Cart): number {
-  return cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  return cart.items.reduce((sum, i) => sum + i.price * i.quantity + regelExtra(i), 0);
 }
 
 export function cartCount(cart: Cart): number {

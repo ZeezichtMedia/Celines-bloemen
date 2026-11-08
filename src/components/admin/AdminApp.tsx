@@ -724,7 +724,7 @@ const ORDER_STATUS: Record<string, { label: string; color: string; dot: string }
   delivered:      { label: 'Bezorgd',           color: 'bg-emerald-50 text-emerald-800', dot: 'bg-emerald-500' },
   cancelled:      { label: 'Geannuleerd',       color: 'bg-red-50 text-red-700',       dot: 'bg-red-400' },
 };
-const DELIVERY_LABELS: Record<string, string> = { pickup: 'Ophalen in winkel', local: 'Lokale bezorging', shipping: 'Verzending' };
+const DELIVERY_LABELS: Record<string, string> = { pickup: 'Ophalen in winkel', local: 'Lokale bezorging', shipping: 'Verzending', adressen: 'Bezorgen per boeket' };
 
 function OrdersTab({ showToast }: { showToast: (m: string) => void }) {
   const [orders, setOrders] = useState<any[]>([]);

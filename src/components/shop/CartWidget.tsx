@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { loadCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, formatEuro, type Cart } from '../../lib/cart';
+import { loadCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, cartKey, formatEuro, type Cart } from '../../lib/cart';
 
 export default function CartWidget() {
   const [cart, setCart] = useState<Cart>({ items: [] });
@@ -103,7 +103,7 @@ function CartSidebar({ cart, setCart, total, onClose }: {
               </a>
             </div>
           ) : cart.items.map((item) => {
-            const key = `${item.productId}-${item.size || ''}`;
+            const key = cartKey(item);
             return (
               <div key={key} className="flex gap-4 items-center py-2">
                 <a href={item.size ? '/bestellen' : '/webshop'} onClick={onClose} className="flex-shrink-0">
@@ -114,22 +114,24 @@ function CartSidebar({ cart, setCart, total, onClose }: {
                     <h3 className="font-sans text-sm font-medium text-[#2b1712] truncate hover:text-[#b2765b] transition-colors">{item.name}</h3>
                   </a>
                   {item.size && <p className="text-[#2b1712]/40 text-xs font-sans capitalize">{item.size}</p>}
+                  {item.ontvanger && <p className="text-[#2b1712]/50 text-xs font-sans truncate">Naar {item.ontvanger.naam}, {item.ontvanger.plaats}</p>}
+                  {item.kaartje && <p className="text-[#2b1712]/50 text-xs font-sans truncate">Met kaartje</p>}
                   <div className="flex items-center gap-3 mt-1.5">
                     <div className="flex items-center border border-[#e4d6c8] rounded-lg overflow-hidden">
                       <button
-                        onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity - 1))}
+                        onClick={() => setCart(updateQuantity(key, item.quantity - 1))}
                         className="w-8 h-8 flex items-center justify-center text-[#2b1712]/50 hover:bg-[#f0e5da] transition-colors text-sm"
                         aria-label="Eén minder"
                       >−</button>
                       <span className="font-sans text-sm w-8 text-center text-[#2b1712]">{item.quantity}</span>
                       <button
-                        onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity + 1))}
+                        onClick={() => setCart(updateQuantity(key, item.quantity + 1))}
                         className="w-8 h-8 flex items-center justify-center text-[#2b1712]/50 hover:bg-[#f0e5da] transition-colors text-sm"
                         aria-label="Eén meer"
                       >+</button>
                     </div>
                     <button
-                      onClick={() => { const c = removeFromCart(item.productId, item.size); setCart(c); toggleWhatsApp(cartCount(c)); }}
+                      onClick={() => { const c = removeFromCart(key); setCart(c); toggleWhatsApp(cartCount(c)); }}
                       className="text-[#2b1712]/20 hover:text-red-500 transition-colors"
                       aria-label={`${item.name} verwijderen`}
                     >

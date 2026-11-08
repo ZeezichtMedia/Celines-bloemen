@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { loadCart, cartTotal, formatEuro, clearCart, updateQuantity, removeFromCart, type CartItem } from '../../lib/cart';
-import { vroegsteBezorgdag, KAARTJE_PRIJS } from '../../lib/bestelregels';
+import { loadCart, cartTotal, formatEuro, clearCart, updateQuantity, removeFromCart, cartKey, regelExtra, type CartItem } from '../../lib/cart';
+import { vroegsteBezorgdag } from '../../lib/bestelregels';
 import { siteConfig } from '../../config';
 
 type DeliveryZone = { id: number; name: string; cost: string; sortOrder: number };
 type ShippingInfo = { enabled: boolean; cost: number; freeFrom: number | null };
-type DeliveryMethod = 'pickup' | 'local' | 'shipping';
+type DeliveryMethod = 'pickup' | 'local' | 'shipping' | 'adressen';
 
 /** closedDays: dagen dat de winkel dicht is (0 = maandag). Daarop kun je geen bezorgdatum kiezen. */
 export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[] }) {
@@ -30,10 +30,6 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
   const [phone, setPhone] = useState('');
   const [note, setNote] = useState('');
 
-  // Kaartje bij het boeket
-  const [kaartje, setKaartje] = useState(false);
-  const [kaartTekst, setKaartTekst] = useState('');
-
   // Address
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
@@ -54,11 +50,16 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
       .catch(() => {});
   }, []);
 
+  // Boeketten met een eigen adres gaan los; de rest volgt de bezorging die je hier kiest
+  const hoofdItems = cart.items.filter((i) => !i.ontvanger);
+  const allesEigenAdres = cart.items.length > 0 && hoofdItems.length === 0;
   // Verse boeketten (alles met een maat) gaan niet per post
-  const hasBouquet = cart.items.some((i) => !!i.size);
+  const hasBouquet = hoofdItems.some((i) => !!i.size);
   useEffect(() => {
+    if (allesEigenAdres && deliveryMethod !== 'adressen') setDeliveryMethod('adressen');
+    if (!allesEigenAdres && deliveryMethod === 'adressen') setDeliveryMethod('pickup');
     if ((hasBouquet || !shipping.enabled) && deliveryMethod === 'shipping') setDeliveryMethod('pickup');
-  }, [hasBouquet, shipping.enabled, deliveryMethod]);
+  }, [allesEigenAdres, hasBouquet, shipping.enabled, deliveryMethod]);
 
   // Reset payment choice when switching to delivery
   useEffect(() => {
@@ -73,11 +74,12 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
     deliveryMethod === 'local' ? parseFloat(selectedZone?.cost || '0')
     : deliveryMethod === 'shipping' ? shippingCost
     : 0;
-  const kaartjeKosten = hasBouquet && kaartje && kaartTekst.trim() ? KAARTJE_PRIJS : 0;
-  const total = subtotal + deliveryCost + kaartjeKosten;
+  const total = subtotal + deliveryCost;
 
   // Vóór 08:00 besteld kan vandaag nog bezorgd worden, daarna vanaf morgen
   const minDate = vroegsteBezorgdag();
+
+  const needsAddress = deliveryMethod === 'local' || deliveryMethod === 'shipping';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,17 +96,18 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
             productId: i.productId,
             size: i.size,
             quantity: i.quantity,
+            ontvanger: i.ontvanger ? { naam: i.ontvanger.naam, adres: i.ontvanger.adres, postcode: i.ontvanger.postcode, zoneId: i.ontvanger.zoneId, datum: i.ontvanger.datum } : null,
+            kaartje: i.kaartje || null,
           })),
           delivery: {
             method: deliveryMethod,
             date: deliveryMethod === 'local' ? deliveryDate : null,
             zoneId: deliveryMethod === 'local' ? zoneId : null,
-            address: deliveryMethod !== 'pickup' ? address : null,
-            city: deliveryMethod !== 'pickup' ? city : null,
-            postalCode: deliveryMethod !== 'pickup' ? postalCode : null,
+            address: needsAddress ? address : null,
+            city: needsAddress ? city : null,
+            postalCode: needsAddress ? postalCode : null,
           },
           paymentMethod: deliveryMethod === 'pickup' ? paymentChoice : 'online',
-          card: hasBouquet && kaartje ? kaartTekst.trim() || null : null,
           acceptTerms,
         }),
       });
@@ -144,7 +147,6 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
     );
   }
 
-  const needsAddress = deliveryMethod !== 'pickup';
   const needsDate = deliveryMethod === 'local';
   const isInStore = paymentChoice === 'in_store' && deliveryMethod === 'pickup';
 
@@ -166,8 +168,17 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
           </div>
 
           {/* Delivery method */}
+          {allesEigenAdres ? (
+          <div className="bg-white rounded-2xl p-6 shadow-sm space-y-2">
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Bezorging</h3>
+            <p className="font-sans text-sm text-[#2b1712]/70">Elk boeket wordt bezorgd op het adres dat je erbij hebt opgegeven. Je ziet ze in het overzicht.</p>
+          </div>
+          ) : (
           <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Bezorging</h3>
+            {hoofdItems.length < cart.items.length && (
+              <p className="font-sans text-xs text-[#2b1712]/60">Boeketten met een eigen adres gaan daarheen. Kies hier hoe de rest van je bestelling bij je komt.</p>
+            )}
             <div className={`grid gap-2 ${shipping.enabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
               {[
                 { val: 'pickup' as const, label: 'Ophalen', sub: 'Arnemuiden', disabled: false },
@@ -236,6 +247,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
               </div>
             )}
           </div>
+          )}
 
           {/* Payment choice for pickup */}
           {deliveryMethod === 'pickup' && (
@@ -264,24 +276,6 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
             </div>
           )}
 
-          {/* Kaartje bij het boeket */}
-          {hasBouquet && (
-            <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-xl text-[#2b1712]">Kaartje</h3>
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input type="checkbox" checked={kaartje} onChange={(e) => setKaartje(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#b2765b] cursor-pointer flex-shrink-0" />
-                <span className="font-sans text-sm text-[#2b1712]">Kaartje bij het boeket <span className="text-[#2b1712]/50">(+ {formatEuro(KAARTJE_PRIJS)})</span></span>
-              </label>
-              {kaartje && (
-                <div>
-                  <textarea value={kaartTekst} onChange={(e) => setKaartTekst(e.target.value)} rows={3} maxLength={200} required
-                    className="w-full px-4 py-3 border border-[#e4d6c8] rounded-lg font-sans text-sm text-[#2b1712] focus:outline-none focus:border-[#b2765b] focus:ring-2 focus:ring-[#b2765b]/20 resize-none"
-                    placeholder="Tekst op het kaartje" aria-label="Tekst op het kaartje" />
-                  <p className="mt-1 text-right font-sans text-[10px] text-[#2b1712]/35">{kaartTekst.length}/200</p>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Note */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
@@ -305,7 +299,7 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
               {cart.items.map((item) => {
                 const link = item.size ? '/bestellen' : '/webshop';
                 return (
-                  <div key={`${item.productId}-${item.size}`} className="flex items-center gap-3">
+                  <div key={cartKey(item)} className="flex items-center gap-3">
                     {item.image && (
                       <a href={link} className="flex-shrink-0">
                         <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-[#e4d6c8] hover:opacity-80 transition-opacity" />
@@ -315,19 +309,23 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
                       <a href={link} className="block">
                         <p className="font-sans text-sm text-[#2b1712] truncate hover:text-[#b2765b] transition-colors">{item.name}{item.size ? ` (${item.size})` : ''}</p>
                       </a>
+                      {item.ontvanger && (
+                        <p className="font-sans text-[11px] leading-snug text-[#2b1712]/55">Naar {item.ontvanger.naam}, {item.ontvanger.adres}, {item.ontvanger.plaats}, {item.ontvanger.datum.split('-').reverse().join('-')} (+ {formatEuro(item.ontvanger.kosten)})</p>
+                      )}
+                      {item.kaartje && <p className="font-sans text-[11px] leading-snug text-[#2b1712]/55">Kaartje: "{item.kaartje}" (+ € 1,50)</p>}
                       <div className="flex items-center gap-2 mt-1">
-                        <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity - 1, true))}
+                        <button type="button" onClick={() => setCart(updateQuantity(cartKey(item), item.quantity - 1, true))}
                           className="w-6 h-6 rounded-md border border-[#e4d6c8] text-[#2b1712]/50 hover:border-[#b2765b] hover:text-[#b2765b] transition-colors flex items-center justify-center text-xs font-bold">&minus;</button>
                         <span className="font-sans text-xs text-[#2b1712] w-4 text-center">{item.quantity}</span>
-                        <button type="button" onClick={() => setCart(updateQuantity(item.productId, item.size, item.quantity + 1, true))}
+                        <button type="button" onClick={() => setCart(updateQuantity(cartKey(item), item.quantity + 1, true))}
                           className="w-6 h-6 rounded-md border border-[#e4d6c8] text-[#2b1712]/50 hover:border-[#b2765b] hover:text-[#b2765b] transition-colors flex items-center justify-center text-xs font-bold">+</button>
-                        <button type="button" onClick={() => setCart(removeFromCart(item.productId, item.size, true))}
+                        <button type="button" onClick={() => setCart(removeFromCart(cartKey(item), true))}
                           className="ml-1 text-[#2b1712]/25 hover:text-red-500 transition-colors" title="Verwijderen">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                       </div>
                     </div>
-                    <span className="font-sans text-sm font-medium text-[#2b1712] flex-shrink-0">{formatEuro(item.price * item.quantity)}</span>
+                    <span className="font-sans text-sm font-medium text-[#2b1712] flex-shrink-0">{formatEuro(item.price * item.quantity + regelExtra(item))}</span>
                   </div>
                 );
               })}
@@ -338,12 +336,6 @@ export default function CheckoutForm({ closedDays = [] }: { closedDays?: number[
                 <span>Subtotaal</span>
                 <span>{formatEuro(subtotal)}</span>
               </div>
-              {kaartjeKosten > 0 && (
-                <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
-                  <span>Kaartje</span>
-                  <span>{formatEuro(kaartjeKosten)}</span>
-                </div>
-              )}
               {deliveryCost > 0 && (
                 <div className="flex justify-between font-sans text-sm text-[#2b1712]/60">
                   <span>Bezorgkosten</span>

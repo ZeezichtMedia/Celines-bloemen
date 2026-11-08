@@ -6,11 +6,13 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import { getVisibleBouquets } from '../lib/data';
 import { licht } from '../lib/img';
-import { getPublicSettings, checkoutOpen } from '../lib/settings';
+import { getPublicSettings, checkoutOpen, closedWeekdays } from '../lib/settings';
 import { isAuthenticated } from '../lib/auth';
 import { siteConfig } from '../config';
 
-const open = checkoutOpen(await getPublicSettings());
+const settings = await getPublicSettings();
+const open = checkoutOpen(settings);
+const dicht = closedWeekdays(settings); // dagen dat de winkel dicht is, 0 = maandag
 // Zolang online afrekenen uit staat, is boeketten bestellen van de site gehaald.
 // Wie in het beheer is ingelogd ziet de pagina wel, als voorbeeld (en nooit uit de CDN-cache).
 const voorbeeld = !open && isAuthenticated(Astro.request.headers.get('cookie'));
@@ -151,6 +153,54 @@ const bouquets = allBouquets.map((b) => ({
     </div>
   </section>
 
+  <!-- Stap tussen boeket en winkelwagen: waar gaat het naartoe, en een kaartje (Celine, 4 nov 2026) -->
+  <dialog id="boeket-stap" data-dicht={dicht.join(',')} class="m-auto w-[min(34rem,calc(100%-2rem))] rounded-[1.5rem] bg-base p-0 text-ink shadow-2xl backdrop:bg-ink/50">
+    <form id="boeket-stap-form" method="dialog" class="max-h-[85svh] space-y-6 overflow-y-auto p-6 sm:p-8">
+      <div>
+        <p class="eyebrow">In je winkelwagen</p>
+        <h2 id="stap-titel" class="mt-3 font-display text-[1.9rem] leading-tight"></h2>
+      </div>
+
+      <fieldset class="space-y-2">
+        <legend class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted">Waar gaat het boeket naartoe?</legend>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 has-[:checked]:border-ink">
+          <input type="radio" name="bestemming" value="mij" checked class="mt-1 accent-[#b2765b]" />
+          <span><span class="block font-medium">Bij mij</span><span class="block text-[0.85rem] text-ink-muted">Ophalen of bezorgen kies je bij het afrekenen, samen met de rest van je bestelling.</span></span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-white p-4 has-[:checked]:border-ink">
+          <input type="radio" name="bestemming" value="ander" class="mt-1 accent-[#b2765b]" />
+          <span><span class="block font-medium">Naar een ander adres</span><span class="block text-[0.85rem] text-ink-muted">Ik bezorg het boeket bij iemand anders, op de dag die je kiest.</span></span>
+        </label>
+      </fieldset>
+
+      <div id="stap-adres" class="hidden space-y-3">
+        <div><label class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted" for="stap-naam">Naam ontvanger</label><input id="stap-naam" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none" autocomplete="off" maxlength="120" /></div>
+        <div><label class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted" for="stap-straat">Straat en huisnummer</label><input id="stap-straat" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none" autocomplete="off" maxlength="300" /></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted" for="stap-postcode">Postcode</label><input id="stap-postcode" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none" autocomplete="off" maxlength="10" /></div>
+          <div><label class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted" for="stap-plaats">Plaats</label><select id="stap-plaats" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none"></select></div>
+        </div>
+        <div><label class="mb-1.5 block text-[0.75rem] font-medium uppercase tracking-[0.12em] text-ink-muted" for="stap-datum">Bezorgdatum</label><input id="stap-datum" type="date" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none" /></div>
+        <p class="text-[0.8rem] leading-relaxed text-ink-muted">Bestel je vóór 08:00, dan bezorg ik dezelfde dag. Op dagen dat de winkel dicht is, bezorg ik niet.</p>
+      </div>
+
+      <div class="space-y-3">
+        <label class="flex cursor-pointer items-center gap-3">
+          <input id="stap-kaartje" type="checkbox" class="h-4 w-4 accent-[#b2765b]" />
+          <span>Kaartje erbij <span class="text-ink-muted">(+ € 1,50)</span></span>
+        </label>
+        <textarea id="stap-kaarttekst" rows="3" maxlength="200" placeholder="Tekst op het kaartje" aria-label="Tekst op het kaartje" class="hidden w-full rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-ink-faint focus:border-accent-500 focus:outline-none resize-none"></textarea>
+      </div>
+
+      <p id="stap-fout" class="hidden text-[0.9rem] text-red-600" role="alert"></p>
+
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" id="stap-annuleren" class="btn-ghost">Annuleren</button>
+        <button type="submit" class="btn-primary"><Icon name="ph:shopping-bag-open-light" class="h-5 w-5" /> In winkelwagen</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="cart-toast" class="fixed bottom-6 left-1/2 z-[100] flex -translate-x-1/2 translate-y-4 items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm text-base opacity-0 shadow-[0_20px_40px_-20px_rgb(0_0_0/0.5)] transition-all duration-500 pointer-events-none">
     <Icon name="ph:check-light" class="h-5 w-5 text-accent-300" />
     <span id="cart-toast-text">Toegevoegd aan winkelwagen</span>
@@ -159,7 +209,8 @@ const bouquets = allBouquets.map((b) => ({
   <CtaSection />
 
   <script>
-    import { addToCart } from '../lib/cart';
+    import { addToCart, type Ontvanger } from '../lib/cart';
+    import { vroegsteBezorgdag } from '../lib/bestelregels';
 
 
     // Online afrekenen staat uit (beheer > Instellingen): bestellen gaat dan via WhatsApp
@@ -167,6 +218,90 @@ const bouquets = allBouquets.map((b) => ({
       if (document.body.dataset.checkout !== 'closed') return false;
       window.open(`https://wa.me/${document.body.dataset.wa}?text=${encodeURIComponent(tekst)}`, '_blank');
       return true;
+    };
+
+    // Stap tussen boeket en winkelwagen: bij mij of naar een ander adres, en eventueel een kaartje
+    type Boeket = { productId: string; name: string; size: string; price: number; priceLabel: string; image: string };
+    let huidig: { boeket: Boeket; knop: HTMLElement } | null = null;
+    let zones: { id: number; name: string; cost: string }[] | null = null;
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+    const toonToast = (tekst: string) => {
+      const toast = document.getElementById('cart-toast');
+      const toastText = document.getElementById('cart-toast-text');
+      if (!toast || !toastText) return;
+      toastText.textContent = tekst;
+      toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    };
+
+    const openStap = async (boeket: Boeket, knop: HTMLElement) => {
+      const dialoog = $<HTMLDialogElement>('boeket-stap');
+      huidig = { boeket, knop };
+      $('stap-titel').textContent = `${boeket.name} (${boeket.size}), ${boeket.priceLabel}`;
+      ($('boeket-stap-form') as HTMLFormElement).reset();
+      $('stap-adres').classList.add('hidden');
+      $('stap-kaarttekst').classList.add('hidden');
+      $('stap-fout').classList.add('hidden');
+      const datum = $<HTMLInputElement>('stap-datum');
+      datum.min = vroegsteBezorgdag();
+      if (!zones) zones = await fetch('/api/delivery-zones').then((r) => r.json()).catch(() => []);
+      $<HTMLSelectElement>('stap-plaats').innerHTML = (zones ?? [])
+        .map((z) => `<option value="${z.id}">${z.name} (+ € ${Number(z.cost).toFixed(2).replace('.', ',')})</option>`).join('');
+      dialoog.showModal();
+    };
+
+    const initStap = () => {
+      const dialoog = document.getElementById('boeket-stap') as HTMLDialogElement | null;
+      if (!dialoog || (dialoog as any).__stapKlaar) return;
+      (dialoog as any).__stapKlaar = true;
+      const form = $<HTMLFormElement>('boeket-stap-form');
+      const fout = (tekst: string) => { $('stap-fout').textContent = tekst; $('stap-fout').classList.remove('hidden'); };
+
+      form.addEventListener('change', (e) => {
+        const t = e.target as HTMLInputElement;
+        if (t.name === 'bestemming') $('stap-adres').classList.toggle('hidden', t.value !== 'ander');
+        if (t.id === 'stap-kaartje') $('stap-kaarttekst').classList.toggle('hidden', !t.checked);
+      });
+      $('stap-annuleren').addEventListener('click', () => dialoog.close());
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!huidig) return;
+        const ander = (form.querySelector('input[name="bestemming"]:checked') as HTMLInputElement)?.value === 'ander';
+        let ontvanger: Ontvanger | undefined;
+        if (ander) {
+          const naam = $<HTMLInputElement>('stap-naam').value.trim();
+          const adres = $<HTMLInputElement>('stap-straat').value.trim();
+          const postcode = $<HTMLInputElement>('stap-postcode').value.trim();
+          const zoneId = Number($<HTMLSelectElement>('stap-plaats').value);
+          const datum = $<HTMLInputElement>('stap-datum').value;
+          const zone = (zones ?? []).find((z) => z.id === zoneId);
+          if (naam.length < 2 || adres.length < 3 || postcode.length < 4 || !zone || !datum) return fout('Vul naam, adres, postcode, plaats en bezorgdatum in.');
+          if (datum < vroegsteBezorgdag()) return fout('Voor vandaag bezorgen moet je vóór 08:00 bestellen. Kies een andere dag.');
+          const dicht = (dialoog.dataset.dicht || '').split(',').filter(Boolean).map(Number);
+          const [y, m, d] = datum.split('-').map(Number);
+          if (dicht.includes((new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7)) return fout('Op die dag is de winkel dicht en wordt er niet bezorgd. Kies een andere dag.');
+          ontvanger = { naam, adres, postcode, zoneId, plaats: zone.name, kosten: Number(zone.cost), datum };
+        }
+        const kaartAan = $<HTMLInputElement>('stap-kaartje').checked;
+        const kaartje = kaartAan ? $<HTMLTextAreaElement>('stap-kaarttekst').value.trim() : '';
+        if (kaartAan && !kaartje) return fout('Schrijf de tekst voor op het kaartje, of haal het vinkje weg.');
+
+        addToCart({ ...huidig.boeket, ...(ontvanger ? { ontvanger } : {}), ...(kaartje ? { kaartje } : {}) });
+        dialoog.close();
+        toonToast(`${huidig.boeket.name} (${huidig.boeket.size}) toegevoegd`);
+        const label = huidig.knop.querySelector('span') as HTMLElement | null;
+        if (label) {
+          const prevText = label.textContent;
+          label.textContent = 'Toegevoegd';
+          setTimeout(() => { label.textContent = prevText; }, 1500);
+        }
+      });
     };
 
     const initBestellen = () => {
@@ -208,40 +343,16 @@ const bouquets = allBouquets.map((b) => ({
           const price = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
           if (viaWhatsApp(`Hoi Celine! Ik wil graag het boeket ${name} bestellen, maat ${size} (${priceStr}).`)) return;
 
-          addToCart({
+          openStap({
             productId: cardEl.dataset.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-            name,
-            size,
-            price,
-            priceLabel: priceStr,
-            image,
-          });
-
-          // Show toast
-          const toast = document.getElementById('cart-toast');
-          const toastText = document.getElementById('cart-toast-text');
-          if (toast && toastText) {
-            toastText.textContent = `${name} (${size}) toegevoegd`;
-            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            setTimeout(() => {
-              toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-              toast.classList.remove('opacity-100', 'translate-y-0');
-            }, 2500);
-          }
-
-          // Korte bevestiging op de knop
-          const label = (addBtn as HTMLElement).querySelector('span') as HTMLElement | null;
-          if (label) {
-            const prevText = label.textContent;
-            label.textContent = 'Toegevoegd';
-            setTimeout(() => { label.textContent = prevText; }, 1500);
-          }
+            name, size, price, priceLabel: priceStr, image,
+          }, addBtn as HTMLElement);
         }, { signal });
       });
     };
 
     initBestellen();
-    document.addEventListener('astro:page-load', initBestellen);
+    initStap();
+    document.addEventListener('astro:page-load', () => { initBestellen(); initStap(); });
   </script>
 </Layout>
