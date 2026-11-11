@@ -11,7 +11,7 @@ const json = (body: unknown, status = 200) =>
 // Welke Mollie-sleutel staat er? Alleen met een live-sleutel mag de webshop open:
 // met een testsleutel zouden echte klanten nepbetalingen doen.
 function mollieModus(): 'live' | 'test' | 'geen' {
-  const key = process.env.MOLLIE_API_KEY ?? '';
+  const key = process.env.MOLLIE_API_KEY?.trim() ?? '';
   return key.startsWith('live_') ? 'live' : key.startsWith('test_') ? 'test' : 'geen';
 }
 

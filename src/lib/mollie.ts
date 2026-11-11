@@ -1,7 +1,7 @@
 import { createMollieClient, SequenceType } from '@mollie/api-client';
 
 function getMollieClient() {
-  const apiKey = process.env.MOLLIE_API_KEY;
+  const apiKey = process.env.MOLLIE_API_KEY?.trim();
   if (!apiKey) throw new Error('MOLLIE_API_KEY is niet ingesteld');
   return createMollieClient({ apiKey });
 }
