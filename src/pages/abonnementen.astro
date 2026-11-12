@@ -4,10 +4,12 @@ import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
 import SubscriptionForm from '../components/shop/SubscriptionForm';
 import PlanCards from '../components/shop/PlanCards.astro';
-import { PLANS, FRESH_FREQUENCIES } from '../lib/plans';
+import { plansMetPrijzen, FRESH_FREQUENCIES } from '../lib/plans';
 import { getPublicSettings, checkoutOpen } from '../lib/settings';
 
-const open = checkoutOpen(await getPublicSettings());
+const settings = await getPublicSettings();
+const open = checkoutOpen(settings);
+const PLANS = plansMetPrijzen(settings.plan_prijzen); // prijzen uit het beheer
 
 const freshPlans = PLANS.filter((p) => p.type === 'fresh');
 const artificialPlans = PLANS.filter((p) => p.type === 'artificial');

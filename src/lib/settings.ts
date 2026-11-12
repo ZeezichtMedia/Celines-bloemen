@@ -7,6 +7,7 @@ export interface Settings {
   shipping_cost: string;       // "6.95" — pakketverzending heel Nederland
   free_shipping_from: string;  // "75.00" — gratis verzending vanaf dit subtotaal ("" = nooit gratis)
   notify_email: string;        // waar nieuwe bestellingen/abonnementen heen gemaild worden
+  plan_prijzen: string;        // JSON met abonnementsprijzen uit het beheer, zie plansMetPrijzen
   announcement: string;        // mededeling bovenaan elke pagina ("" = geen balk)
   opening_hours: string;       // JSON: 7 dagen (ma t/m zo), elk { open, close } of null = gesloten
 }
@@ -39,6 +40,7 @@ export const DEFAULT_SETTINGS: Settings = {
   shipping_cost: '6.95',
   free_shipping_from: '75.00',
   notify_email: '',
+  plan_prijzen: '',
   announcement: '',
   opening_hours: JSON.stringify(DEFAULT_HOURS),
 };

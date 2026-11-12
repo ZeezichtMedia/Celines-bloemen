@@ -80,6 +80,7 @@ export const settingsSchema = z.object({
   free_shipping_from: z.string().regex(/^(\d+(\.\d{1,2})?)?$/, 'Ongeldig bedrag').optional(),
   notify_email: z.string().email('Ongeldig e-mailadres').or(z.literal('')).optional(),
   announcement: z.string().trim().max(200, 'De mededeling mag maximaal 200 tekens zijn').optional(),
+  plan_prijzen: z.string().max(2000).refine((v) => { if (!v) return true; try { const o = JSON.parse(v); return typeof o === 'object' && o !== null && Object.values(o).every((x) => x === null || (typeof x === 'number' && x >= 0 && x < 10000)); } catch { return false; } }, 'Controleer de prijzen van de abonnementen').optional(),
   opening_hours: z.string().refine(isValidOpeningHours, 'Controleer de openingstijden: de sluittijd moet na de openingstijd liggen').optional(),
 });
 

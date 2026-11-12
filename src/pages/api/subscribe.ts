@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { db, schema } from '../../lib/db';
 import { createFirstPayment } from '../../lib/mollie';
 import { subscribeSchema, validateOrError } from '../../lib/validation';
-import { resolvePlan, formatEuro } from '../../lib/plans';
+import { resolvePlan, plansMetPrijzen, formatEuro } from '../../lib/plans';
 import { getSettings, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { eq } from 'drizzle-orm';
 
@@ -13,7 +13,8 @@ const json = (body: unknown, status = 200) =>
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!checkoutOpen(await getSettings())) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
+    const settings = await getSettings();
+    if (!checkoutOpen(settings)) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
     const body = await request.json();
 
     const { data, error } = validateOrError(subscribeSchema, body);
@@ -22,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     const { customer, plan: chosen, delivery } = data;
 
     // Prijs komt uit lib/plans.ts, nooit uit de request
-    const plan = resolvePlan(chosen.type, chosen.size, chosen.frequency);
+    const plan = resolvePlan(chosen.type, chosen.size, chosen.frequency, plansMetPrijzen(settings.plan_prijzen));
     if (!plan) return json({ error: 'Dit abonnement bestaat niet (meer). Vernieuw de pagina en probeer opnieuw.' }, 400);
     const amount = plan.price.toFixed(2);
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import type { Bouquet, Product } from '../../lib/types';
 import { Ph } from './icons';
+import { PLANS, planKey, plansMetPrijzen, planLabel } from '../../lib/plans';
 
 // ============================================================
 // Bouwstenen: één plek voor knoppen, velden en kaarten, zodat elk
@@ -970,7 +971,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
 // Instellingen
 // ============================================================
 type DeliveryZone = { id?: number; name: string; cost: string; sortOrder: number };
-type ShopSettings = { mollie?: 'live' | 'test' | 'geen'; checkout_enabled?: string; shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
+type ShopSettings = { plan_prijzen?: string; mollie?: 'live' | 'test' | 'geen'; checkout_enabled?: string; shipping_enabled: string; shipping_cost: string; free_shipping_from: string; notify_email: string; announcement?: string; opening_hours?: string; effectiveNotifyEmail?: string | null };
 type DayHours = { open: string; close: string } | null;
 const DAGEN = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
 
@@ -989,6 +990,59 @@ function Section({ title, sub, children }: { title: string; sub?: string; childr
       {sub && <p className="mt-1 text-sm text-ink-muted">{sub}</p>}
       <div className="mt-6 space-y-6">{children}</div>
     </section>
+  );
+}
+
+// Prijzen van de abonnementen. Leeg is "op aanvraag": dan kunnen klanten dat abonnement alleen aanvragen.
+function PlanPrijzen({ settings, showToast }: { settings: ShopSettings; showToast: (m: string) => void }) {
+  const huidig = plansMetPrijzen(settings.plan_prijzen);
+  const [prijzen, setPrijzen] = useState<Record<string, string>>(() =>
+    Object.fromEntries(huidig.map((p) => [planKey(p), p.price == null ? '' : p.price.toFixed(2).replace('.', ',')])));
+  const [saving, setSaving] = useState(false);
+
+  const opslaan = async () => {
+    const json: Record<string, number | null> = {};
+    for (const p of PLANS) {
+      const v = (prijzen[planKey(p)] ?? '').trim().replace('€', '').replace(',', '.').trim();
+      if (v === '') { json[planKey(p)] = null; continue; }
+      const n = Number(v);
+      if (!(n > 0) || n >= 10000) { alert(`Controleer de prijs van ${planLabel(p)}`); return; }
+      json[planKey(p)] = Math.round(n * 100) / 100;
+    }
+    setSaving(true);
+    const res = await fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_prijzen: JSON.stringify(json) }) });
+    if (res.ok) showToast('Prijzen opgeslagen');
+    else {
+      const { error } = await res.json().catch(() => ({ error: 'Opslaan mislukt' }));
+      alert(error || 'Opslaan mislukt');
+    }
+    setSaving(false);
+  };
+
+  const groep = (type: 'fresh' | 'artificial', titel: string) => (
+    <div>
+      <p className={cls.label}>{titel}</p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {PLANS.filter((p) => p.type === type).map((p) => (
+          <div key={planKey(p)}>
+            <span className="mb-1 block text-[0.75rem] text-ink-faint">{p.size}{type === 'fresh' ? ', per levering' : ''}</span>
+            <div className="relative">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ink-faint">€</span>
+              <input value={prijzen[planKey(p)] ?? ''} onChange={(e) => setPrijzen({ ...prijzen, [planKey(p)]: e.target.value })}
+                placeholder="Op aanvraag" inputMode="decimal" className={`${cls.input} pl-8`} aria-label={`Prijs ${planLabel(p)}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <Section title="Prijzen abonnementen" sub="Laat je een prijs leeg, dan staat er Op aanvraag en kunnen klanten dat abonnement alleen aanvragen.">
+      {groep('fresh', 'Verse bloemen')}
+      {groep('artificial', 'Kunstbloemen')}
+      <button type="button" onClick={opslaan} disabled={saving} className={`${cls.primary} w-full sm:w-auto`}>{saving ? 'Opslaan...' : 'Prijzen opslaan'}</button>
+    </Section>
   );
 }
 
@@ -1138,6 +1192,8 @@ function SettingsTab({ showToast }: { showToast: (m: string) => void }) {
       </Section>
 
       <WebsiteSettings settings={settings} showToast={showToast} />
+
+      <PlanPrijzen settings={settings} showToast={showToast} />
 
       <Section title="Bezorgtarieven" sub="Plaatsen waar je bezorgt en wat dat kost.">
         {zones.length === 0 ? (

@@ -2,11 +2,13 @@
 import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import CtaSection from '../components/home/CtaSection.astro';
-import { PLANS, formatEuro } from '../lib/plans';
+import { plansMetPrijzen, formatEuro } from '../lib/plans';
 import { getPublicSettings, checkoutOpen } from '../lib/settings';
 import { siteConfig } from '../config';
 
-const shop = checkoutOpen(await getPublicSettings());
+const settings = await getPublicSettings();
+const shop = checkoutOpen(settings);
+const PLANS = plansMetPrijzen(settings.plan_prijzen); // prijzen uit het beheer
 
 const vanaf = Math.min(...PLANS.filter((p) => p.type === 'fresh' && p.price != null).map((p) => p.price as number));
 

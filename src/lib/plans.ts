@@ -87,9 +87,26 @@ export function planLabel(plan: Plan): string {
   return plan.type === 'fresh' ? `${plan.size} seizoensboeket` : `Kunstbloemen ${plan.size.toLowerCase()}`;
 }
 
+/** Sleutel van een plan in de prijzen uit het beheer, bijv. "fresh:Medium". */
+export const planKey = (p: Pick<Plan, 'type' | 'size'>) => `${p.type}:${p.size}`;
+
+/**
+ * Prijzen uit het beheer (instelling plan_prijzen, JSON { "fresh:Medium": 23.95, "artificial:Per jaar": null })
+ * over de standaardprijzen heen. null of 0 = op aanvraag. Ontbreekt een plan, dan geldt de standaardprijs.
+ */
+export function plansMetPrijzen(raw: string | null | undefined): Plan[] {
+  let prijzen: Record<string, unknown> = {};
+  try { prijzen = raw ? JSON.parse(raw) : {}; } catch { prijzen = {}; }
+  return PLANS.map((p) => {
+    if (!(planKey(p) in prijzen)) return p;
+    const v = Number(prijzen[planKey(p)]);
+    return { ...p, price: prijzen[planKey(p)] != null && v > 0 ? Math.round(v * 100) / 100 : null };
+  });
+}
+
 /** Zoekt een plan op en controleert of de frequentie erbij mag. Null = ongeldig of (nog) niet online te bestellen. */
-export function resolvePlan(type: string, size: string, frequency: string): (Plan & { price: number }) | null {
-  const plan = PLANS.find((p) => p.type === type && p.size.toLowerCase() === size.toLowerCase());
+export function resolvePlan(type: string, size: string, frequency: string, plans: Plan[] = PLANS): (Plan & { price: number }) | null {
+  const plan = plans.find((p) => p.type === type && p.size.toLowerCase() === size.toLowerCase());
   if (!plan) return null;
   if (plan.price == null) return null; // prijs nog niet bepaald: loopt via contact
   if (!plan.frequencies.includes(frequency as Frequency)) return null;
