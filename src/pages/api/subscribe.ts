@@ -5,6 +5,7 @@ import { subscribeSchema, validateOrError } from '../../lib/validation';
 import { resolvePlan, plansMetPrijzen, formatEuro } from '../../lib/plans';
 import { getSettings, checkoutOpen, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { eq } from 'drizzle-orm';
+import { checkRateLimit, getClientIP } from '../../lib/rate-limit';
 
 export const prerender = false;
 
@@ -15,6 +16,10 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const settings = await getSettings();
     if (!checkoutOpen(settings)) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
+    // Tegen misbruik (nepbestellingen, mails naar vreemde adressen): hooguit 10 pogingen per 10 minuten per adres
+    if (!checkRateLimit(`abonnement:${getClientIP(request)}`, 10, 10 * 60 * 1000).allowed) {
+      return json({ error: 'Je hebt het net al een paar keer geprobeerd. Wacht even, of stuur Celine een berichtje via WhatsApp.' }, 429);
+    }
     const body = await request.json();
 
     const { data, error } = validateOrError(subscribeSchema, body);

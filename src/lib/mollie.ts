@@ -91,12 +91,18 @@ export async function createSubscription({
   interval,
   description,
   subscriptionId,
+  startDate,
+  idempotencyKey,
 }: {
   customerId: string;
   amount: string;
   interval: string; // '1 weeks', '2 weeks', '1 months', '3 months'
   description: string;
   subscriptionId: number;
+  /** Eerste incassodag (YYYY-MM-DD). Zonder startDate incasseert Mollie meteen vandaag. */
+  startDate: string;
+  /** Zelfde sleutel = Mollie maakt het abonnement maar een keer aan, ook als de webhook dubbel binnenkomt. */
+  idempotencyKey: string;
 }) {
   const mollie = getMollieClient();
   const subscription = await mollie.customerSubscriptions.create({
@@ -104,15 +110,53 @@ export async function createSubscription({
     amount: { currency: 'EUR', value: amount },
     interval,
     description,
+    startDate,
     webhookUrl: `${SITE_URL}/api/webhooks/mollie-subscription`,
     metadata: { subscriptionId: String(subscriptionId) },
+    idempotencyKey,
   });
   return subscription;
 }
 
+/** Zegt het abonnement bij Mollie op. Stond het daar al opgezegd, dan is dat ook goed. Lukt het niet, dan gooit hij een fout. */
 export async function cancelSubscription(customerId: string, mollieSubscriptionId: string) {
   const mollie = getMollieClient();
-  await mollie.customerSubscriptions.cancel(mollieSubscriptionId, { customerId });
+  try {
+    await mollie.customerSubscriptions.cancel(mollieSubscriptionId, { customerId });
+  } catch (err) {
+    const sub = await mollie.customerSubscriptions.get(mollieSubscriptionId, { customerId }).catch(() => null);
+    if (sub && (sub.status === 'canceled' || sub.status === 'completed')) return;
+    throw err;
+  }
+}
+
+/** Vandaag in Nederland als YYYY-MM-DD. */
+export function vandaagNL(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(new Date());
+}
+
+/** Datum (YYYY-MM-DD) plus een Mollie-interval zoals '2 weeks' of '1 months'. */
+export function datumPlusInterval(datum: string, interval: string): string {
+  const [y, m, d] = datum.split('-').map(Number);
+  const [nStr, eenheid] = interval.split(' ');
+  const n = parseInt(nStr, 10);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (eenheid.startsWith('week')) dt.setUTCDate(dt.getUTCDate() + 7 * n);
+  else if (eenheid.startsWith('day')) dt.setUTCDate(dt.getUTCDate() + n);
+  else {
+    // Maanden: 31 januari + 1 maand wordt 28/29 februari, niet 3 maart
+    const doelMaand = dt.getUTCMonth() + n;
+    const laatsteDag = new Date(Date.UTC(dt.getUTCFullYear(), doelMaand + 1, 0)).getUTCDate();
+    dt.setUTCDate(1);
+    dt.setUTCMonth(doelMaand);
+    dt.setUTCDate(Math.min(d, laatsteDag));
+  }
+  return dt.toISOString().slice(0, 10);
+}
+
+/** Klopt het bedrag van een Mollie-betaling precies met wat wij verwachten? */
+export function bedragKlopt(payment: { amount: { value: string; currency: string } }, verwacht: number | string): boolean {
+  return payment.amount.currency === 'EUR' && payment.amount.value === Number(verwacht).toFixed(2);
 }
 
 // ============================================================

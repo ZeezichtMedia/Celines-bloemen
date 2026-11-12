@@ -724,6 +724,7 @@ const ORDER_STATUS: Record<string, { label: string; color: string; dot: string }
   shipped:        { label: 'Verzonden',         color: 'bg-sky-50 text-sky-800',       dot: 'bg-sky-400' },
   delivered:      { label: 'Bezorgd',           color: 'bg-emerald-50 text-emerald-800', dot: 'bg-emerald-500' },
   cancelled:      { label: 'Geannuleerd',       color: 'bg-red-50 text-red-700',       dot: 'bg-red-400' },
+  refunded:       { label: 'Terugbetaald',      color: 'bg-stone-100 text-stone-700',  dot: 'bg-stone-400' },
 };
 const DELIVERY_LABELS: Record<string, string> = { pickup: 'Ophalen in winkel', local: 'Lokale bezorging', shipping: 'Verzending', adressen: 'Bezorgen per boeket' };
 
@@ -903,14 +904,16 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
 
   const handleAction = async (id: number, action: string) => {
     if (action === 'cancel' && !confirm('Weet je zeker dat je dit abonnement wilt stoppen?')) return;
-    await fetch('/api/admin/subscriptions', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, action }) });
+    const res = await fetch('/api/admin/subscriptions', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, action }) });
+    if (!res.ok) { const { error } = await res.json().catch(() => ({ error: 'Er ging iets mis' })); alert(error || 'Er ging iets mis'); return; }
     setSubs(subs.map((s) => s.id === id ? { ...s, status: action === 'pause' ? 'paused' : action === 'resume' ? 'active' : 'cancelled' } : s));
     showToast(action === 'cancel' ? 'Abonnement gestopt' : 'Status bijgewerkt');
   };
 
   const deleteSub = async (id: number) => {
     if (!confirm('Weet je zeker dat je dit abonnement wilt verwijderen?')) return;
-    await fetch('/api/admin/subscriptions', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    const res = await fetch('/api/admin/subscriptions', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    if (!res.ok) { const { error } = await res.json().catch(() => ({ error: 'Er ging iets mis' })); alert(error || 'Er ging iets mis'); return; }
     setSubs(subs.filter((s) => s.id !== id));
     showToast('Abonnement verwijderd');
   };
@@ -920,6 +923,7 @@ function SubscriptionsTab({ showToast }: { showToast: (m: string) => void }) {
     active:    { label: 'Actief',        color: 'bg-emerald-50 text-emerald-800', dot: 'bg-emerald-500' },
     paused:    { label: 'Gepauzeerd',    color: 'bg-amber-50 text-amber-800',     dot: 'bg-amber-400' },
     pending:   { label: 'In afwachting', color: 'bg-blue-50 text-blue-800',       dot: 'bg-blue-500' },
+    activating: { label: 'Wordt gestart', color: 'bg-blue-50 text-blue-800',      dot: 'bg-blue-500' },
     cancelled: { label: 'Gestopt',       color: 'bg-red-50 text-red-700',         dot: 'bg-red-400' },
   };
 

@@ -6,6 +6,7 @@ import { priceOrder, PricingError, euro } from '../../lib/pricing';
 import { getSettings, resolveNotifyEmail, checkoutOpen, closedWeekdays, weekdayIndex, CHECKOUT_CLOSED_MESSAGE } from '../../lib/settings';
 import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData } from '../../lib/email';
 import { eq } from 'drizzle-orm';
+import { checkRateLimit, getClientIP } from '../../lib/rate-limit';
 import { vroegsteBezorgdag } from '../../lib/bestelregels';
 
 export const prerender = false;
@@ -26,6 +27,10 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const settings = await getSettings();
     if (!checkoutOpen(settings)) return json({ error: CHECKOUT_CLOSED_MESSAGE }, 403);
+    // Tegen misbruik (nepbestellingen, mails naar vreemde adressen): hooguit 10 pogingen per 10 minuten per adres
+    if (!checkRateLimit(`bestellen:${getClientIP(request)}`, 10, 10 * 60 * 1000).allowed) {
+      return json({ error: 'Je hebt het net al een paar keer geprobeerd. Wacht even, of stuur Celine een berichtje via WhatsApp.' }, 429);
+    }
     const body = await request.json();
 
     const { data, error } = validateOrError(checkoutSchema, body);

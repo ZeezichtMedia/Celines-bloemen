@@ -66,6 +66,10 @@ export const PATCH: APIRoute = async ({ request }) => {
   }
 
   // Manual status update
+  const toegestaan = ['pending', 'pending_pickup', 'paid', 'preparing', 'shipped', 'delivered', 'cancelled', 'refunded'];
+  if (!toegestaan.includes(status)) {
+    return new Response(JSON.stringify({ error: 'Onbekende status' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+  }
   await db.update(schema.orders)
     .set({ status, adminNote, updatedAt: new Date() })
     .where(eq(schema.orders.id, id));
