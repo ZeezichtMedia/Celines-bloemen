@@ -3,6 +3,7 @@ import { isAuthenticated } from '../../../lib/auth';
 import { db, schema } from '../../../lib/db';
 import { getPayment } from '../../../lib/mollie';
 import { desc, eq } from 'drizzle-orm';
+import { herstelVoorraad } from '../../../lib/data';
 
 export const prerender = false;
 
@@ -70,9 +71,20 @@ export const PATCH: APIRoute = async ({ request }) => {
   if (!toegestaan.includes(status)) {
     return new Response(JSON.stringify({ error: 'Onbekende status' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
   }
+  const [voor] = await db.select().from(schema.orders).where(eq(schema.orders.id, id)).limit(1);
   await db.update(schema.orders)
     .set({ status, adminNote, updatedAt: new Date() })
     .where(eq(schema.orders.id, id));
+  // Geannuleerd of terugbetaald: voorraad die al was afgeboekt (in de winkel betaald, of online betaald) gaat terug
+  const weg = ['cancelled', 'refunded'];
+  if (voor && weg.includes(status) && !weg.includes(voor.status) && (voor.paymentMethod === 'in_store' || voor.paidAt)) {
+    try {
+      const items = typeof voor.items === 'string' ? JSON.parse(voor.items) : (voor.items as any[]);
+      await herstelVoorraad(items);
+    } catch (err) {
+      console.error('Voorraad terugzetten mislukt:', err);
+    }
+  }
   return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } });
 };
 

@@ -8,6 +8,7 @@ import { sendOrderConfirmation, sendOwnerOrderNotification, type OrderMailData }
 import { eq } from 'drizzle-orm';
 import { checkRateLimit, getClientIP } from '../../lib/rate-limit';
 import { vroegsteBezorgdag } from '../../lib/bestelregels';
+import { reserveerVoorraad } from '../../lib/data';
 
 export const prerender = false;
 
@@ -58,6 +59,15 @@ export const POST: APIRoute = async ({ request }) => {
     } catch (err) {
       if (err instanceof PricingError) return json({ error: err.message }, 400);
       throw err;
+    }
+
+    // Betalen in de winkel: geen webhook, dus de voorraad gaat nu al omlaag (online betaald: in de webhook)
+    if (isInStore) {
+      const op = await reserveerVoorraad(priced.items.filter((i) => i.kind === 'product'));
+      if (op) {
+        const naam = priced.items.find((i) => i.productId === op)?.name ?? 'Een product';
+        return json({ error: `${naam} is helaas uitverkocht. Haal het uit je winkelwagen en probeer het opnieuw.` }, 400);
+      }
     }
 
     const orderNumber = generateOrderNumber();

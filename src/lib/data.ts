@@ -1,7 +1,7 @@
 import type { Bouquet, Product } from './types';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { asc, eq, and, isNotNull, sql } from 'drizzle-orm';
+import { asc, eq, and, gte, isNotNull, sql } from 'drizzle-orm';
 import { db, schema } from './db';
 import { purgeSiteCache } from './cache';
 import { leesFotos, schrijfFotos } from './img';
@@ -88,6 +88,50 @@ export async function upsertProduct(input: Product): Promise<Product> {
 
 export async function deleteProduct(id: string): Promise<void> {
   await db.delete(schema.shopProducts).where(eq(schema.shopProducts.id, id));
+  await purgeSiteCache();
+}
+
+/** Per product opgeteld; regels zonder productrij (kaartje, bezorging, boeketten) doen niets. */
+function perProduct(items: { productId: string; quantity: number }[]): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const i of items) m.set(i.productId, (m.get(i.productId) ?? 0) + i.quantity);
+  return m;
+}
+
+/**
+ * Voorraad afboeken bij een bestelling die in de winkel wordt betaald. Er komt geen Mollie-webhook,
+ * dus dit gebeurt meteen bij het bestellen. Per product in één UPDATE die alleen lukt als er genoeg is,
+ * zodat twee klanten niet tegelijk het laatste exemplaar kopen. Alles of niets: lukt een product niet,
+ * dan gaat wat al was afgeboekt terug en krijg je het id van dat product.
+ */
+export async function reserveerVoorraad(items: { productId: string; quantity: number }[]): Promise<string | null> {
+  const gedaan: { productId: string; quantity: number }[] = [];
+  for (const [id, n] of perProduct(items)) {
+    const gelukt = await db.update(schema.shopProducts)
+      .set({ stock: sql`${schema.shopProducts.stock} - ${n}`, updatedAt: new Date() })
+      .where(and(eq(schema.shopProducts.id, id), isNotNull(schema.shopProducts.stock), gte(schema.shopProducts.stock, n)))
+      .returning({ id: schema.shopProducts.id });
+    if (gelukt.length) { gedaan.push({ productId: id, quantity: n }); continue; }
+    // Niet gelukt: onbeperkte voorraad (stock leeg) of geen product is prima, te weinig niet
+    const [p] = await db.select({ stock: schema.shopProducts.stock }).from(schema.shopProducts).where(eq(schema.shopProducts.id, id)).limit(1);
+    if (p && p.stock != null) {
+      await herstelVoorraad(gedaan);
+      return id;
+    }
+  }
+  if (gedaan.length) await purgeSiteCache();
+  return null;
+}
+
+/** Voorraad teruggeven, bijvoorbeeld als een bestelling wordt geannuleerd. */
+export async function herstelVoorraad(items: { productId: string; quantity: number }[]): Promise<void> {
+  const m = perProduct(items);
+  if (m.size === 0) return;
+  for (const [id, n] of m) {
+    await db.update(schema.shopProducts)
+      .set({ stock: sql`${schema.shopProducts.stock} + ${n}`, updatedAt: new Date() })
+      .where(and(eq(schema.shopProducts.id, id), isNotNull(schema.shopProducts.stock)));
+  }
   await purgeSiteCache();
 }
 
